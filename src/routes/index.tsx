@@ -359,7 +359,7 @@ function HorizontalShowcase() {
     <>
       {/* Section 1 — Chegou a hora (com vídeo de fundo em loop) */}
       <section className="relative overflow-hidden py-24 md:py-32 px-6">
-        {/* Background video */}
+        {/* Background video — mais vivo (overlay reduzido) */}
         <div className="absolute inset-0 z-[-1] pointer-events-none overflow-hidden">
           <video
             src="/videos/section1-bg.mp4"
@@ -367,19 +367,20 @@ function HorizontalShowcase() {
             loop
             muted
             playsInline
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover scale-105"
           />
-          <div className="absolute inset-0 bg-background/70" />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/30 to-background" />
+          <div className="absolute inset-0 bg-background/35" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/10 via-transparent to-background" />
         </div>
 
         <div className="max-w-[750px] mx-auto text-center relative z-10">
+          <Reveal>
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary-custom/20 bg-primary-custom/10 backdrop-blur-md text-primary-custom text-[11px] font-semibold tracking-wider mb-6">
             <Zap size={14} /> Movimento de Posicionamento Digital
           </div>
-          <h1 className="text-[clamp(32px,6vw,60px)] font-black leading-[1] mb-4 tracking-tight">
+          <h1 className="text-[clamp(32px,6vw,60px)] font-black leading-[1.15] pb-2 mb-4 tracking-tight">
             Chegou a hora do Brasil conhecer os{" "}
-            <span className="bg-gradient-to-br from-primary-custom to-primary-light bg-clip-text text-transparent">
+            <span className="inline-block bg-gradient-to-br from-primary-custom to-primary-light bg-clip-text text-transparent leading-[1.2] pb-1">
               Novos Nordestinos.
             </span>
           </h1>
