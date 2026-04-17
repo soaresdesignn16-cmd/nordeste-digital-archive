@@ -299,7 +299,7 @@ function Navbar() {
     <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-3xl bg-background/70 border-b border-primary-custom/15">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <LogoIcon className="w-6 h-6 text-primary-custom" />
+          <LogoIcon className="w-6 h-6" />
           <span className="text-[11px] font-bold tracking-[0.15em] uppercase">
             Os Novos Nordestinos
           </span>
@@ -314,6 +314,33 @@ function Navbar() {
     </nav>
   );
 }
+
+function VslNavbar() {
+  return (
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-xl border-b border-primary-custom/10">
+      <div className="max-w-7xl mx-auto px-5 h-20 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3 min-w-0">
+          <LogoIcon className="w-10 h-10 shrink-0" />
+          <div className="flex flex-col leading-tight">
+            <span className="text-[13px] font-extrabold tracking-[0.18em] uppercase text-foreground">
+              Os Novos
+            </span>
+            <span className="text-[13px] font-extrabold tracking-[0.18em] uppercase text-foreground">
+              Nordestinos
+            </span>
+          </div>
+        </div>
+        <a
+          href="#vsl-gate"
+          className="px-5 py-3 bg-primary-custom hover:bg-primary-light text-white rounded-xl text-[13px] font-bold leading-tight text-center transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(234,144,46,0.35)]"
+        >
+          Solicitar<br />Avaliação
+        </a>
+      </div>
+    </nav>
+  );
+}
+
 
 function LogoIcon({ className }: { className?: string }) {
   return (
@@ -334,7 +361,7 @@ function HorizontalShowcase() {
         {/* Background video */}
         <div className="absolute inset-0 z-[-1] pointer-events-none overflow-hidden">
           <video
-            src="/videos/gamechanger-bg.mp4"
+            src="/videos/section1-bg.mp4"
             autoPlay
             loop
             muted
@@ -408,8 +435,20 @@ function HorizontalShowcase() {
         </div>
       </section>
 
-      {/* Section 2 — Você já construiu resultado */}
+      {/* Section 2 — Você já construiu resultado (com vídeo de fundo) */}
       <section className="py-24 px-6 relative overflow-hidden">
+        <div className="absolute inset-0 z-[-1] pointer-events-none overflow-hidden">
+          <video
+            src="/videos/section2-bg.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-background/75" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background via-background/60 to-background" />
+        </div>
         <div className="max-w-[900px] mx-auto text-center">
           <span className="text-[10px] font-bold tracking-widest uppercase text-primary-custom mb-3 block">
             ⚠️ A verdade que ninguém fala
