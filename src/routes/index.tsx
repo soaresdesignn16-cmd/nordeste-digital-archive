@@ -895,12 +895,9 @@ function FinalCTA() {
           </div>
 
           <div className="flex flex-col items-center gap-6">
-            <a
-              href="#"
-              className="px-12 py-5 rounded-2xl font-black text-lg bg-gradient-to-r from-primary-custom to-primary-light text-white shadow-[0_20px_60px_-15px_rgba(234,144,46,0.5)] transition-all hover:scale-105 hover:shadow-[0_25px_80px_-10px_rgba(234,144,46,0.6)] active:scale-95"
-            >
+            <BrutalistButton href="#" size="lg">
               Solicitar minha avaliação estratégica →
-            </a>
+            </BrutalistButton>
             <p className="max-w-[420px] text-[11px] text-muted-custom font-semibold tracking-wide leading-relaxed">
               Entre para o movimento exclusivo de empresários que estão
               redefinindo o padrão de autoridade nordestina no cenário digital
