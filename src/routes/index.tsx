@@ -332,9 +332,10 @@ function VslNavbar() {
         </div>
         <a
           href="#vsl-gate"
-          className="px-5 py-3 bg-primary-custom hover:bg-primary-light text-white rounded-xl text-[13px] font-bold leading-tight text-center transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(234,144,46,0.35)]"
+          className="flex flex-col px-5 py-3 bg-primary-custom hover:bg-primary-light text-white rounded-xl text-[13px] font-bold leading-tight text-center transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(234,144,46,0.35)]"
         >
-          Solicitar<br />Avaliação
+          <span>Solicitar</span>
+          <span>Avaliação</span>
         </a>
       </div>
     </nav>
