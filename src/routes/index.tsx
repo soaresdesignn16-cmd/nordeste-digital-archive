@@ -22,6 +22,7 @@ import {
   Sparkles,
   Cpu,
 } from "lucide-react";
+import logoOnn from "@/assets/logo-onn.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -317,258 +318,192 @@ function Navbar() {
 
 function LogoIcon({ className }: { className?: string }) {
   return (
-    <svg
-      viewBox="0 0 40 40"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
+    <img
+      src={logoOnn}
+      alt="Os Novos Nordestinos"
       className={className}
-    >
-      <path
-        d="M20 5L33 12.5V27.5L20 35L7 27.5V12.5L20 5Z"
-        stroke="currentColor"
-        strokeWidth="2.5"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M14 13V24L20 27.5L26 24V13L20 9.5L14 13Z"
-        fill="currentColor"
-      />
-      <path
-        d="M20 16V21"
-        stroke="white"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
+      style={{ objectFit: "contain" }}
+    />
   );
 }
 
 function HorizontalShowcase() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
-
-  const xTransform = useTransform(scrollYProgress, [0, 1], ["0%", "-66.66%"]);
-  const x = useSpring(xTransform, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001,
-  });
-
-  const rotation = useTransform(scrollYProgress, [0, 1], [0, 360]);
-  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1, 1.25, 1]);
-  const floatingY = useTransform(scrollYProgress, [0, 0.5, 1], [0, -100, 0]);
-
-  const indicatorWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
-
   return (
-    <div ref={containerRef} className="h-[300vh] relative">
-      <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center">
-        {/* Floating Decorative Element */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden h-full w-full">
-          <motion.div
-            style={{ y: floatingY, rotate: rotation, scale }}
-            className="absolute top-1/3 right-[15%] w-72 h-72 border border-primary-custom/10 rounded-[3rem] flex items-center justify-center z-0 opacity-20"
-          >
-            <div className="w-56 h-56 border border-primary-custom/5 rounded-full" />
-            <Sparkles className="absolute text-primary-custom/30" size={64} />
-          </motion.div>
-        </div>
-
-        {/* Track */}
-        <motion.div
-          style={{ x }}
-          className="flex h-full w-[300vw] relative z-10 items-center"
-        >
-          {/* Panel 1 */}
-          <div className="w-screen h-full flex flex-col items-center justify-start px-6 pt-24 pb-12 relative overflow-hidden">
-            <div className="absolute inset-0 z-[-1] pointer-events-none overflow-hidden">
-              <img
-                src="https://images.unsplash.com/photo-1495195129352-aec325b55b65?q=80&w=1776&auto=format&fit=crop"
-                alt=""
-                className="w-full h-full object-cover scale-110"
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
-              <div className="absolute inset-0 bg-background/30" />
-            </div>
-
-            <div className="max-w-[750px] w-full text-center mt-auto mb-auto">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary-custom/20 bg-primary-custom/5 text-primary-custom text-[11px] font-semibold tracking-wider mb-6">
-                <Zap size={14} /> Movimento de Posicionamento Digital
-              </div>
-              <h1 className="text-[clamp(32px,6vw,60px)] font-black leading-[1] mb-4 tracking-tight">
-                Chegou a hora do Brasil conhecer os{" "}
-                <span className="bg-gradient-to-br from-primary-custom to-primary-light bg-clip-text text-transparent">
-                  Novos Nordestinos.
-                </span>
-              </h1>
-              <p className="text-sm md:text-base text-cream-muted max-w-[540px] mx-auto mb-6 leading-relaxed font-medium">
-                Empresários e profissionais que já constroem resultado, mas
-                agora decidiram ser{" "}
-                <strong className="text-foreground">
-                  vistos, valorizados e respeitados
-                </strong>{" "}
-                no nível que realmente são.
-              </p>
-
-              <div className="max-w-[380px] mx-auto p-5 rounded-2xl border border-primary-custom/30 bg-card/60 backdrop-blur-md mb-6 shadow-[0_0_40px_-5px_rgba(234,144,46,0.3)]">
-                <div className="text-xs font-semibold mb-1">
-                  Você não precisa de mais clientes.
-                </div>
-                <div className="text-xs font-bold text-primary-custom uppercase tracking-wide">
-                  Você precisa de clientes melhores.
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-2 items-center mb-8">
-                {[
-                  "Atenda menos e aumente seu ticket",
-                  "Atraia clientes premium",
-                  "Tenha mais tempo livre",
-                  "Construa uma marca pessoal forte",
-                  "Cresça no digital sem depender de você",
-                ].map((item, i) => (
-                  <div key={i} className="flex items-center gap-2.5">
-                    <div className="w-4 h-4 rounded-full bg-primary-custom/20 flex items-center justify-center text-primary-custom">
-                      <Check size={10} />
-                    </div>
-                    <span className="text-xs text-foreground/90 font-medium">
-                      {item}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              <a
-                href="#cta-final"
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-bold bg-gradient-to-r from-primary-custom to-primary-light text-white shadow-[0_0_30px_rgba(234,144,46,0.4)] transition-all hover:scale-105 hover:shadow-[0_0_50px_rgba(234,144,46,0.5)] group"
-              >
-                Quero fazer parte dos Novos Nordestinos
-                <ChevronRight
-                  className="transition-transform group-hover:translate-x-1"
-                  size={16}
-                />
-              </a>
-              <p className="text-[10px] text-muted-custom mt-4 font-medium italic opacity-80">
-                Avaliação estratégica + plano de posicionamento personalizado
-              </p>
-            </div>
-          </div>
-
-          {/* Panel 2 */}
-          <div className="w-screen h-full flex flex-col items-center justify-start px-6 pt-24 pb-12 overflow-hidden">
-            <div className="max-w-[850px] w-full text-center mt-auto mb-auto">
-              <span className="text-[10px] font-bold tracking-widest uppercase text-primary-custom mb-3 block">
-                ⚠️ A verdade que ninguém fala
-              </span>
-              <h2 className="text-[clamp(28px,5vw,50px)] font-black leading-[1.1] mb-8">
-                Você já construiu{" "}
-                <span className="bg-gradient-to-br from-primary-custom to-primary-light bg-clip-text text-transparent">
-                  resultado.
-                </span>
-              </h2>
-
-              <div className="grid md:grid-cols-3 gap-5 max-w-[900px] mx-auto">
-                <div className="p-6 rounded-2xl border border-primary-custom/15 bg-card/40 backdrop-blur-md flex flex-col items-center text-center">
-                  <div className="w-10 h-10 rounded-xl bg-primary-custom/10 flex items-center justify-center text-primary-custom mb-4">
-                    <Users size={20} />
-                  </div>
-                  <h3 className="text-xs font-bold mb-2">Tem história real</h3>
-                  <p className="text-[11px] text-muted-custom leading-relaxed">
-                    Tem empresa e faturamento. Mas se o digital não mostra, o
-                    mercado assume que não existe.
-                  </p>
-                </div>
-                <div className="p-6 rounded-2xl border border-primary-custom/15 bg-card/40 backdrop-blur-md flex flex-col items-center text-center">
-                  <div className="w-10 h-10 rounded-xl bg-primary-custom/10 flex items-center justify-center text-primary-custom mb-4">
-                    <Lock size={20} />
-                  </div>
-                  <h3 className="text-xs font-bold mb-2">
-                    Permanece invisível
-                  </h3>
-                  <p className="text-[11px] text-muted-custom leading-relaxed">
-                    Alguém menos preparado — mas mais posicionado — ocupa seu
-                    espaço de direito.
-                  </p>
-                </div>
-                <div className="p-6 rounded-2xl border border-primary-custom/15 bg-card/40 backdrop-blur-md flex flex-col items-center text-center">
-                  <div className="w-10 h-10 rounded-xl bg-primary-custom/10 flex items-center justify-center text-primary-custom mb-4">
-                    <Target size={20} />
-                  </div>
-                  <h3 className="text-xs font-bold mb-2">
-                    O espaço é ocupado
-                  </h3>
-                  <p className="text-[11px] text-muted-custom leading-relaxed">
-                    Enquanto você não se posiciona, outros constroem autoridade
-                    no SEU mercado.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Panel 3 */}
-          <div className="w-screen h-full flex flex-col items-center justify-start px-6 pt-24 pb-12 overflow-hidden">
-            <div className="max-w-[750px] w-full text-center mt-auto mb-auto">
-              <h2 className="text-[clamp(28px,5vw,50px)] font-black leading-[1.1] mb-4">
-                O mercado{" "}
-                <span className="bg-gradient-to-br from-primary-custom to-primary-light bg-clip-text text-transparent">
-                  não escolhe o melhor.
-                </span>
-              </h2>
-              <p className="text-sm text-cream-muted mb-4">
-                Escolhe o{" "}
-                <strong className="text-foreground">
-                  mais bem percebido.
-                </strong>
-              </p>
-              <p className="text-[10px] text-muted-custom mb-10 tracking-wide uppercase font-semibold">
-                E percepção hoje é construída exclusivamente no digital.
-              </p>
-
-              <div className="flex flex-col md:flex-row items-center justify-center gap-6 max-w-[600px] mx-auto">
-                <div className="flex-1 w-full p-6 rounded-2xl border border-primary-custom/10 bg-card/20 text-center">
-                  <div className="w-9 h-9 rounded-full bg-red-500/10 flex items-center justify-center text-red-500 mx-auto mb-3">
-                    <ChevronRight size={18} className="rotate-90" />
-                  </div>
-                  <p className="text-[8px] font-bold tracking-widest uppercase text-red-500/80 mb-2">
-                    O erro da maioria
-                  </p>
-                  <p className="text-xs font-bold">
-                    Tentar crescer aumentando volume de trabalho
-                  </p>
-                </div>
-                <div className="text-primary-custom font-black tracking-widest text-base">
-                  VS
-                </div>
-                <div className="flex-1 w-full p-6 rounded-2xl border border-primary-custom/30 bg-primary-custom/5 text-center shadow-[0_0_20px_rgba(234,144,46,0.2)]">
-                  <div className="w-9 h-9 rounded-full bg-primary-custom/20 flex items-center justify-center text-primary-custom mx-auto mb-3">
-                    <ChevronRight size={18} className="-rotate-90" />
-                  </div>
-                  <p className="text-[8px] font-bold tracking-widest uppercase text-primary-custom mb-2">
-                    O jogo real
-                  </p>
-                  <p className="text-xs font-bold">
-                    Diminuir volume e aumentar valor percebido
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Progress UI */}
-        <div className="absolute top-24 left-1/2 -translate-x-1/2 w-32 h-[2px] bg-foreground/10 rounded-full overflow-hidden z-20">
-          <motion.div
-            style={{ width: indicatorWidth }}
-            className="h-full bg-gradient-to-r from-primary-custom to-primary-light"
+    <>
+      {/* Section 1 — Chegou a hora (com vídeo de fundo em loop) */}
+      <section className="relative overflow-hidden py-24 md:py-32 px-6">
+        {/* Background video */}
+        <div className="absolute inset-0 z-[-1] pointer-events-none overflow-hidden">
+          <video
+            src="/videos/gamechanger-bg.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover"
           />
+          <div className="absolute inset-0 bg-background/70" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/30 to-background" />
         </div>
-      </div>
-    </div>
+
+        <div className="max-w-[750px] mx-auto text-center relative z-10">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary-custom/20 bg-primary-custom/10 backdrop-blur-md text-primary-custom text-[11px] font-semibold tracking-wider mb-6">
+            <Zap size={14} /> Movimento de Posicionamento Digital
+          </div>
+          <h1 className="text-[clamp(32px,6vw,60px)] font-black leading-[1] mb-4 tracking-tight">
+            Chegou a hora do Brasil conhecer os{" "}
+            <span className="bg-gradient-to-br from-primary-custom to-primary-light bg-clip-text text-transparent">
+              Novos Nordestinos.
+            </span>
+          </h1>
+          <p className="text-sm md:text-base text-cream-muted max-w-[540px] mx-auto mb-6 leading-relaxed font-medium">
+            Empresários e profissionais que já constroem resultado, mas agora
+            decidiram ser{" "}
+            <strong className="text-foreground">
+              vistos, valorizados e respeitados
+            </strong>{" "}
+            no nível que realmente são.
+          </p>
+
+          <div className="max-w-[380px] mx-auto p-5 rounded-2xl border border-primary-custom/30 bg-card/60 backdrop-blur-md mb-6 shadow-[0_0_40px_-5px_rgba(234,144,46,0.3)]">
+            <div className="text-xs font-semibold mb-1">
+              Você não precisa de mais clientes.
+            </div>
+            <div className="text-xs font-bold text-primary-custom uppercase tracking-wide">
+              Você precisa de clientes melhores.
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2 items-center mb-8">
+            {[
+              "Atenda menos e aumente seu ticket",
+              "Atraia clientes premium",
+              "Tenha mais tempo livre",
+              "Construa uma marca pessoal forte",
+              "Cresça no digital sem depender de você",
+            ].map((item, i) => (
+              <div key={i} className="flex items-center gap-2.5">
+                <div className="w-4 h-4 rounded-full bg-primary-custom/20 flex items-center justify-center text-primary-custom">
+                  <Check size={10} />
+                </div>
+                <span className="text-xs text-foreground/90 font-medium">
+                  {item}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <a
+            href="#cta-final"
+            className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-bold bg-gradient-to-r from-primary-custom to-primary-light text-white shadow-[0_0_30px_rgba(234,144,46,0.4)] transition-all hover:scale-105 hover:shadow-[0_0_50px_rgba(234,144,46,0.5)] group"
+          >
+            Quero fazer parte dos Novos Nordestinos
+            <ChevronRight
+              className="transition-transform group-hover:translate-x-1"
+              size={16}
+            />
+          </a>
+          <p className="text-[10px] text-muted-custom mt-4 font-medium italic opacity-80">
+            Avaliação estratégica + plano de posicionamento personalizado
+          </p>
+        </div>
+      </section>
+
+      {/* Section 2 — Você já construiu resultado */}
+      <section className="py-24 px-6 relative overflow-hidden">
+        <div className="max-w-[900px] mx-auto text-center">
+          <span className="text-[10px] font-bold tracking-widest uppercase text-primary-custom mb-3 block">
+            ⚠️ A verdade que ninguém fala
+          </span>
+          <h2 className="text-[clamp(28px,5vw,50px)] font-black leading-[1.1] mb-12">
+            Você já construiu{" "}
+            <span className="bg-gradient-to-br from-primary-custom to-primary-light bg-clip-text text-transparent">
+              resultado.
+            </span>
+          </h2>
+
+          <div className="grid md:grid-cols-3 gap-5">
+            <div className="p-6 rounded-2xl border border-primary-custom/15 bg-card/40 backdrop-blur-md flex flex-col items-center text-center">
+              <div className="w-10 h-10 rounded-xl bg-primary-custom/10 flex items-center justify-center text-primary-custom mb-4">
+                <Users size={20} />
+              </div>
+              <h3 className="text-xs font-bold mb-2">Tem história real</h3>
+              <p className="text-[11px] text-muted-custom leading-relaxed">
+                Tem empresa e faturamento. Mas se o digital não mostra, o
+                mercado assume que não existe.
+              </p>
+            </div>
+            <div className="p-6 rounded-2xl border border-primary-custom/15 bg-card/40 backdrop-blur-md flex flex-col items-center text-center">
+              <div className="w-10 h-10 rounded-xl bg-primary-custom/10 flex items-center justify-center text-primary-custom mb-4">
+                <Lock size={20} />
+              </div>
+              <h3 className="text-xs font-bold mb-2">Permanece invisível</h3>
+              <p className="text-[11px] text-muted-custom leading-relaxed">
+                Alguém menos preparado — mas mais posicionado — ocupa seu
+                espaço de direito.
+              </p>
+            </div>
+            <div className="p-6 rounded-2xl border border-primary-custom/15 bg-card/40 backdrop-blur-md flex flex-col items-center text-center">
+              <div className="w-10 h-10 rounded-xl bg-primary-custom/10 flex items-center justify-center text-primary-custom mb-4">
+                <Target size={20} />
+              </div>
+              <h3 className="text-xs font-bold mb-2">O espaço é ocupado</h3>
+              <p className="text-[11px] text-muted-custom leading-relaxed">
+                Enquanto você não se posiciona, outros constroem autoridade no
+                SEU mercado.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Section 3 — O mercado não escolhe o melhor */}
+      <section className="py-24 px-6 relative overflow-hidden">
+        <div className="max-w-[750px] mx-auto text-center">
+          <h2 className="text-[clamp(28px,5vw,50px)] font-black leading-[1.1] mb-4">
+            O mercado{" "}
+            <span className="bg-gradient-to-br from-primary-custom to-primary-light bg-clip-text text-transparent">
+              não escolhe o melhor.
+            </span>
+          </h2>
+          <p className="text-sm text-cream-muted mb-4">
+            Escolhe o{" "}
+            <strong className="text-foreground">mais bem percebido.</strong>
+          </p>
+          <p className="text-[10px] text-muted-custom mb-10 tracking-wide uppercase font-semibold">
+            E percepção hoje é construída exclusivamente no digital.
+          </p>
+
+          <div className="flex flex-col md:flex-row items-center justify-center gap-6 max-w-[600px] mx-auto">
+            <div className="flex-1 w-full p-6 rounded-2xl border border-primary-custom/10 bg-card/20 text-center">
+              <div className="w-9 h-9 rounded-full bg-red-500/10 flex items-center justify-center text-red-500 mx-auto mb-3">
+                <ChevronRight size={18} className="rotate-90" />
+              </div>
+              <p className="text-[8px] font-bold tracking-widest uppercase text-red-500/80 mb-2">
+                O erro da maioria
+              </p>
+              <p className="text-xs font-bold">
+                Tentar crescer aumentando volume de trabalho
+              </p>
+            </div>
+            <div className="text-primary-custom font-black tracking-widest text-base">
+              VS
+            </div>
+            <div className="flex-1 w-full p-6 rounded-2xl border border-primary-custom/30 bg-primary-custom/5 text-center shadow-[0_0_20px_rgba(234,144,46,0.2)]">
+              <div className="w-9 h-9 rounded-full bg-primary-custom/20 flex items-center justify-center text-primary-custom mx-auto mb-3">
+                <ChevronRight size={18} className="-rotate-90" />
+              </div>
+              <p className="text-[8px] font-bold tracking-widest uppercase text-primary-custom mb-2">
+                O jogo real
+              </p>
+              <p className="text-xs font-bold">
+                Diminuir volume e aumentar valor percebido
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
 
