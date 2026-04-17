@@ -250,7 +250,8 @@ function NovosNordestinos() {
             )}
           </AnimatePresence>
         </div>
-      </section>
+        </section>
+      </>
     );
   }
 
