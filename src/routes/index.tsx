@@ -238,15 +238,15 @@ function NovosNordestinos() {
             )}
 
             {vslStatus === "finished" && (
-              <motion.button
+              <motion.div
                 key="unlock-btn"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                onClick={unlockContent}
-                className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold bg-gradient-to-br from-primary-custom to-primary-light text-white shadow-[0_0_40px_rgba(234,144,46,0.4)] transition-transform hover:scale-105"
               >
-                <Check size={18} /> Liberar acesso ao conteúdo completo
-              </motion.button>
+                <BrutalistButton onClick={unlockContent} size="lg">
+                  <Check size={18} /> Liberar acesso ao conteúdo completo
+                </BrutalistButton>
+              </motion.div>
             )}
           </AnimatePresence>
         </div>
@@ -304,12 +304,9 @@ function Navbar() {
             Os Novos Nordestinos
           </span>
         </div>
-        <a
-          href="#cta-final"
-          className="px-4 py-2 bg-primary-custom hover:bg-primary-light text-white rounded-lg text-[11px] font-semibold transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(234,144,46,0.3)]"
-        >
+        <BrutalistButton href="#cta-final" className="!px-4 !py-2 !text-[11px]">
           Solicitar Avaliação
-        </a>
+        </BrutalistButton>
       </div>
     </nav>
   );
@@ -330,13 +327,10 @@ function VslNavbar() {
             </span>
           </div>
         </div>
-        <a
-          href="#vsl-gate"
-          className="flex flex-col px-5 py-3 bg-primary-custom hover:bg-primary-light text-white rounded-xl text-[13px] font-bold leading-tight text-center transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(234,144,46,0.35)]"
-        >
+        <BrutalistButton href="#vsl-gate" className="!flex-col !px-5 !py-3 !text-[13px] !leading-tight !gap-0">
           <span>Solicitar</span>
           <span>Avaliação</span>
-        </a>
+        </BrutalistButton>
       </div>
     </nav>
   );
@@ -989,16 +983,22 @@ function BrutalistButton({
       ? "px-10 py-5 text-base"
       : "px-6 py-3.5 text-sm";
 
+  // Estado neutro: botão "pousado" sobre a sombra (sem offset, sombra colada).
+  // Hover/touch: o botão "levanta" — translada para cima/esquerda revelando a sombra dura.
+  // Active (clique): volta a pousar.
   const baseClasses = `relative inline-flex items-center justify-center gap-2 rounded-xl font-bold uppercase tracking-wide
     bg-gradient-to-r from-primary-custom to-primary-light text-white
     border-2 border-primary-dark
-    shadow-[4px_4px_0_0_var(--primary-dark)]
-    transition-all duration-150 ease-out
-    hover:translate-x-[-2px] hover:translate-y-[-2px]
+    translate-x-0 translate-y-0
+    shadow-[0px_0px_0_0_var(--primary-dark)]
+    transition-all duration-200 ease-out
+    hover:-translate-x-[3px] hover:-translate-y-[3px]
     hover:shadow-[6px_6px_0_0_var(--primary-dark)]
-    active:translate-x-[2px] active:translate-y-[2px]
-    active:shadow-[1px_1px_0_0_var(--primary-dark)]
-    cursor-pointer select-none ${sizeClasses} ${className}`;
+    focus-visible:-translate-x-[3px] focus-visible:-translate-y-[3px]
+    focus-visible:shadow-[6px_6px_0_0_var(--primary-dark)]
+    active:translate-x-0 active:translate-y-0
+    active:shadow-[0px_0px_0_0_var(--primary-dark)]
+    cursor-pointer select-none outline-none ${sizeClasses} ${className}`;
 
   if (href) {
     return (
