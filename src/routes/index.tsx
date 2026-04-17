@@ -22,6 +22,7 @@ import {
   Sparkles,
   Cpu,
 } from "lucide-react";
+import logoOnn from "@/assets/logo-onn.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
