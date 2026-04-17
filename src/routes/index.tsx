@@ -318,29 +318,12 @@ function Navbar() {
 
 function LogoIcon({ className }: { className?: string }) {
   return (
-    <svg
-      viewBox="0 0 40 40"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
+    <img
+      src={logoOnn}
+      alt="Os Novos Nordestinos"
       className={className}
-    >
-      <path
-        d="M20 5L33 12.5V27.5L20 35L7 27.5V12.5L20 5Z"
-        stroke="currentColor"
-        strokeWidth="2.5"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M14 13V24L20 27.5L26 24V13L20 9.5L14 13Z"
-        fill="currentColor"
-      />
-      <path
-        d="M20 16V21"
-        stroke="white"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
+      style={{ objectFit: "contain" }}
+    />
   );
 }
 
