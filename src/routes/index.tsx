@@ -359,7 +359,7 @@ function HorizontalShowcase() {
     <>
       {/* Section 1 — Chegou a hora (com vídeo de fundo em loop) */}
       <section className="relative overflow-hidden py-24 md:py-32 px-6">
-        {/* Background video */}
+        {/* Background video — mais vivo (overlay reduzido) */}
         <div className="absolute inset-0 z-[-1] pointer-events-none overflow-hidden">
           <video
             src="/videos/section1-bg.mp4"
@@ -367,19 +367,20 @@ function HorizontalShowcase() {
             loop
             muted
             playsInline
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover scale-105"
           />
-          <div className="absolute inset-0 bg-background/70" />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/30 to-background" />
+          <div className="absolute inset-0 bg-background/35" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/10 via-transparent to-background" />
         </div>
 
         <div className="max-w-[750px] mx-auto text-center relative z-10">
+          <Reveal>
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary-custom/20 bg-primary-custom/10 backdrop-blur-md text-primary-custom text-[11px] font-semibold tracking-wider mb-6">
             <Zap size={14} /> Movimento de Posicionamento Digital
           </div>
-          <h1 className="text-[clamp(32px,6vw,60px)] font-black leading-[1] mb-4 tracking-tight">
+          <h1 className="text-[clamp(32px,6vw,60px)] font-black leading-[1.15] pb-2 mb-4 tracking-tight">
             Chegou a hora do Brasil conhecer os{" "}
-            <span className="bg-gradient-to-br from-primary-custom to-primary-light bg-clip-text text-transparent">
+            <span className="inline-block bg-gradient-to-br from-primary-custom to-primary-light bg-clip-text text-transparent leading-[1.2] pb-1">
               Novos Nordestinos.
             </span>
           </h1>
@@ -420,19 +421,14 @@ function HorizontalShowcase() {
             ))}
           </div>
 
-          <a
-            href="#cta-final"
-            className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-bold bg-gradient-to-r from-primary-custom to-primary-light text-white shadow-[0_0_30px_rgba(234,144,46,0.4)] transition-all hover:scale-105 hover:shadow-[0_0_50px_rgba(234,144,46,0.5)] group"
-          >
+          <BrutalistButton href="#cta-final">
             Quero fazer parte dos Novos Nordestinos
-            <ChevronRight
-              className="transition-transform group-hover:translate-x-1"
-              size={16}
-            />
-          </a>
+            <ChevronRight size={16} />
+          </BrutalistButton>
           <p className="text-[10px] text-muted-custom mt-4 font-medium italic opacity-80">
             Avaliação estratégica + plano de posicionamento personalizado
           </p>
+          </Reveal>
         </div>
       </section>
 
@@ -445,53 +441,54 @@ function HorizontalShowcase() {
             loop
             muted
             playsInline
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover scale-105"
           />
-          <div className="absolute inset-0 bg-background/75" />
-          <div className="absolute inset-0 bg-gradient-to-b from-background via-background/60 to-background" />
+          <div className="absolute inset-0 bg-background/40" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-transparent to-background" />
         </div>
-        <div className="max-w-[900px] mx-auto text-center">
-          <span className="text-[10px] font-bold tracking-widest uppercase text-primary-custom mb-3 block">
-            ⚠️ A verdade que ninguém fala
-          </span>
-          <h2 className="text-[clamp(28px,5vw,50px)] font-black leading-[1.1] mb-12">
-            Você já construiu{" "}
-            <span className="bg-gradient-to-br from-primary-custom to-primary-light bg-clip-text text-transparent">
-              resultado.
+        <div className="max-w-[900px] mx-auto text-center relative z-10">
+          <Reveal>
+            <span className="text-[10px] font-bold tracking-widest uppercase text-primary-custom mb-3 block">
+              ⚠️ A verdade que ninguém fala
             </span>
-          </h2>
+            <h2 className="text-[clamp(28px,5vw,50px)] font-black leading-[1.15] pb-2 mb-12">
+              Você já construiu{" "}
+              <span className="inline-block bg-gradient-to-br from-primary-custom to-primary-light bg-clip-text text-transparent leading-[1.2] pb-1">
+                resultado.
+              </span>
+            </h2>
+          </Reveal>
 
           <div className="grid md:grid-cols-3 gap-5">
-            <div className="p-6 rounded-2xl border border-primary-custom/15 bg-card/40 backdrop-blur-md flex flex-col items-center text-center">
-              <div className="w-10 h-10 rounded-xl bg-primary-custom/10 flex items-center justify-center text-primary-custom mb-4">
-                <Users size={20} />
-              </div>
-              <h3 className="text-xs font-bold mb-2">Tem história real</h3>
-              <p className="text-[11px] text-muted-custom leading-relaxed">
-                Tem empresa e faturamento. Mas se o digital não mostra, o
-                mercado assume que não existe.
-              </p>
-            </div>
-            <div className="p-6 rounded-2xl border border-primary-custom/15 bg-card/40 backdrop-blur-md flex flex-col items-center text-center">
-              <div className="w-10 h-10 rounded-xl bg-primary-custom/10 flex items-center justify-center text-primary-custom mb-4">
-                <Lock size={20} />
-              </div>
-              <h3 className="text-xs font-bold mb-2">Permanece invisível</h3>
-              <p className="text-[11px] text-muted-custom leading-relaxed">
-                Alguém menos preparado — mas mais posicionado — ocupa seu
-                espaço de direito.
-              </p>
-            </div>
-            <div className="p-6 rounded-2xl border border-primary-custom/15 bg-card/40 backdrop-blur-md flex flex-col items-center text-center">
-              <div className="w-10 h-10 rounded-xl bg-primary-custom/10 flex items-center justify-center text-primary-custom mb-4">
-                <Target size={20} />
-              </div>
-              <h3 className="text-xs font-bold mb-2">O espaço é ocupado</h3>
-              <p className="text-[11px] text-muted-custom leading-relaxed">
-                Enquanto você não se posiciona, outros constroem autoridade no
-                SEU mercado.
-              </p>
-            </div>
+            {[
+              {
+                icon: <Users size={20} />,
+                title: "Tem história real",
+                desc: "Tem empresa e faturamento. Mas se o digital não mostra, o mercado assume que não existe.",
+              },
+              {
+                icon: <Lock size={20} />,
+                title: "Permanece invisível",
+                desc: "Alguém menos preparado — mas mais posicionado — ocupa seu espaço de direito.",
+              },
+              {
+                icon: <Target size={20} />,
+                title: "O espaço é ocupado",
+                desc: "Enquanto você não se posiciona, outros constroem autoridade no SEU mercado.",
+              },
+            ].map((b, i) => (
+              <Reveal key={i} delay={i * 0.15}>
+                <div className="p-6 rounded-2xl border border-primary-custom/15 bg-card/40 backdrop-blur-md flex flex-col items-center text-center h-full">
+                  <div className="w-10 h-10 rounded-xl bg-primary-custom/10 flex items-center justify-center text-primary-custom mb-4">
+                    {b.icon}
+                  </div>
+                  <h3 className="text-xs font-bold mb-2">{b.title}</h3>
+                  <p className="text-[11px] text-muted-custom leading-relaxed">
+                    {b.desc}
+                  </p>
+                </div>
+              </Reveal>
+            ))}
           </div>
         </div>
       </section>
@@ -898,12 +895,9 @@ function FinalCTA() {
           </div>
 
           <div className="flex flex-col items-center gap-6">
-            <a
-              href="#"
-              className="px-12 py-5 rounded-2xl font-black text-lg bg-gradient-to-r from-primary-custom to-primary-light text-white shadow-[0_20px_60px_-15px_rgba(234,144,46,0.5)] transition-all hover:scale-105 hover:shadow-[0_25px_80px_-10px_rgba(234,144,46,0.6)] active:scale-95"
-            >
+            <BrutalistButton href="#" size="lg">
               Solicitar minha avaliação estratégica →
-            </a>
+            </BrutalistButton>
             <p className="max-w-[420px] text-[11px] text-muted-custom font-semibold tracking-wide leading-relaxed">
               Entre para o movimento exclusivo de empresários que estão
               redefinindo o padrão de autoridade nordestina no cenário digital
@@ -952,15 +946,70 @@ function Footer() {
   );
 }
 
-function Reveal({ children }: { children: ReactNode }) {
+function Reveal({
+  children,
+  delay = 0,
+}: {
+  children: ReactNode;
+  delay?: number;
+}) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{
+        duration: 0.8,
+        delay,
+        ease: [0.25, 0.46, 0.45, 0.94],
+      }}
     >
       {children}
     </motion.div>
+  );
+}
+
+/* ── Botão estilo "GumRoad" (neo-brutalist) — sombra dura deslocada,
+   no hover translada e revela a sombra; no active "afunda" ── */
+function BrutalistButton({
+  href,
+  onClick,
+  children,
+  size = "md",
+  className = "",
+}: {
+  href?: string;
+  onClick?: () => void;
+  children: ReactNode;
+  size?: "md" | "lg";
+  className?: string;
+}) {
+  const sizeClasses =
+    size === "lg"
+      ? "px-10 py-5 text-base"
+      : "px-6 py-3.5 text-sm";
+
+  const baseClasses = `relative inline-flex items-center justify-center gap-2 rounded-xl font-bold uppercase tracking-wide
+    bg-gradient-to-r from-primary-custom to-primary-light text-white
+    border-2 border-primary-dark
+    shadow-[4px_4px_0_0_var(--primary-dark)]
+    transition-all duration-150 ease-out
+    hover:translate-x-[-2px] hover:translate-y-[-2px]
+    hover:shadow-[6px_6px_0_0_var(--primary-dark)]
+    active:translate-x-[2px] active:translate-y-[2px]
+    active:shadow-[1px_1px_0_0_var(--primary-dark)]
+    cursor-pointer select-none ${sizeClasses} ${className}`;
+
+  if (href) {
+    return (
+      <a href={href} className={baseClasses}>
+        {children}
+      </a>
+    );
+  }
+  return (
+    <button onClick={onClick} className={baseClasses}>
+      {children}
+    </button>
   );
 }
