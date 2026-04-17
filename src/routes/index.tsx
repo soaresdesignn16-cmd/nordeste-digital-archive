@@ -132,18 +132,16 @@ function NovosNordestinos() {
     }
 
     return (
-      <section
-        id="vsl-gate"
-        className="min-h-screen flex items-center justify-center pt-24 pb-16 relative overflow-hidden bg-background"
-      >
+      <>
+        <VslNavbar />
+        <section
+          id="vsl-gate"
+          className="min-h-screen flex items-center justify-center pt-28 pb-16 relative overflow-hidden bg-background"
+        >
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-primary-custom/10 rounded-full blur-[200px] animate-[pulse-glow_5s_ease-in-out_infinite]"></div>
         <div className="relative z-10 text-center max-w-[700px] mx-auto px-6">
-          <div className="mb-6">
-            <LogoIcon className="w-14 h-14 text-primary-custom mx-auto shadow-[0_0_30px_rgba(234,144,46,0.3)]" />
-          </div>
-
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary-custom/30 bg-primary-custom/10 text-primary-custom text-[11px] font-semibold tracking-wider mb-6">
-            <Lock size={12} /> Conteúdo exclusivo — Assista antes de continuar
+          <div className="mb-8 flex justify-center">
+            <LogoIcon className="w-20 h-20 drop-shadow-[0_0_30px_rgba(234,144,46,0.4)]" />
           </div>
 
           <h1 className="text-[clamp(28px,5vw,48px)] font-extrabold leading-[1.1] mb-4">
