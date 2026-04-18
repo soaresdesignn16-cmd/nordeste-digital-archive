@@ -69,12 +69,14 @@ function NovosNordestinos() {
       interval = setInterval(() => {
         setVslElapsed((prev) => prev + 1);
       }, 1000);
-    } else if (vslElapsed >= MIN_WATCH) {
+    } else if (vslStatus === "watching" && vslElapsed >= MIN_WATCH) {
       setVslStatus("finished");
+      unlockContent();
     }
     return () => {
       if (interval) clearInterval(interval);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vslStatus, vslElapsed]);
 
   const startVSL = () => setVslStatus("watching");
