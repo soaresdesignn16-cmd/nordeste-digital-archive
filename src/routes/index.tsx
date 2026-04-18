@@ -281,21 +281,37 @@ function NovosNordestinos() {
       <PremiumBackground />
       <Navbar />
       <main>
-        <HorizontalShowcase />
+        <ParallaxLayer offset={60} scaleFrom={0.96}>
+          <HorizontalShowcase />
+        </ParallaxLayer>
         <SectionDivider />
-        <GameChanger />
+        <ParallaxLayer offset={80} scaleFrom={0.94}>
+          <GameChanger />
+        </ParallaxLayer>
         <SectionDivider />
-        <MovementSection />
+        <ParallaxLayer offset={70} scaleFrom={0.95}>
+          <MovementSection />
+        </ParallaxLayer>
         <SectionDivider />
-        <OpportunitySection />
+        <ParallaxLayer offset={90} scaleFrom={0.93}>
+          <OpportunitySection />
+        </ParallaxLayer>
         <SectionDivider />
-        <ObjectionsSection />
+        <ParallaxLayer offset={70} scaleFrom={0.95}>
+          <ObjectionsSection />
+        </ParallaxLayer>
         <SectionDivider />
-        <SolutionSection />
+        <ParallaxLayer offset={85} scaleFrom={0.94}>
+          <SolutionSection />
+        </ParallaxLayer>
         <SectionDivider />
-        <ImpactSection />
+        <ParallaxLayer offset={75} scaleFrom={0.95}>
+          <ImpactSection />
+        </ParallaxLayer>
         <SectionDivider />
-        <FinalCTA />
+        <ParallaxLayer offset={60} scaleFrom={0.96}>
+          <FinalCTA />
+        </ParallaxLayer>
         <Footer />
       </main>
     </div>
@@ -995,6 +1011,52 @@ function Reveal({
         ease: [0.25, 0.46, 0.45, 0.94],
       }}
       style={{ width: "100%" }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+/* ── ParallaxLayer: aplica parallax (translateY) + zoom sutil + fade
+   conforme a seção entra/sai da viewport. Cria sensação de profundidade
+   em todas as seções abaixo do topo. ── */
+function ParallaxLayer({
+  children,
+  offset = 70,
+  scaleFrom = 0.95,
+}: {
+  children: ReactNode;
+  offset?: number;
+  scaleFrom?: number;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+
+  // Spring para suavizar o scroll (sensação premium)
+  const smooth = useSpring(scrollYProgress, {
+    stiffness: 80,
+    damping: 25,
+    mass: 0.4,
+  });
+
+  // Translação vertical: entra um pouco abaixo, sai um pouco acima
+  const y = useTransform(smooth, [0, 0.5, 1], [offset, 0, -offset]);
+  // Zoom sutil: começa menor, atinge 1 no centro, volta a diminuir
+  const scale = useTransform(smooth, [0, 0.5, 1], [scaleFrom, 1, scaleFrom]);
+  // Opacidade: fade-in/out nas pontas para reforçar profundidade
+  const opacity = useTransform(
+    smooth,
+    [0, 0.15, 0.85, 1],
+    [0.55, 1, 1, 0.55],
+  );
+
+  return (
+    <motion.div
+      ref={ref}
+      style={{ y, scale, opacity, willChange: "transform, opacity" }}
     >
       {children}
     </motion.div>
