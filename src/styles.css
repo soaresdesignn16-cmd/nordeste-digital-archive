@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;900&display=swap');
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
@@ -7,8 +7,8 @@
 
 /*
  * Design system — Os Novos Nordestinos
- * Tema dark com paleta marrom/laranja (sertão premium).
- * Tokens em oklch + cores customizadas mapeadas para utilitários Tailwind.
+ * Dark luxury, dourado editorial, premium do Nordeste.
+ * Paleta: preto profundo + dourado (#C97B2A / #E08C32) + cream off-white (#F2F0EB).
  */
 
 @theme inline {
@@ -43,7 +43,7 @@
   --color-ring: var(--ring);
   --color-ring-offset-background: var(--background);
 
-  /* Paleta nordestina */
+  /* Paleta nordestina premium */
   --color-primary-custom: var(--primary-custom);
   --color-primary-light: var(--primary-light);
   --color-primary-dark: var(--primary-dark);
@@ -67,56 +67,62 @@
 }
 
 :root {
-  --radius: 0.625rem;
+  --radius: 0.375rem; /* 6px — mais editorial / sóbrio */
 
-  /* Tema dark "nordestino" aplicado por padrão */
-  --background: oklch(0.13 0 0);
-  --foreground: oklch(0.96 0.015 70);
-  --card: oklch(0.17 0.015 50);
-  --card-foreground: oklch(0.96 0.015 70);
-  --popover: oklch(0.17 0.015 50);
-  --popover-foreground: oklch(0.96 0.015 70);
-  --primary: oklch(0.68 0.16 55);
-  --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.22 0.02 50);
-  --secondary-foreground: oklch(0.96 0.015 70);
-  --muted: oklch(0.22 0.02 50);
-  --muted-foreground: oklch(0.7 0.04 60);
-  --accent: oklch(0.22 0.02 50);
-  --accent-foreground: oklch(0.96 0.015 70);
+  /* === NOVA PALETA ===
+   * bg:        #0A0A0A  → oklch(0.13 0 0)
+   * gold:      #C97B2A  → oklch(0.6 0.13 55)
+   * gold-warm: #E08C32  → oklch(0.68 0.155 55)
+   * cream:     #F2F0EB  → oklch(0.95 0.008 80)
+   * surface:   #0f0d0a  → oklch(0.16 0.005 60)
+   */
+
+  --background: oklch(0.13 0 0);            /* #0A0A0A */
+  --foreground: oklch(0.95 0.008 80);       /* #F2F0EB cream */
+  --card: oklch(0.16 0.005 60);             /* #0f0d0a surface quente */
+  --card-foreground: oklch(0.95 0.008 80);
+  --popover: oklch(0.16 0.005 60);
+  --popover-foreground: oklch(0.95 0.008 80);
+  --primary: oklch(0.6 0.13 55);            /* dourado #C97B2A */
+  --primary-foreground: oklch(0.13 0 0);    /* texto sobre dourado = preto */
+  --secondary: oklch(0.18 0.005 60);
+  --secondary-foreground: oklch(0.95 0.008 80);
+  --muted: oklch(0.18 0.005 60);
+  --muted-foreground: oklch(0.72 0.02 70);
+  --accent: oklch(0.68 0.155 55);           /* dourado quente #E08C32 */
+  --accent-foreground: oklch(0.13 0 0);
   --destructive: oklch(0.62 0.22 27);
   --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.68 0.16 55 / 0.15);
-  --input: oklch(0.68 0.16 55 / 0.2);
-  --ring: oklch(0.68 0.16 55);
+  --border: oklch(0.6 0.13 55 / 0.25);      /* dourado 25% — separadores */
+  --input: oklch(0.6 0.13 55 / 0.2);
+  --ring: oklch(0.6 0.13 55);
 
-  /* Paleta nordestina (laranja queimada / marrom) */
-  --primary-custom: oklch(0.68 0.16 55);
-  --primary-light: oklch(0.74 0.17 60);
-  --primary-dark: oklch(0.45 0.12 50);
+  --primary-custom: oklch(0.6 0.13 55);
+  --primary-light: oklch(0.68 0.155 55);
+  --primary-dark: oklch(0.45 0.1 50);
   --muted-custom: oklch(0.55 0.05 60);
-  --cream-muted: oklch(0.78 0.04 70);
-  --dark-surface: oklch(0.16 0.005 50);
+  --cream-muted: oklch(0.78 0.015 75);
+  --dark-surface: oklch(0.16 0.005 60);
 
-  --chart-1: oklch(0.68 0.16 55);
-  --chart-2: oklch(0.6 0.118 184);
-  --chart-3: oklch(0.45 0.12 50);
-  --chart-4: oklch(0.74 0.17 60);
+  --chart-1: oklch(0.6 0.13 55);
+  --chart-2: oklch(0.68 0.155 55);
+  --chart-3: oklch(0.45 0.1 50);
+  --chart-4: oklch(0.78 0.015 75);
   --chart-5: oklch(0.55 0.05 60);
 
   --sidebar: oklch(0.13 0 0);
-  --sidebar-foreground: oklch(0.96 0.015 70);
-  --sidebar-primary: oklch(0.68 0.16 55);
-  --sidebar-primary-foreground: oklch(0.98 0 0);
-  --sidebar-accent: oklch(0.22 0.02 50);
-  --sidebar-accent-foreground: oklch(0.96 0.015 70);
-  --sidebar-border: oklch(0.68 0.16 55 / 0.15);
-  --sidebar-ring: oklch(0.68 0.16 55);
+  --sidebar-foreground: oklch(0.95 0.008 80);
+  --sidebar-primary: oklch(0.6 0.13 55);
+  --sidebar-primary-foreground: oklch(0.13 0 0);
+  --sidebar-accent: oklch(0.18 0.005 60);
+  --sidebar-accent-foreground: oklch(0.95 0.008 80);
+  --sidebar-border: oklch(0.6 0.13 55 / 0.25);
+  --sidebar-ring: oklch(0.6 0.13 55);
 }
 
 .dark {
   --background: oklch(0.13 0 0);
-  --foreground: oklch(0.96 0.015 70);
+  --foreground: oklch(0.95 0.008 80);
 }
 
 @layer base {
@@ -126,13 +132,39 @@
 
   html,
   body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
+    background-color: #0A0A0A;
+    color: #F2F0EB;
     font-family: var(--font-sans);
+    font-weight: 400;
     font-feature-settings: "rlig" 1, "calt" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+  }
+
+  /* Tipografia editorial */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-sans);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    color: #F2F0EB;
+  }
+
+  p, li, span, a {
+    line-height: 1.5;
+  }
+
+  /* Noise / grain overlay global — profundidade premium */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    mix-blend-mode: overlay;
   }
 }
 
@@ -140,37 +172,119 @@
   .clip-path-inset-0 {
     clip-path: inset(0 100% 0 0);
   }
+
+  /* Headline com degrade cream → dourado */
+  .headline-gradient {
+    background: linear-gradient(180deg, #F2F0EB 0%, #C97B2A 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  /* Section alternada — surface quente */
+  .section-warm {
+    background-color: #0f0d0a;
+  }
+
+  /* Separador dourado entre seções */
+  .section-divider-gold {
+    border-top: 1px solid rgba(201, 123, 42, 0.3);
+  }
+
+  /* Blockquote editorial */
+  .blockquote-gold {
+    border-left: 3px solid #C97B2A;
+    background: rgba(201, 123, 42, 0.06);
+    padding: 1.5rem 1.75rem;
+    font-style: italic;
+    font-weight: 400;
+    color: #F2F0EB;
+  }
+
+  /* Check / bullet com glow dourado */
+  .icon-gold {
+    color: #C97B2A;
+  }
+  .icon-gold-glow {
+    color: #C97B2A;
+    filter: drop-shadow(0 0 12px rgba(224, 140, 50, 0.5));
+  }
+  .text-gold-glow {
+    color: #C97B2A;
+    text-shadow: 0 0 12px rgba(224, 140, 50, 0.5);
+  }
+
+  /* CTA principal — botão dourado premium */
+  .btn-gold {
+    background: linear-gradient(135deg, #C97B2A, #E08C32);
+    color: #0A0A0A;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 18px 40px;
+    border-radius: 4px;
+    box-shadow: 0 0 32px rgba(201, 123, 42, 0.35);
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    border: none;
+  }
+  .btn-gold:hover {
+    box-shadow: 0 0 48px rgba(224, 140, 50, 0.6);
+    transform: translateY(-2px);
+  }
+
+  /* Card / bloco premium translúcido */
+  .card-premium {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(201, 123, 42, 0.2);
+    border-radius: 6px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  /* VSL / vídeo placeholder — moldura dourada */
+  .vsl-frame {
+    border: 2px solid rgba(201, 123, 42, 0.5);
+    box-shadow: 0 0 40px rgba(201, 123, 42, 0.15);
+    border-radius: 8px;
+    overflow: hidden;
+  }
 }
 
-/* ── PREMIUM BACKGROUND ── */
+/* ── PREMIUM BACKGROUND — radial dourado sutil no hero ── */
 .premium-bg {
   position: fixed;
   inset: 0;
   z-index: -10;
   pointer-events: none;
   overflow: hidden;
+  background: #0A0A0A;
 }
 .premium-bg::before {
   content: '';
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 70% 50% at 15% 0%, hsla(30, 80%, 35%, 0.18), transparent 60%),
-    radial-gradient(ellipse 60% 50% at 85% 20%, hsla(20, 70%, 25%, 0.14), transparent 60%),
-    radial-gradient(ellipse 80% 60% at 50% 50%, hsla(30, 60%, 20%, 0.10), transparent 70%),
-    radial-gradient(ellipse 70% 50% at 20% 85%, hsla(25, 70%, 28%, 0.12), transparent 60%),
-    radial-gradient(ellipse 60% 50% at 90% 100%, hsla(30, 80%, 35%, 0.14), transparent 60%),
-    linear-gradient(180deg, hsl(0, 0%, 3.1%) 0%, hsl(24, 12%, 5%) 50%, hsl(0, 0%, 3.1%) 100%);
+    radial-gradient(ellipse 80% 60% at 50% 0%, #1a1000 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 15% 30%, rgba(201, 123, 42, 0.08), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 85% 70%, rgba(224, 140, 50, 0.06), transparent 60%),
+    linear-gradient(180deg, #0A0A0A 0%, #0f0d0a 50%, #0A0A0A 100%);
 }
 
 .bg-grid {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(hsla(30, 30%, 15%, 0.3) 1px, transparent 1px),
-    linear-gradient(90deg, hsla(30, 30%, 15%, 0.3) 1px, transparent 1px);
-  background-size: 30px 30px;
-  opacity: 0.4;
+    linear-gradient(rgba(201, 123, 42, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201, 123, 42, 0.08) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.3;
 }
 
 .bg-scanlines {
@@ -180,8 +294,8 @@
     0deg,
     transparent,
     transparent 3px,
-    hsla(30, 30%, 50%, 0.015) 3px,
-    hsla(30, 30%, 50%, 0.015) 4px
+    rgba(201, 123, 42, 0.015) 3px,
+    rgba(201, 123, 42, 0.015) 4px
   );
   opacity: 0.5;
 }
@@ -206,4 +320,13 @@
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
+}
+
+/* Fade-in + slide-up sofisticado para entrada de seções */
+@keyframes section-rise {
+  0% { opacity: 0; transform: translateY(24px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.animate-section-rise {
+  animation: section-rise 0.6s ease-out both;
 }
