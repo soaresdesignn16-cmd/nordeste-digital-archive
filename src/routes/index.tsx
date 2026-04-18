@@ -632,6 +632,13 @@ function FounderSection() {
   );
 }
 
+function SectionDivider() {
+  return (
+    <div className="w-full flex justify-center py-2">
+      <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-primary-custom/30 to-transparent" />
+    </div>
+  );
+}
 
 function ImpactSection() {
   return (
