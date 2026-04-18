@@ -281,21 +281,37 @@ function NovosNordestinos() {
       <PremiumBackground />
       <Navbar />
       <main>
-        <HorizontalShowcase />
+        <ParallaxLayer offset={60} scaleFrom={0.96}>
+          <HorizontalShowcase />
+        </ParallaxLayer>
         <SectionDivider />
-        <GameChanger />
+        <ParallaxLayer offset={80} scaleFrom={0.94}>
+          <GameChanger />
+        </ParallaxLayer>
         <SectionDivider />
-        <MovementSection />
+        <ParallaxLayer offset={70} scaleFrom={0.95}>
+          <MovementSection />
+        </ParallaxLayer>
         <SectionDivider />
-        <OpportunitySection />
+        <ParallaxLayer offset={90} scaleFrom={0.93}>
+          <OpportunitySection />
+        </ParallaxLayer>
         <SectionDivider />
-        <ObjectionsSection />
+        <ParallaxLayer offset={70} scaleFrom={0.95}>
+          <ObjectionsSection />
+        </ParallaxLayer>
         <SectionDivider />
-        <SolutionSection />
+        <ParallaxLayer offset={85} scaleFrom={0.94}>
+          <SolutionSection />
+        </ParallaxLayer>
         <SectionDivider />
-        <ImpactSection />
+        <ParallaxLayer offset={75} scaleFrom={0.95}>
+          <ImpactSection />
+        </ParallaxLayer>
         <SectionDivider />
-        <FinalCTA />
+        <ParallaxLayer offset={60} scaleFrom={0.96}>
+          <FinalCTA />
+        </ParallaxLayer>
         <Footer />
       </main>
     </div>
