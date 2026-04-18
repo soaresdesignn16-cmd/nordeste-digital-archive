@@ -23,6 +23,7 @@ import {
   Cpu,
 } from "lucide-react";
 import logoOnn from "@/assets/logo-onn.png";
+import heroBgFlame from "@/assets/hero-bg-flame.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -138,6 +139,26 @@ function NovosNordestinos() {
           id="vsl-gate"
           className="min-h-screen flex items-center justify-center pt-28 pb-16 relative overflow-hidden bg-background"
         >
+        {/* Foto de fundo (chama nordestina) com fade nas bordas */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 z-0 pointer-events-none"
+          style={{
+            backgroundImage: `url(${heroBgFlame})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            opacity: 0.55,
+            maskImage:
+              "radial-gradient(ellipse 75% 70% at 50% 45%, black 35%, transparent 85%)",
+            WebkitMaskImage:
+              "radial-gradient(ellipse 75% 70% at 50% 45%, black 35%, transparent 85%)",
+          }}
+        ></div>
+        {/* Overlay escuro para legibilidade */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 z-0 bg-background/55 pointer-events-none"
+        ></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-primary-custom/10 rounded-full blur-[200px] animate-[pulse-glow_5s_ease-in-out_infinite]"></div>
         <div className="relative z-10 text-center max-w-[700px] mx-auto px-6">
           <div className="mb-8 flex justify-center">
