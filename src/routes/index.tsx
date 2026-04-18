@@ -380,45 +380,45 @@ function LogoIcon({ className }: { className?: string }) {
   );
 }
 
-function HorizontalShowcase() {
+/* ── Pill com tag de seção (estilo "O QUE É" / "PARA QUEM É" do vídeo) ── */
+function SectionPill({ children }: { children: ReactNode }) {
   return (
-    <>
-      {/* Section 1 — Chegou a hora (com vídeo de fundo em loop) */}
-      <section className="relative overflow-hidden py-24 md:py-32 px-6">
-        {/* Background video — mais vivo (overlay reduzido) */}
-        <div
-          className="absolute inset-0 z-[-1] pointer-events-none overflow-hidden"
-          style={{
-            maskImage:
-              "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
-            WebkitMaskImage:
-              "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
-          }}
-        >
-          <video
-            src="/videos/section1-bg.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="w-full h-full object-cover scale-105 opacity-55"
-          />
-          <div className="absolute inset-0 bg-background/65" />
-          <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
-        </div>
+    <div className="inline-flex items-center justify-center px-8 py-2.5 rounded-full border border-primary-custom/40 bg-background/40 backdrop-blur-md text-foreground text-[11px] font-bold tracking-[0.35em] uppercase shadow-[0_0_20px_-4px_rgba(234,144,46,0.35)]">
+      {children}
+    </div>
+  );
+}
 
-        <div className="max-w-[750px] mx-auto text-center relative z-10">
-          <Reveal>
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary-custom/20 bg-primary-custom/10 backdrop-blur-md text-primary-custom text-[11px] font-semibold tracking-wider mb-6">
-            <Zap size={14} /> Movimento de Posicionamento Digital
+/* ── Seta indicadora entre seções ── */
+function ArrowDivider() {
+  return (
+    <div className="w-full flex justify-center py-10">
+      <ChevronDown
+        className="text-primary-custom/70 animate-bounce"
+        size={28}
+        strokeWidth={2.5}
+      />
+    </div>
+  );
+}
+
+/* ── HERO INTRO — bloco de abertura após o VSL ── */
+function HeroIntro() {
+  return (
+    <section className="relative pt-24 pb-12 px-6">
+      <div className="max-w-[760px] mx-auto text-center">
+        <Reveal>
+          <ArrowDivider />
+          <div className="mb-8 flex justify-center">
+            <SectionPill>O Movimento</SectionPill>
           </div>
-          <h1 className="text-[clamp(32px,6vw,60px)] font-black leading-[1.15] pb-2 mb-4 tracking-tight">
+          <h1 className="text-[clamp(34px,6vw,58px)] font-black leading-[1.08] tracking-tight mb-6">
             Chegou a hora do Brasil conhecer os{" "}
-            <span className="inline-block bg-gradient-to-br from-primary-custom to-primary-light bg-clip-text text-transparent leading-[1.2] pb-1">
+            <span className="bg-gradient-to-br from-primary-custom to-primary-light bg-clip-text text-transparent">
               Novos Nordestinos.
             </span>
           </h1>
-          <p className="text-sm md:text-base text-cream-muted max-w-[540px] mx-auto mb-6 leading-relaxed font-medium">
+          <p className="text-base text-cream-muted leading-relaxed max-w-[560px] mx-auto mb-8">
             Empresários e profissionais que já constroem resultado, mas agora
             decidiram ser{" "}
             <strong className="text-foreground">
@@ -426,440 +426,212 @@ function HorizontalShowcase() {
             </strong>{" "}
             no nível que realmente são.
           </p>
-
-          <div className="max-w-[380px] mx-auto p-5 rounded-2xl border border-primary-custom/30 bg-card/60 backdrop-blur-md mb-6 shadow-[0_0_40px_-5px_rgba(234,144,46,0.3)]">
-            <div className="text-xs font-semibold mb-1">
+          <div className="max-w-[420px] mx-auto p-6 rounded-2xl border border-primary-custom/30 bg-card/60 backdrop-blur-md shadow-[0_0_40px_-8px_rgba(234,144,46,0.35)]">
+            <p className="text-sm text-foreground/90 mb-1">
               Você não precisa de mais clientes.
-            </div>
-            <div className="text-xs font-bold text-primary-custom uppercase tracking-wide">
+            </p>
+            <p className="text-sm font-black text-primary-custom uppercase tracking-wider">
               Você precisa de clientes melhores.
-            </div>
+            </p>
           </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
 
-          <div className="flex flex-col gap-2 items-center mb-8">
-            {[
-              "Atenda menos e aumente seu ticket",
-              "Atraia clientes premium",
-              "Tenha mais tempo livre",
-              "Construa uma marca pessoal forte",
-              "Cresça no digital sem depender de você",
-            ].map((item, i) => (
-              <div key={i} className="flex items-center gap-2.5">
-                <div className="w-4 h-4 rounded-full bg-primary-custom/20 flex items-center justify-center text-primary-custom">
-                  <Check size={10} />
+/* ── STEPS SECTION — 4 etapas no formato do vídeo (PASSO 1, 2, 3, 4) ── */
+function StepsSection() {
+  const steps = [
+    {
+      title: "Diagnóstico de Posicionamento",
+      desc: "Vamos analisar como o mercado realmente enxerga você hoje — onde está sua autoridade, onde estão os ruídos e onde mora o dinheiro escondido na sua percepção.",
+    },
+    {
+      title: "Mapeamento da Audiência Premium",
+      desc: "Identificamos exatamente quem é o cliente que paga mais e respeita mais — para você parar de atender qualquer um e começar a atrair os melhores.",
+    },
+    {
+      title: "Arquitetura de Marca Pessoal",
+      desc: "Construímos a estrutura completa da sua presença digital: comunicação, estética, narrativa e conteúdo no nível de quem você realmente é.",
+    },
+    {
+      title: "Implementação do Clone Digital",
+      desc: "Ativamos o sistema que trabalha seu posicionamento 24/7 — sem exigir seu tempo, sem você precisar gravar nada, sem aparecer se não quiser.",
+    },
+  ];
+
+  return (
+    <section className="relative py-20 px-6">
+      <div className="max-w-[760px] mx-auto">
+        <Reveal>
+          <ArrowDivider />
+          <div className="mb-8 flex justify-center">
+            <SectionPill>O Que É</SectionPill>
+          </div>
+          <h2 className="text-[clamp(30px,5vw,48px)] font-black leading-[1.1] tracking-tight mb-5 text-left">
+            Dentro da nossa Arquitetura de Posicionamento, vamos passar por{" "}
+            <span className="bg-gradient-to-br from-primary-custom to-primary-light bg-clip-text text-transparent">
+              4 etapas:
+            </span>
+          </h2>
+          <p className="text-sm text-cream-muted leading-relaxed mb-12 text-left max-w-[560px]">
+            Um processo direto ao ponto pra você sair com um plano de ação claro
+            — sem enrolação, sem teoria vazia.
+          </p>
+        </Reveal>
+
+        <div className="flex flex-col gap-6">
+          {steps.map((s, i) => (
+            <Reveal key={i} delay={i * 0.08}>
+              <div className="relative p-7 rounded-3xl border border-primary-custom/25 bg-card/60 backdrop-blur-md shadow-[0_0_40px_-12px_rgba(234,144,46,0.4)]">
+                <div className="inline-flex items-center justify-center px-7 py-2 rounded-full bg-gradient-to-r from-primary-dark via-primary-custom to-primary-light text-background text-[11px] font-black tracking-[0.3em] uppercase shadow-[0_4px_20px_-4px_rgba(234,144,46,0.6)] mb-5">
+                  Passo {i + 1}
                 </div>
-                <span className="text-xs text-foreground/90 font-medium">
-                  {item}
-                </span>
+                <h3 className="text-xl md:text-2xl font-extrabold mb-3 leading-tight">
+                  {s.title}
+                </h3>
+                <p className="text-sm text-cream-muted leading-relaxed">
+                  {s.desc}
+                </p>
               </div>
-            ))}
+            </Reveal>
+          ))}
+        </div>
+
+        <Reveal delay={0.2}>
+          <div className="flex justify-center mt-12">
+            <BrutalistButton href="#cta-final" size="lg">
+              Quero ser selecionado <ArrowRight size={18} />
+            </BrutalistButton>
           </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
 
-          <BrutalistButton href="#cta-final">
-            Quero fazer parte dos Novos Nordestinos
-            <ChevronRight size={16} />
-          </BrutalistButton>
-          <p className="text-[10px] text-muted-custom mt-4 font-medium italic opacity-80">
-            Avaliação estratégica + plano de posicionamento personalizado
+/* ── AUDIENCE SECTION — "Para quem é" (perfis) ── */
+function AudienceSection() {
+  const profiles = [
+    {
+      icon: <Store size={22} />,
+      title: "Donos de negócios do mundo físico",
+      desc: "Lojas, clínicas, escritórios, prestadores de serviço presencial. Você sente que está preso na operação e que o digital não traduz o tamanho real da sua empresa.",
+    },
+    {
+      icon: <TrendingUp size={22} />,
+      title: "Empresários em escala",
+      desc: "Sua empresa já fatura bem, mas ainda faz 80% dos processos na mão. Está na hora de profissionalizar a percepção e escalar com margem — não com volume.",
+    },
+    {
+      icon: <Scale size={22} />,
+      title: "Profissionais liberais",
+      desc: "Advogados, médicos, contadores, consultores. Você vende seu tempo e sabe que tem um teto. Posicionamento te ajuda a cobrar mais, atender melhor e parar de ser refém da própria agenda.",
+    },
+    {
+      icon: <Briefcase size={22} />,
+      title: "Especialistas e autoridades",
+      desc: "Você já tem conhecimento, resultado e bagagem. Falta apenas a estrutura digital pra que o mercado pare de te tratar como mais um e comece a te tratar como referência.",
+    },
+  ];
+
+  return (
+    <section className="relative py-20 px-6">
+      <div className="max-w-[760px] mx-auto">
+        <Reveal>
+          <ArrowDivider />
+          <div className="mb-8 flex justify-center">
+            <SectionPill>Para Quem É</SectionPill>
+          </div>
+          <h2 className="text-[clamp(30px,5vw,48px)] font-black leading-[1.1] tracking-tight mb-5 text-left">
+            Esse movimento faz sentido pra você se:
+          </h2>
+          <p className="text-sm text-cream-muted leading-relaxed mb-12 text-left max-w-[560px]">
+            Você se encaixa em um desses perfis e quer usar posicionamento pra
+            crescer de verdade.
           </p>
-          </Reveal>
-        </div>
-      </section>
+        </Reveal>
 
-      {/* Section 2 — Você já construiu resultado (com vídeo de fundo) */}
-      <section className="py-24 px-6 relative overflow-hidden">
-        <div
-          className="absolute inset-0 z-[-1] pointer-events-none overflow-hidden"
-          style={{
-            maskImage:
-              "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
-            WebkitMaskImage:
-              "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
-          }}
-        >
-          <video
-            src="/videos/section2-bg.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="w-full h-full object-cover scale-105 opacity-50"
-          />
-          <div className="absolute inset-0 bg-background/70" />
-          <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
-        </div>
-        <div className="max-w-[900px] mx-auto text-center relative z-10">
-          <Reveal>
-            <span className="text-[10px] font-bold tracking-widest uppercase text-primary-custom mb-3 block">
-              ⚠️ A verdade que ninguém fala
-            </span>
-            <h2 className="text-[clamp(28px,5vw,50px)] font-black leading-[1.15] pb-2 mb-12">
-              Você já construiu{" "}
-              <span className="inline-block bg-gradient-to-br from-primary-custom to-primary-light bg-clip-text text-transparent leading-[1.2] pb-1">
-                resultado.
-              </span>
-            </h2>
-          </Reveal>
-
-          <div className="grid md:grid-cols-3 gap-5">
-            {[
-              {
-                icon: <Users size={20} />,
-                title: "Tem história real",
-                desc: "Tem empresa e faturamento. Mas se o digital não mostra, o mercado assume que não existe.",
-              },
-              {
-                icon: <Lock size={20} />,
-                title: "Permanece invisível",
-                desc: "Alguém menos preparado — mas mais posicionado — ocupa seu espaço de direito.",
-              },
-              {
-                icon: <Target size={20} />,
-                title: "O espaço é ocupado",
-                desc: "Enquanto você não se posiciona, outros constroem autoridade no SEU mercado.",
-              },
-            ].map((b, i) => (
-              <Reveal key={i} delay={i * 0.15}>
-                <div className="p-6 rounded-2xl border border-primary-custom/15 bg-card/40 backdrop-blur-md flex flex-col items-center text-center h-full">
-                  <div className="w-10 h-10 rounded-xl bg-primary-custom/10 flex items-center justify-center text-primary-custom mb-4">
-                    {b.icon}
-                  </div>
-                  <h3 className="text-xs font-bold mb-2">{b.title}</h3>
-                  <p className="text-[11px] text-muted-custom leading-relaxed">
-                    {b.desc}
-                  </p>
+        <div className="flex flex-col gap-5">
+          {profiles.map((p, i) => (
+            <Reveal key={i} delay={i * 0.08}>
+              <div className="p-7 rounded-3xl border border-primary-custom/15 bg-card/50 backdrop-blur-md">
+                <div className="w-11 h-11 rounded-xl bg-primary-custom/15 flex items-center justify-center text-primary-custom mb-4">
+                  {p.icon}
                 </div>
-              </Reveal>
-            ))}
-          </div>
+                <h3 className="text-lg md:text-xl font-extrabold mb-2 leading-tight">
+                  {p.title}
+                </h3>
+                <p className="text-sm text-cream-muted leading-relaxed">
+                  {p.desc}
+                </p>
+              </div>
+            </Reveal>
+          ))}
         </div>
-      </section>
+      </div>
+    </section>
+  );
+}
 
-      {/* Section 3 — O mercado não escolhe o melhor */}
-      <section className="py-24 px-6 relative overflow-hidden">
-        <div className="max-w-[750px] mx-auto text-center">
-          <h2 className="text-[clamp(28px,5vw,50px)] font-black leading-[1.1] mb-4">
-            O mercado{" "}
+/* ── FOUNDER SECTION — apresentação do idealizador (estilo "Muito prazer") ── */
+function FounderSection() {
+  return (
+    <section className="relative py-20 px-6">
+      <div className="max-w-[760px] mx-auto">
+        <Reveal>
+          <ArrowDivider />
+          <div className="mb-8 flex justify-center">
+            <SectionPill>Quem Está Por Trás</SectionPill>
+          </div>
+          <h2 className="text-[clamp(30px,5vw,48px)] font-black leading-[1.05] tracking-tight mb-6 text-left">
+            Muito prazer,
+            <br />
             <span className="bg-gradient-to-br from-primary-custom to-primary-light bg-clip-text text-transparent">
-              não escolhe o melhor.
+              Os Novos Nordestinos.
             </span>
           </h2>
-          <p className="text-sm text-cream-muted mb-4">
-            Escolhe o{" "}
-            <strong className="text-foreground">mais bem percebido.</strong>
+          <p className="text-sm font-semibold text-primary-custom tracking-wide mb-5 uppercase">
+            Movimento de Posicionamento Digital • Especialistas em Autoridade de Marca
           </p>
-          <p className="text-[10px] text-muted-custom mb-10 tracking-wide uppercase font-semibold">
-            E percepção hoje é construída exclusivamente no digital.
-          </p>
-
-          <div className="flex flex-col md:flex-row items-center justify-center gap-6 max-w-[600px] mx-auto">
-            <div className="flex-1 w-full p-6 rounded-2xl border border-primary-custom/10 bg-card/20 text-center">
-              <div className="w-9 h-9 rounded-full bg-red-500/10 flex items-center justify-center text-red-500 mx-auto mb-3">
-                <ChevronRight size={18} className="rotate-90" />
-              </div>
-              <p className="text-[8px] font-bold tracking-widest uppercase text-red-500/80 mb-2">
-                O erro da maioria
-              </p>
-              <p className="text-xs font-bold">
-                Tentar crescer aumentando volume de trabalho
-              </p>
-            </div>
-            <div className="text-primary-custom font-black tracking-widest text-base">
-              VS
-            </div>
-            <div className="flex-1 w-full p-6 rounded-2xl border border-primary-custom/30 bg-primary-custom/5 text-center shadow-[0_0_20px_rgba(234,144,46,0.2)]">
-              <div className="w-9 h-9 rounded-full bg-primary-custom/20 flex items-center justify-center text-primary-custom mx-auto mb-3">
-                <ChevronRight size={18} className="-rotate-90" />
-              </div>
-              <p className="text-[8px] font-bold tracking-widest uppercase text-primary-custom mb-2">
-                O jogo real
-              </p>
-              <p className="text-xs font-bold">
-                Diminuir volume e aumentar valor percebido
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-    </>
-  );
-}
-
-function SectionDivider() {
-  return (
-    <div className="w-full flex justify-center py-2">
-      <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-primary-custom/30 to-transparent" />
-    </div>
-  );
-}
-
-function GameChanger() {
-  return (
-    <section className="py-24 relative overflow-hidden">
-      <div className="absolute top-0 inset-x-0 h-20 bg-gradient-to-b from-primary-custom/10 to-transparent"></div>
-      <div className="max-w-7xl mx-auto px-6 text-center">
-        <Reveal>
-          <span className="text-[10px] font-bold tracking-widest uppercase text-primary-custom mb-4 block">
-            🔥 Mudança de jogo
-          </span>
-          <h2 className="text-[clamp(24px,4vw,42px)] font-extrabold leading-tight mb-4">
-            Empresário que vive cheio de cliente… mas cobrando barato…
-          </h2>
-          <div className="flex flex-col items-center gap-1 mb-10">
-            <p className="text-lg font-bold">não tem negócio.</p>
-            <p className="text-2xl font-black bg-gradient-to-r from-primary-custom to-primary-light bg-clip-text text-transparent">
-              Tem um emprego caro.
-            </p>
-          </div>
-          <p className="text-sm text-muted-custom mb-10">
-            Agora veja o outro lado — quando você se posiciona da forma certa:
-          </p>
-
-          <div className="flex flex-wrap justify-center gap-4 mb-10">
-            {[
-              { icon: "💰", text: "Seu ticket sobe" },
-              { icon: "👥", text: "Seu cliente muda" },
-              { icon: "⏰", text: "Sua agenda desafoga" },
-              { icon: "📈", text: "Você atende menos… e ganha mais" },
-            ].map((item, i) => (
-              <div
-                key={i}
-                className="flex items-center gap-3 px-6 py-4 rounded-xl border border-primary-custom/20 bg-card/40 backdrop-blur-md"
-              >
-                <span className="text-xl">{item.icon}</span>
-                <span className="text-sm font-semibold">{item.text}</span>
-              </div>
-            ))}
-          </div>
-
-          <div className="max-w-[440px] mx-auto p-6 rounded-2xl border border-primary-custom/20 bg-primary-custom/5">
-            <p className="text-sm font-medium">
-              Você passa a atender menos… e ganhar mais.
-            </p>
-            <p className="text-sm text-primary-custom font-bold mt-1">
-              Com muito mais tempo e liberdade.
-            </p>
-          </div>
-        </Reveal>
-      </div>
-    </section>
-  );
-}
-
-function MovementSection() {
-  return (
-    <section className="py-24 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 text-center">
-        <Reveal>
-          <span className="text-[10px] font-bold tracking-widest uppercase text-primary-custom mb-4 block">
-            🏛️ O Movimento
-          </span>
-          <h2 className="text-[clamp(24px,4vw,42px)] font-extrabold leading-tight mb-12">
-            Durante anos, tentaram definir o que é{" "}
-            <span className="bg-gradient-to-br from-primary-custom to-primary-light bg-clip-text text-transparent">
-              ser nordestino.
-            </span>
-          </h2>
-
-          <div className="grid md:grid-cols-2 gap-8 max-w-[600px] mx-auto mb-12">
-            <div className="p-8 rounded-2xl border border-foreground/5 bg-card/20 text-center">
-              <p className="text-[9px] font-bold tracking-widest uppercase text-red-500/70 mb-6">
-                O que diziam
-              </p>
-              <div className="space-y-3">
-                {["Pouca sofisticação", "Pouca relevância", "Mercado limitado"].map(
-                  (text, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center justify-center gap-2 text-muted-custom"
-                    >
-                      <span className="text-red-500/60 font-bold">✕</span>
-                      <span className="text-sm">{text}</span>
-                    </div>
-                  ),
-                )}
-              </div>
-            </div>
-            <div className="p-8 rounded-2xl border border-primary-custom/30 bg-primary-custom/5 text-center shadow-[0_0_30px_rgba(234,144,46,0.2)]">
-              <p className="text-[9px] font-bold tracking-widest uppercase text-primary-custom mb-6">
-                A realidade atual
-              </p>
-              <div className="space-y-3">
-                {[
-                  "Empresários sofisticados",
-                  "Negócios milionários",
-                  "Estratégia e inovação",
-                ].map((text, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center justify-center gap-2"
-                  >
-                    <span className="text-primary-custom font-bold">✓</span>
-                    <span className="text-sm font-semibold">{text}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="max-w-[480px] mx-auto p-10 rounded-3xl border border-primary-custom/30 bg-card/60 backdrop-blur-xl shadow-[0_0_60px_-15px_rgba(234,144,46,0.4)] relative">
-            <div className="text-4xl mb-6 animate-bounce">🔥</div>
-            <h3 className="text-base font-bold mb-3">
-              Quando um empresário nordestino se posiciona…
-            </h3>
-            <p className="text-sm text-cream-muted leading-relaxed mb-4">
-              ele não cresce sozinho. Ele altera a percepção de uma região
-              inteira no mercado nacional.
-            </p>
-            <p className="text-xs font-black uppercase tracking-widest text-primary-custom">
-              Reposicionamento Cultural
-            </p>
-          </div>
-        </Reveal>
-      </div>
-    </section>
-  );
-}
-
-function OpportunitySection() {
-  return (
-    <section className="py-24 relative overflow-hidden">
-      <div className="absolute bottom-0 inset-x-0 h-20 bg-gradient-to-t from-primary-custom/10 to-transparent"></div>
-      <div className="max-w-7xl mx-auto px-6 text-center">
-        <Reveal>
-          <span className="text-[10px] font-bold tracking-widest uppercase text-primary-custom mb-4 block">
-            🚀 Oportunidade
-          </span>
-          <h2 className="text-[clamp(24px,4vw,42px)] font-extrabold leading-tight mb-4">
-            Você não representa só a sua empresa.
-          </h2>
-          <p className="text-lg text-cream-muted mb-12">
-            Você representa{" "}
-            <strong className="text-foreground border-b-2 border-primary-custom pb-1">
-              o que é possível no Nordeste.
-            </strong>
-          </p>
-
-          <div className="flex flex-wrap justify-center gap-4">
-            {[
-              { icon: <Award size={18} />, text: "Seu nome vira autoridade" },
-              { icon: <Zap size={18} />, text: "Seu ticket aumenta" },
-              { icon: <Users size={18} />, text: "Atrai clientes premium" },
-              {
-                icon: <Target size={18} />,
-                text: "Acessa oportunidades maiores",
-              },
-              { icon: <Shield size={18} />, text: "Ganha respeito nacional" },
-            ].map((item, i) => (
-              <div
-                key={i}
-                className="flex items-center gap-3 px-6 py-4 rounded-xl border border-primary-custom/20 bg-card/40 backdrop-blur-md"
-              >
-                <span className="text-primary-custom">{item.icon}</span>
-                <span className="text-sm font-semibold">{item.text}</span>
-              </div>
-            ))}
-          </div>
-        </Reveal>
-      </div>
-    </section>
-  );
-}
-
-function ObjectionsSection() {
-  return (
-    <section className="py-24 relative">
-      <div className="max-w-7xl mx-auto px-6 text-center">
-        <Reveal>
-          <span className="text-[10px] font-bold tracking-widest uppercase text-primary-custom mb-8 block">
-            ⚠️ O maior bloqueio
-          </span>
-          <div className="flex flex-col gap-4 mb-12">
-            {[
-              "Não tenho tempo pra criar conteúdo…",
-              "Não gosto de aparecer…",
-              "Isso não é pra mim…",
-            ].map((text, i) => (
-              <div
-                key={i}
-                className="px-6 py-4 rounded-xl border border-primary-custom/10 bg-card/30 max-w-[380px] mx-auto w-full italic text-sm text-muted-custom"
-              >
-                " {text} "
-              </div>
-            ))}
-          </div>
-          <p className="text-3xl font-black mb-2 italic">Perfeito.</p>
-          <p className="text-xl font-bold text-primary-custom">
-            Porque você não precisa fazer isso.
-          </p>
-        </Reveal>
-      </div>
-    </section>
-  );
-}
-
-function SolutionSection() {
-  return (
-    <section className="py-24 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 text-center">
-        <Reveal>
-          <span className="text-[10px] font-bold tracking-widest uppercase text-primary-custom mb-4 block">
-            🧠 A Solução
-          </span>
-          <h2 className="text-[clamp(24px,4vw,42px)] font-extrabold leading-tight mb-6">
-            Nós construímos toda a sua presença digital{" "}
-            <span className="bg-gradient-to-br from-primary-custom to-primary-light bg-clip-text text-transparent">
-              pra você.
-            </span>
-          </h2>
-          <p className="text-sm text-muted-custom mb-12">
-            Através de uma verdadeira{" "}
+          <p className="text-sm md:text-base text-cream-muted leading-relaxed mb-8">
+            Nascemos com um propósito: mostrar pro Brasil que o Nordeste produz
+            empresários sofisticados, negócios milionários e marcas no nível
+            das maiores do país. Hoje, à frente do movimento, ajudamos
+            empresários nordestinos a implementar uma{" "}
             <strong className="text-foreground">
               Arquitetura de Posicionamento Digital
-            </strong>
-            :
+            </strong>{" "}
+            de ponta a ponta — transformando autoridade em ticket maior, mais
+            tempo livre e respeito de mercado.
           </p>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-            {[
-              { icon: <Shield />, text: "Estruturamos sua autoridade" },
-              { icon: <MessageSquare />, text: "Criamos sua comunicação" },
-              {
-                icon: <ImageIcon />,
-                text: "Posicionamos sua imagem no nível certo",
-              },
-              { icon: <Sparkles />, text: "Produzimos conteúdos estratégicos" },
-            ].map((item, i) => (
-              <div
-                key={i}
-                className="p-8 rounded-2xl border border-primary-custom/15 bg-card/40 flex flex-col items-center gap-4"
-              >
-                <div className="w-12 h-12 rounded-xl bg-primary-custom/10 flex items-center justify-center text-primary-custom">
-                  {item.icon}
-                </div>
-                <p className="text-xs font-bold leading-relaxed">{item.text}</p>
-              </div>
-            ))}
+          <div className="mb-10">
+            <BrutalistButton href="#cta-final" size="lg">
+              Quero entrar para o movimento <ArrowRight size={18} />
+            </BrutalistButton>
           </div>
 
-          <div className="max-w-[480px] mx-auto p-10 rounded-[32px] border border-primary-custom/30 bg-gradient-to-br from-card to-primary-custom/10 shadow-[0_0_60px_-10px_rgba(234,144,46,0.35)]">
-            <div className="w-16 h-16 rounded-2xl bg-primary-custom/20 flex items-center justify-center text-primary-custom mx-auto mb-6">
-              <Cpu size={32} />
+          <div className="relative rounded-3xl overflow-hidden border border-primary-custom/30 bg-card aspect-[4/5] max-w-[460px] mx-auto shadow-[0_0_60px_-15px_rgba(234,144,46,0.5)]">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary-dark/40 via-background to-primary-custom/30" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <LogoIcon className="w-32 h-32 opacity-90 drop-shadow-[0_0_40px_rgba(234,144,46,0.5)]" />
             </div>
-            <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-primary-custom mb-2">
-              A Tecnologia que nos separa
-            </p>
-            <h3 className="text-2xl font-black mb-4">Clone Digital</h3>
-            <p className="text-sm text-cream-muted leading-relaxed">
-              Criamos um Clone Digital que trabalha seu posicionamento — 24
-              horas por dia, 7 dias por semana, sem exigir seu tempo.
-            </p>
+            <div className="absolute bottom-0 inset-x-0 p-6 bg-gradient-to-t from-background via-background/80 to-transparent">
+              <p className="text-[11px] font-black tracking-[0.3em] uppercase text-primary-custom mb-1">
+                Movimento ONN
+              </p>
+              <p className="text-sm font-bold">
+                Reposicionamento Cultural & Autoridade Digital
+              </p>
+            </div>
           </div>
         </Reveal>
       </div>
     </section>
   );
 }
+
 
 function ImpactSection() {
   return (
