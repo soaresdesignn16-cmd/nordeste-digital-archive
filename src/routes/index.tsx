@@ -58,7 +58,7 @@ function NovosNordestinos() {
   const [loadProgress, setLoadProgress] = useState(0);
 
   // VSL Logic
-  const MIN_WATCH = 30;
+  const MIN_WATCH = 1;
   useEffect(() => {
     let interval: ReturnType<typeof setInterval> | undefined;
     if (vslStatus === "watching" && vslElapsed < MIN_WATCH) {
