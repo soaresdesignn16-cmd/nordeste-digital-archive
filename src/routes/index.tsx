@@ -11,16 +11,19 @@ import {
   Play,
   Check,
   ChevronRight,
+  ChevronDown,
   Lock,
   Zap,
-  Award,
   Users,
   Target,
   Shield,
-  MessageSquare,
-  Image as ImageIcon,
   Sparkles,
   Cpu,
+  Store,
+  Briefcase,
+  TrendingUp,
+  Scale,
+  ArrowRight,
 } from "lucide-react";
 import logoOnn from "@/assets/logo-onn.png";
 import heroBgFlame from "@/assets/hero-bg-flame.jpg";
