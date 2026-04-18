@@ -112,6 +112,16 @@
   --cream-muted: oklch(0.78 0.04 70);
   --dark-surface: oklch(0.16 0.005 50);
 
+  /* Paleta ONN oficial — hex convertidos para oklch para casar com tokens */
+  --vazio: oklch(0.13 0 0);            /* #0A0A0A */
+  --brasa: oklch(0.62 0.14 52);        /* #C97B2A */
+  --brasa-viva: oklch(0.69 0.16 56);   /* #E08C32 */
+  --pergaminho: oklch(0.95 0.012 80);  /* #F2F0EB */
+  --territorio: oklch(0.16 0 0);       /* #111111 */
+  --superficie: oklch(0.2 0 0);        /* #1A1A1A */
+  --borda-onn: oklch(0.27 0 0);        /* #2A2A2A */
+  --cinza-quente: oklch(0.45 0.01 70); /* #5A5A52 */
+
   --chart-1: oklch(0.68 0.16 55);
   --chart-2: oklch(0.6 0.118 184);
   --chart-3: oklch(0.45 0.12 50);
