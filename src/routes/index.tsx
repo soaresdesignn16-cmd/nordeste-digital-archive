@@ -284,31 +284,23 @@ function NovosNordestinos() {
       <PremiumBackground />
       <Navbar />
       <main>
+        <ParallaxLayer offset={50} scaleFrom={0.97}>
+          <HeroIntro />
+        </ParallaxLayer>
+        <SectionDivider />
+        <ParallaxLayer offset={70} scaleFrom={0.95}>
+          <StepsSection />
+        </ParallaxLayer>
+        <SectionDivider />
+        <ParallaxLayer offset={70} scaleFrom={0.95}>
+          <AudienceSection />
+        </ParallaxLayer>
+        <SectionDivider />
+        <ParallaxLayer offset={70} scaleFrom={0.95}>
+          <FounderSection />
+        </ParallaxLayer>
+        <SectionDivider />
         <ParallaxLayer offset={60} scaleFrom={0.96}>
-          <HorizontalShowcase />
-        </ParallaxLayer>
-        <SectionDivider />
-        <ParallaxLayer offset={80} scaleFrom={0.94}>
-          <GameChanger />
-        </ParallaxLayer>
-        <SectionDivider />
-        <ParallaxLayer offset={70} scaleFrom={0.95}>
-          <MovementSection />
-        </ParallaxLayer>
-        <SectionDivider />
-        <ParallaxLayer offset={90} scaleFrom={0.93}>
-          <OpportunitySection />
-        </ParallaxLayer>
-        <SectionDivider />
-        <ParallaxLayer offset={70} scaleFrom={0.95}>
-          <ObjectionsSection />
-        </ParallaxLayer>
-        <SectionDivider />
-        <ParallaxLayer offset={85} scaleFrom={0.94}>
-          <SolutionSection />
-        </ParallaxLayer>
-        <SectionDivider />
-        <ParallaxLayer offset={75} scaleFrom={0.95}>
           <ImpactSection />
         </ParallaxLayer>
         <SectionDivider />
