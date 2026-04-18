@@ -354,17 +354,25 @@ function HorizontalShowcase() {
       {/* Section 1 — Chegou a hora (com vídeo de fundo em loop) */}
       <section className="relative overflow-hidden py-24 md:py-32 px-6">
         {/* Background video — mais vivo (overlay reduzido) */}
-        <div className="absolute inset-0 z-[-1] pointer-events-none overflow-hidden">
+        <div
+          className="absolute inset-0 z-[-1] pointer-events-none overflow-hidden"
+          style={{
+            maskImage:
+              "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
+            WebkitMaskImage:
+              "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
+          }}
+        >
           <video
             src="/videos/section1-bg.mp4"
             autoPlay
             loop
             muted
             playsInline
-            className="w-full h-full object-cover scale-105"
+            className="w-full h-full object-cover scale-105 opacity-55"
           />
-          <div className="absolute inset-0 bg-background/35" />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/10 via-transparent to-background" />
+          <div className="absolute inset-0 bg-background/65" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
         </div>
 
         <div className="max-w-[750px] mx-auto text-center relative z-10">
@@ -428,17 +436,25 @@ function HorizontalShowcase() {
 
       {/* Section 2 — Você já construiu resultado (com vídeo de fundo) */}
       <section className="py-24 px-6 relative overflow-hidden">
-        <div className="absolute inset-0 z-[-1] pointer-events-none overflow-hidden">
+        <div
+          className="absolute inset-0 z-[-1] pointer-events-none overflow-hidden"
+          style={{
+            maskImage:
+              "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
+            WebkitMaskImage:
+              "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
+          }}
+        >
           <video
             src="/videos/section2-bg.mp4"
             autoPlay
             loop
             muted
             playsInline
-            className="w-full h-full object-cover scale-105"
+            className="w-full h-full object-cover scale-105 opacity-50"
           />
-          <div className="absolute inset-0 bg-background/40" />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-transparent to-background" />
+          <div className="absolute inset-0 bg-background/70" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
         </div>
         <div className="max-w-[900px] mx-auto text-center relative z-10">
           <Reveal>
