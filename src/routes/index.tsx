@@ -1017,6 +1017,52 @@ function Reveal({
   );
 }
 
+/* ── ParallaxLayer: aplica parallax (translateY) + zoom sutil + fade
+   conforme a seção entra/sai da viewport. Cria sensação de profundidade
+   em todas as seções abaixo do topo. ── */
+function ParallaxLayer({
+  children,
+  offset = 70,
+  scaleFrom = 0.95,
+}: {
+  children: ReactNode;
+  offset?: number;
+  scaleFrom?: number;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+
+  // Spring para suavizar o scroll (sensação premium)
+  const smooth = useSpring(scrollYProgress, {
+    stiffness: 80,
+    damping: 25,
+    mass: 0.4,
+  });
+
+  // Translação vertical: entra um pouco abaixo, sai um pouco acima
+  const y = useTransform(smooth, [0, 0.5, 1], [offset, 0, -offset]);
+  // Zoom sutil: começa menor, atinge 1 no centro, volta a diminuir
+  const scale = useTransform(smooth, [0, 0.5, 1], [scaleFrom, 1, scaleFrom]);
+  // Opacidade: fade-in/out nas pontas para reforçar profundidade
+  const opacity = useTransform(
+    smooth,
+    [0, 0.15, 0.85, 1],
+    [0.55, 1, 1, 0.55],
+  );
+
+  return (
+    <motion.div
+      ref={ref}
+      style={{ y, scale, opacity, willChange: "transform, opacity" }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 /* ── Botão estilo "GumRoad" (neo-brutalist) — sombra dura deslocada,
    no hover translada e revela a sombra; no active "afunda" ── */
 function BrutalistButton({
