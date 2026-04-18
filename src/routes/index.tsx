@@ -265,13 +265,12 @@ function NovosNordestinos() {
 
             {vslStatus === "finished" && (
               <motion.div
-                key="unlock-btn"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                key="unlock-auto"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-[11px] text-primary-custom uppercase tracking-widest"
               >
-                <BrutalistButton onClick={unlockContent} size="lg">
-                  <Check size={18} /> Liberar acesso ao conteúdo completo
-                </BrutalistButton>
+                Liberando acesso…
               </motion.div>
             )}
           </AnimatePresence>
