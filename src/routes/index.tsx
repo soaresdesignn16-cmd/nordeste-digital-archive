@@ -69,12 +69,14 @@ function NovosNordestinos() {
       interval = setInterval(() => {
         setVslElapsed((prev) => prev + 1);
       }, 1000);
-    } else if (vslElapsed >= MIN_WATCH) {
+    } else if (vslStatus === "watching" && vslElapsed >= MIN_WATCH) {
       setVslStatus("finished");
+      unlockContent();
     }
     return () => {
       if (interval) clearInterval(interval);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vslStatus, vslElapsed]);
 
   const startVSL = () => setVslStatus("watching");
@@ -263,13 +265,12 @@ function NovosNordestinos() {
 
             {vslStatus === "finished" && (
               <motion.div
-                key="unlock-btn"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                key="unlock-auto"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-[11px] text-primary-custom uppercase tracking-widest"
               >
-                <BrutalistButton onClick={unlockContent} size="lg">
-                  <Check size={18} /> Liberar acesso ao conteúdo completo
-                </BrutalistButton>
+                Liberando acesso…
               </motion.div>
             )}
           </AnimatePresence>
