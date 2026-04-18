@@ -259,7 +259,7 @@ function NovosNordestinos() {
     <div className="relative">
       <PremiumBackground />
       <Navbar />
-      <main className="animate-in fade-in slide-in-from-bottom-10 duration-1000 fill-mode-forwards">
+      <main>
         <HorizontalShowcase />
         <SectionDivider />
         <GameChanger />
@@ -965,14 +965,15 @@ function Reveal({
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
+      viewport={{ once: true, amount: 0.05 }}
       transition={{
-        duration: 0.8,
+        duration: 0.6,
         delay,
         ease: [0.25, 0.46, 0.45, 0.94],
       }}
+      style={{ width: "100%" }}
     >
       {children}
     </motion.div>
