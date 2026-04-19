@@ -182,7 +182,7 @@ function NovosNordestinos() {
             se posiciona no digital.
           </p>
 
-          <div className="rounded-2xl overflow-hidden border border-primary-custom/20 bg-card shadow-[0_0_40px_-10px_rgba(234,144,46,0.4)] mb-6">
+          <div className="vsl-frame mb-6">
             <div className="aspect-video bg-dark-surface flex items-center justify-center relative">
               <div className="absolute inset-0 bg-gradient-to-br from-primary-custom/10 to-transparent"></div>
 
@@ -191,11 +191,11 @@ function NovosNordestinos() {
                   onClick={startVSL}
                   className="relative z-10 flex flex-col items-center gap-3 bg-none border-none cursor-pointer text-foreground group"
                 >
-                  <div className="w-24 h-24 rounded-full bg-primary-custom flex items-center justify-center relative shadow-[0_0_40px_rgba(234,144,46,0.5)] transition-transform duration-200 group-hover:scale-110">
-                    <div className="absolute inset-0 rounded-full bg-primary-custom/40 animate-[ping_1.5s_cubic-bezier(0,0,0.2,1)_infinite]"></div>
-                    <Play className="ml-1 text-white fill-current" size={36} />
+                  <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary-custom to-primary-light flex items-center justify-center relative shadow-[0_0_50px_rgba(224,140,50,0.55)] transition-transform duration-200 group-hover:scale-110">
+                    <div className="absolute inset-0 rounded-full border-2 border-primary-custom/50 animate-[ping_1.8s_cubic-bezier(0,0,0.2,1)_infinite]"></div>
+                    <Play className="ml-1 fill-current" style={{ color: "#0A0A0A" }} size={36} />
                   </div>
-                  <span className="text-[11px] text-foreground/80 flex items-center gap-1.5 uppercase tracking-widest">
+                  <span className="text-[11px] text-foreground/80 flex items-center gap-1.5 uppercase tracking-[0.25em] font-semibold">
                     🔊 Assista com som ativado
                   </span>
                 </button>
@@ -204,10 +204,10 @@ function NovosNordestinos() {
               {vslStatus === "watching" && (
                 <div className="relative z-10 flex flex-col items-center gap-3">
                   <div className="w-16 h-16 border-2 border-primary-custom/30 border-t-primary-custom rounded-full animate-spin"></div>
-                  <p className="text-[11px] text-muted-custom uppercase tracking-widest">
+                  <p className="text-[11px] text-cream-muted uppercase tracking-[0.25em] font-semibold">
                     Reproduzindo apresentação…
                   </p>
-                  <p className="text-xs font-mono text-primary-custom">
+                  <p className="text-xs font-mono text-primary-custom text-gold-glow">
                     {Math.floor(vslElapsed / 60)
                       .toString()
                       .padStart(2, "0")}
@@ -220,7 +220,7 @@ function NovosNordestinos() {
                 <div className="relative z-10 text-foreground">
                   <Sparkles
                     size={48}
-                    className="text-primary-custom mx-auto mb-4"
+                    className="text-primary-custom mx-auto mb-4 icon-gold-glow"
                   />
                   <p className="text-sm font-semibold mb-2">
                     Apresentação concluída!
@@ -230,7 +230,7 @@ function NovosNordestinos() {
             </div>
             <div className="h-1.5 bg-dark-surface relative overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-primary-custom to-primary-light transition-all duration-1000"
+                className="h-full bg-gradient-to-r from-primary-custom via-primary-light to-primary-custom bg-[length:200%_100%] transition-all duration-1000 animate-[shimmer_2s_linear_infinite]"
                 style={{
                   width: `${Math.min((vslElapsed / MIN_WATCH) * 100, 100)}%`,
                 }}
