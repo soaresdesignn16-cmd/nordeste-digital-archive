@@ -170,10 +170,10 @@ function NovosNordestinos() {
             <LogoIcon className="w-20 h-20 drop-shadow-[0_0_30px_rgba(234,144,46,0.4)]" />
           </div>
 
-          <h1 className="text-[clamp(28px,5vw,48px)] font-extrabold leading-[1.1] mb-4">
+          <h1 className="text-[clamp(28px,5vw,48px)] font-black leading-[1.1] mb-4 tracking-tight">
             Antes de qualquer coisa,
             <br />
-            <span className="bg-gradient-to-br from-primary-custom to-primary-light bg-clip-text text-transparent">
+            <span className="headline-gradient">
               assista isso.
             </span>
           </h1>
