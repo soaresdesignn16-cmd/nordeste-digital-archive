@@ -670,12 +670,12 @@ function ImpactSection() {
               "Sua agenda finalmente desafoga",
             ].map((text, i) => (
               <Reveal key={i} delay={i * 0.08}>
-                <div className="card-premium flex items-center gap-4 px-6 py-5 text-left transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:border-primary-custom/45 hover:shadow-[0_0_35px_-10px_rgba(224,140,50,0.5)]">
+                <TiltCard tilt={false} spotlight className="card-premium flex items-center gap-4 px-6 py-5 text-left transition-shadow duration-300 hover:border-primary-custom/45 hover:shadow-[0_0_35px_-10px_rgba(224,140,50,0.5)]">
                   <div className="flex-shrink-0 w-7 h-7 rounded-full bg-primary-custom/15 border border-primary-custom/40 flex items-center justify-center text-primary-custom icon-gold-glow">
                     <Check size={14} strokeWidth={3} />
                   </div>
                   <span className="text-sm font-semibold">{text}</span>
-                </div>
+                </TiltCard>
               </Reveal>
             ))}
           </div>
