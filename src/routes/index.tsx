@@ -164,11 +164,13 @@ function NovosNordestinos() {
           aria-hidden="true"
           className="absolute inset-0 z-0 bg-background/55 pointer-events-none"
         ></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-primary-custom/10 rounded-full blur-[200px] animate-[pulse-glow_5s_ease-in-out_infinite]"></div>
+        <MouseParallax intensity={14} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-primary-custom/10 rounded-full blur-[200px] animate-[pulse-glow_5s_ease-in-out_infinite]">
+          <span className="sr-only">glow</span>
+        </MouseParallax>
         <div className="relative z-10 text-center max-w-[700px] mx-auto px-6">
-          <div className="mb-8 flex justify-center">
+          <MouseParallax intensity={6} className="mb-8 flex justify-center">
             <LogoIcon className="w-20 h-20 drop-shadow-[0_0_30px_rgba(234,144,46,0.4)]" />
-          </div>
+          </MouseParallax>
 
           <h1 className="text-[clamp(28px,5vw,48px)] font-black leading-[1.1] mb-4 tracking-tight">
             Antes de qualquer coisa,
