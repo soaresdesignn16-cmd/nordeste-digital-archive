@@ -558,14 +558,15 @@ function AudienceSection() {
 
         <div className="flex flex-col gap-5">
           {profiles.map((p, i) => (
-            <Reveal key={i} delay={i * 0.08}>
-              <div className="p-7 rounded-3xl border border-primary-custom/15 bg-card/50 backdrop-blur-md">
-                <div className="w-11 h-11 rounded-xl bg-primary-custom/15 flex items-center justify-center text-primary-custom mb-4">
+            <Reveal key={i} delay={i * 0.1}>
+              <div className="card-premium p-7 transition-all duration-300 hover:-translate-y-1 hover:border-primary-custom/40 hover:shadow-[0_0_40px_-12px_rgba(224,140,50,0.4)]">
+                <div className="w-11 h-11 rounded-xl bg-primary-custom/15 border border-primary-custom/30 flex items-center justify-center text-primary-custom mb-4 shadow-[0_0_20px_-6px_rgba(224,140,50,0.5)]">
                   {p.icon}
                 </div>
-                <h3 className="text-lg md:text-xl font-extrabold mb-2 leading-tight">
+                <h3 className="text-lg md:text-xl font-black mb-2 leading-tight tracking-tight">
                   {p.title}
                 </h3>
+                <div className="w-10 h-px bg-primary-custom/40 mb-3" />
                 <p className="text-sm text-cream-muted leading-relaxed">
                   {p.desc}
                 </p>
