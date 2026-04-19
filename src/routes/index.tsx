@@ -650,10 +650,10 @@ function SectionDivider() {
 
 function ImpactSection() {
   return (
-    <section className="py-24 relative">
+    <section className="py-24 relative section-warm">
       <div className="max-w-7xl mx-auto px-6 text-center">
         <Reveal>
-          <span className="text-[10px] font-bold tracking-widest uppercase text-primary-custom mb-12 block">
+          <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-primary-custom mb-12 block text-gold-glow">
             ⚙️ Como isso muda sua vida
           </span>
           <div className="grid md:grid-cols-2 gap-4 max-w-[800px] mx-auto mb-16">
@@ -663,27 +663,26 @@ function ImpactSection() {
               "Seu ticket médio sobe exponencialmente",
               "Sua agenda finalmente desafoga",
             ].map((text, i) => (
-              <div
-                key={i}
-                className="flex items-center gap-4 px-6 py-5 rounded-2xl border border-primary-custom/10 bg-card/40 text-left"
-              >
-                <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-custom/20 flex items-center justify-center text-primary-custom">
-                  <Check size={14} />
+              <Reveal key={i} delay={i * 0.08}>
+                <div className="card-premium flex items-center gap-4 px-6 py-5 text-left transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:border-primary-custom/45 hover:shadow-[0_0_35px_-10px_rgba(224,140,50,0.5)]">
+                  <div className="flex-shrink-0 w-7 h-7 rounded-full bg-primary-custom/15 border border-primary-custom/40 flex items-center justify-center text-primary-custom icon-gold-glow">
+                    <Check size={14} strokeWidth={3} />
+                  </div>
+                  <span className="text-sm font-semibold">{text}</span>
                 </div>
-                <span className="text-sm font-semibold">{text}</span>
-              </div>
+              </Reveal>
             ))}
           </div>
 
-          <div className="max-w-[440px] mx-auto p-8 rounded-2xl border border-primary-custom/20 bg-card">
-            <p className="text-sm font-medium mb-1">
+          <blockquote className="blockquote-gold max-w-[440px] mx-auto text-left">
+            <p className="text-sm font-medium mb-1 not-italic">
               Você deixa de viver no{" "}
               <strong className="text-foreground">volume exaustivo</strong>…
             </p>
-            <p className="text-base font-black text-primary-custom uppercase tracking-wide">
+            <p className="text-base font-black text-primary-custom uppercase tracking-wide not-italic">
               e passa a viver no valor premium.
             </p>
-          </div>
+          </blockquote>
         </Reveal>
       </div>
     </section>
