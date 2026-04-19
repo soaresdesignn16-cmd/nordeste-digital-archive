@@ -935,6 +935,104 @@ function MouseParallax({
   );
 }
 
+/* ── TiltCard — wrapper com Tilt 3D sutil + Spotlight dourado seguindo o cursor.
+   Ambos efeitos opcionais. Desabilitados em touch / reduced-motion. ── */
+function TiltCard({
+  children,
+  className = "",
+  tilt = true,
+  spotlight = true,
+  intensity = 3,
+  intense = false,
+}: {
+  children: ReactNode;
+  className?: string;
+  tilt?: boolean;
+  spotlight?: boolean;
+  /** graus máximos de inclinação */
+  intensity?: number;
+  /** spotlight mais forte (para cards isolados/grandes) */
+  intense?: boolean;
+}) {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const isTouch = window.matchMedia("(pointer: coarse)").matches;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) return;
+
+    const wrap = wrapRef.current;
+    const card = cardRef.current;
+    if (!wrap || !card) return;
+
+    let raf = 0;
+    let rx = 0;
+    let ry = 0;
+
+    const onMove = (e: MouseEvent) => {
+      const rect = wrap.getBoundingClientRect();
+      const px = (e.clientX - rect.left) / rect.width;
+      const py = (e.clientY - rect.top) / rect.height;
+
+      if (spotlight) {
+        card.style.setProperty("--mx", `${px * 100}%`);
+        card.style.setProperty("--my", `${py * 100}%`);
+      }
+
+      if (tilt && !isTouch) {
+        ry = (px - 0.5) * intensity * 2;
+        rx = (0.5 - py) * intensity * 2;
+        if (!raf) {
+          raf = requestAnimationFrame(() => {
+            card.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+            raf = 0;
+          });
+        }
+      }
+    };
+
+    const onEnter = () => {
+      if (spotlight) card.style.setProperty("--spot-opacity", "1");
+    };
+    const onLeave = () => {
+      if (spotlight) card.style.setProperty("--spot-opacity", "0");
+      if (tilt && !isTouch) {
+        card.style.transform = "rotateX(0deg) rotateY(0deg)";
+      }
+    };
+
+    wrap.addEventListener("mousemove", onMove, { passive: true });
+    wrap.addEventListener("mouseenter", onEnter);
+    wrap.addEventListener("mouseleave", onLeave);
+    return () => {
+      wrap.removeEventListener("mousemove", onMove);
+      wrap.removeEventListener("mouseenter", onEnter);
+      wrap.removeEventListener("mouseleave", onLeave);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [tilt, spotlight, intensity]);
+
+  const wrapCls = tilt ? "tilt-wrap" : "";
+  const cardCls = [
+    tilt ? "tilt-card" : "",
+    spotlight ? "spotlight-card" : "",
+    spotlight && intense ? "spotlight-card-intense" : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  return (
+    <div ref={wrapRef} className={wrapCls}>
+      <div ref={cardRef} className={cardCls}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
 /* ── GoldCTA — botão dourado editorial premium (substitui o Brutalist) ── */
 function BrutalistButton({
   href,
