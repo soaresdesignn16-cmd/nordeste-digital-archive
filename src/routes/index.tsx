@@ -481,17 +481,22 @@ function StepsSection() {
 
         <div className="flex flex-col gap-6">
           {steps.map((s, i) => (
-            <Reveal key={i} delay={i * 0.08}>
-              <div className="relative p-7 rounded-3xl border border-primary-custom/25 bg-card/60 backdrop-blur-md shadow-[0_0_40px_-12px_rgba(234,144,46,0.4)]">
-                <div className="inline-flex items-center justify-center px-7 py-2 rounded-full bg-gradient-to-r from-primary-dark via-primary-custom to-primary-light text-background text-[11px] font-black tracking-[0.3em] uppercase shadow-[0_4px_20px_-4px_rgba(234,144,46,0.6)] mb-5">
-                  Passo {i + 1}
+            <Reveal key={i} delay={i * 0.1}>
+              <div className="card-premium relative p-7 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_50px_-10px_rgba(224,140,50,0.45)] hover:border-primary-custom/40">
+                <span className="ghost-number absolute -top-4 -right-2">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div className="relative">
+                  <div className="inline-flex items-center justify-center px-7 py-2 rounded-full bg-gradient-to-r from-primary-custom to-primary-light text-background text-[11px] font-black tracking-[0.3em] uppercase shadow-[0_4px_20px_-4px_rgba(224,140,50,0.6)] mb-5">
+                    Passo {i + 1}
+                  </div>
+                  <h3 className="text-xl md:text-2xl font-black mb-3 leading-tight tracking-tight">
+                    {s.title}
+                  </h3>
+                  <p className="text-sm text-cream-muted leading-relaxed">
+                    {s.desc}
+                  </p>
                 </div>
-                <h3 className="text-xl md:text-2xl font-extrabold mb-3 leading-tight">
-                  {s.title}
-                </h3>
-                <p className="text-sm text-cream-muted leading-relaxed">
-                  {s.desc}
-                </p>
               </div>
             </Reveal>
           ))}
