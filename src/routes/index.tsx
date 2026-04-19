@@ -485,9 +485,11 @@ function StepsSection() {
           {steps.map((s, i) => (
             <Reveal key={i} delay={i * 0.1}>
               <div className="card-premium relative p-7 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_50px_-10px_rgba(224,140,50,0.45)] hover:border-primary-custom/40">
-                <span className="ghost-number absolute -top-4 -right-2">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
+                <Parallax speed={-0.5} className="absolute -top-4 -right-2 pointer-events-none">
+                  <span className="ghost-number block">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                </Parallax>
                 <div className="relative">
                   <div className="inline-flex items-center justify-center px-7 py-2 rounded-full bg-gradient-to-r from-primary-custom to-primary-light text-background text-[11px] font-black tracking-[0.3em] uppercase shadow-[0_4px_20px_-4px_rgba(224,140,50,0.6)] mb-5">
                     Passo {i + 1}
@@ -622,11 +624,13 @@ function FounderSection() {
           </div>
 
           <div className="relative rounded-lg overflow-hidden border-2 border-primary-custom/50 bg-card aspect-[4/5] max-w-[460px] mx-auto shadow-[0_0_60px_-10px_rgba(224,140,50,0.55)]">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(224,140,50,0.25),transparent_70%)]" />
-            <div className="absolute inset-0 bg-gradient-to-br from-primary-dark/30 via-transparent to-primary-custom/20" />
-            <div className="absolute inset-0 flex items-center justify-center">
+            <Parallax speed={-0.25} className="absolute inset-0">
+              <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(224,140,50,0.25),transparent_70%)]" />
+              <div className="absolute inset-0 bg-gradient-to-br from-primary-dark/30 via-transparent to-primary-custom/20" />
+            </Parallax>
+            <Parallax speed={0.15} className="absolute inset-0 flex items-center justify-center">
               <LogoIcon className="w-32 h-32 opacity-95 drop-shadow-[0_0_50px_rgba(224,140,50,0.6)]" />
-            </div>
+            </Parallax>
             <div className="absolute bottom-0 inset-x-0 p-6 bg-gradient-to-t from-background via-background/85 to-transparent">
               <span className="inline-block px-3 py-1 rounded-full bg-primary-custom/15 border border-primary-custom/40 text-[10px] font-black tracking-[0.3em] uppercase text-primary-custom mb-2">
                 Movimento ONN
@@ -697,9 +701,13 @@ function FinalCTA() {
       id="cta-final"
       className="py-32 relative overflow-hidden scroll-mt-20"
     >
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-custom/15 rounded-full blur-[180px] animate-[pulse-glow_6s_ease-in-out_infinite]"></div>
+      <Parallax speed={-0.4} className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-custom/15 rounded-full blur-[180px] animate-[pulse-glow_6s_ease-in-out_infinite]"></div>
+      </Parallax>
       <div className="bg-scanlines"></div>
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(224,140,50,0.08),transparent_70%)]"></div>
+      <Parallax speed={-0.2} className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(224,140,50,0.08),transparent_70%)]"></div>
+      </Parallax>
       <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
         <Reveal>
           <div className="w-20 h-20 rounded-full bg-background border border-primary-custom/40 flex items-center justify-center mx-auto mb-10 shadow-[0_0_50px_rgba(224,140,50,0.5)]">
