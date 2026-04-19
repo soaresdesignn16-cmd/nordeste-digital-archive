@@ -1,84 +1,50 @@
 
+O usuário quer adicionar efeito parallax em todo o site. Já existe um `ParallaxLayer` no `src/routes/index.tsx` (mencionado em mensagens anteriores). Preciso verificar o estado atual para reforçar/expandir o parallax em todas as seções.
 
-## Plano: Refinamento visual editorial dourado da ONN
+## Plano: Parallax cinematográfico em toda a landing page
 
-Vou aplicar a estética **dark luxury / âmbar editorial** já definida em `src/styles.css` (paleta preto + dourado #C97B2A/#E08C32 + cream #F2F0EB, Poppins 400/600/900, noise overlay, gradiente radial) em **todos os componentes visuais** de `src/routes/index.tsx`, sem tocar em copy, ordem, hierarquia ou estrutura semântica.
+Vou intensificar e aplicar o efeito parallax de forma consistente em todas as seções do site, criando profundidade cinematográfica sem comprometer performance ou legibilidade.
 
-### 1. Substituir botões brutalistas por CTA dourado editorial
-- Trocar todo o `BrutalistButton` (estilo neo-brutalist com sombra dura deslocada) por um novo **`GoldCTA`** baseado em `.btn-gold` do styles.css:
-  - Gradiente `linear-gradient(135deg, #C97B2A, #E08C32)`, texto `#0A0A0A`, Poppins Black
-  - `text-transform: uppercase`, letter-spacing 0.08em, padding 18×40, radius 4px
-  - Glow base `0 0 32px rgba(201,123,42,0.35)` → hover `0 0 48px rgba(224,140,50,0.6)` + `translateY(-2px)`
-  - Microinteração: shimmer dourado sutil no hover (gradient animado opcional)
-  - 3 variantes: `md` (CTA navbar), `lg` (CTA seções), `xl` (CTA final hero/footer)
+### 1. Sistema de parallax unificado
+- Refinar o componente `ParallaxLayer` existente para suportar múltiplas velocidades (slow / medium / fast) e direções (up / down)
+- Usar `transform: translate3d()` com `will-change: transform` para aceleração GPU
+- Throttle via `requestAnimationFrame` para 60fps suaves
+- Detectar `prefers-reduced-motion` e desativar automaticamente para acessibilidade
 
-### 2. Hero / VSL Gate (pré-desbloqueio)
-- Logo ONN com glow âmbar reforçado
-- VSL frame: trocar a borda atual pela classe `.vsl-frame` (borda dourada 2px + box-shadow dourado, radius 8px)
-- Botão Play: anel dourado com pulso, ícone Play em preto sobre dourado quente
-- Barra de progresso: gradiente C97B2A → E08C32 com shimmer animado
-- Hint "Liberando acesso…" com fade dourado
+### 2. Camadas de profundidade por seção
+Cada seção ganhará 3 camadas parallax:
+- **Background layer (lento, -0.3x)**: gradientes radiais dourados, noise, grid sutil
+- **Mid layer (médio, -0.15x)**: ghost numbers, decorações, blockquotes
+- **Foreground layer (rápido, +0.05x ou estático)**: títulos, CTAs, conteúdo principal
 
-### 3. Loader ONN
-- Texto "ONN" com gradiente cream → dourado (`.headline-gradient`)
-- Drop-shadow dourado mais quente, barra de progresso com shimmer
+### 3. Aplicação por seção
+- **Hero/VSL**: VSL frame com leve translate (foreground), glow dourado se movendo mais lento (background)
+- **HeroIntro**: Headline com parallax suave, ghost decoração ao fundo
+- **StepsSection**: Ghost numbers (01/02/03/04) movendo a -0.4x — efeito editorial dramático
+- **AudienceSection**: Cards com parallax escalonado por índice
+- **FounderSection**: Logo central com glow parallax, blockquote em camada média
+- **ImpactSection**: Checks foreground, gradientes background lentos
+- **FinalCTA**: Background radial com forte parallax, CTA fixo no foreground
+- **Footer**: Tags em parallax leve
 
-### 4. Navbar (Navbar + VslNavbar)
-- Backdrop blur + borda inferior dourada 25% opacity
-- Tipografia uppercase tracking editorial
-- CTA navbar com versão `md` do GoldCTA
+### 4. Microinterações complementares
+- **Mouse parallax sutil** no hero (logo ONN reage 5-10px ao movimento do mouse) — opcional, só desktop
+- **Tilt 3D leve** nos cards premium ao hover (rotateX/rotateY 2-3deg seguindo cursor)
+- Manter as transições `.animate-section-rise` já existentes
 
-### 5. HeroIntro (pós-desbloqueio)
-- Aplicar `.headline-gradient` (cream → dourado) no H1 (única exceção da regra)
-- Card de quote interno: classe `.card-premium` (rgba branco 3% + borda dourada 20% + blur 4px)
-- SectionPill com glow dourado refinado
-
-### 6. StepsSection (4 passos)
-- Cards: `.card-premium` com hover lift sutil (translateY -4px + glow dourado intensificado)
-- Badge "PASSO N": pílula dourada gradient, font-weight 900, glow
-- Numeração tipográfica gigante em outline dourado de fundo (ghost number 01/02/03/04) — profundidade editorial
-- Stagger reveal 0.1s entre cards
-
-### 7. AudienceSection (perfis)
-- Cards `.card-premium`, ícones em quadrado dourado translúcido com glow
-- Linha dourada decorativa horizontal em cada card (microdetalhe editorial)
-
-### 8. FounderSection
-- Aplicar `.blockquote-gold` na frase de destaque interna (border-left dourado + bg dourado 6% + itálico)
-- Card visual com logo: borda dourada + glow cinematográfico 60px + gradiente radial interno
-- Tag "Movimento ONN" com pílula dourada
-
-### 9. ImpactSection
-- Bloco de 4 checks: `.icon-gold-glow` nos ícones ✔ (text-shadow dourado quente)
-- Cards com hover scale + glow
-- Card final com `.blockquote-gold`
-
-### 10. FinalCTA
-- Background: gradient radial dourado mais cinematográfico + scanlines sutis
-- "N" badge: trocar por LogoIcon com glow dourado 40px
-- Frase em itálico com `.blockquote-gold`
-- Linha de checks com `.icon-gold-glow`
-- CTA principal: GoldCTA tamanho `xl`
-
-### 11. Footer
-- Tags "Autoridade / Liberdade / etc": pílulas douradas com glow sutil
-- Separador superior dourado 25%
-- Logo final com glow contido
-
-### 12. Microinterações globais
-- Hover lift padrão em todos cards (`hover:-translate-y-1` + glow expand)
-- Reveal com stagger 0.1s
-- Mantém o `ParallaxLayer` existente (já dá cinematicidade)
-- Adicionar `.animate-section-rise` opcional em pills
+### 5. Performance
+- IntersectionObserver para só animar seções visíveis
+- `transform` apenas (nunca `top`/`left`)
+- Desabilitar parallax abaixo de 768px se causar jank (testar)
+- Respeitar `prefers-reduced-motion: reduce`
 
 ### Arquivos afetados
-- `src/routes/index.tsx` — refatoração visual completa (sem mudar copy/estrutura)
-- `src/styles.css` — adicionar variantes `.btn-gold-lg`, `.btn-gold-xl` e keyframe shimmer no botão; adicionar `.ghost-number` para numeração outline gigante dos passos
+- `src/routes/index.tsx` — refinar `ParallaxLayer`, adicionar hook `useMouseParallax` (hero), aplicar camadas em todas as seções
+- `src/styles.css` — adicionar utilitários `.parallax-slow`, `.parallax-mid`, `.parallax-fast` e `@media (prefers-reduced-motion)` global
 
 ### Garantias
-- ✅ Copy 100% preservada (nenhum texto alterado)
-- ✅ Ordem das seções preservada
-- ✅ Hierarquia H1/H2/H3 preservada
-- ✅ Componentes/lógica VSL e parallax preservados
-- ✅ Apenas paleta, efeitos, botões e microinterações mudam
-
+- ✅ Copy 100% preservada
+- ✅ Estrutura/hierarquia preservada
+- ✅ Paleta dourada e estilos atuais preservados
+- ✅ Acessibilidade respeitada (reduced motion)
+- ✅ Performance GPU-accelerated, 60fps
