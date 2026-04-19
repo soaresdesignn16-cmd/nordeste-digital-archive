@@ -164,11 +164,13 @@ function NovosNordestinos() {
           aria-hidden="true"
           className="absolute inset-0 z-0 bg-background/55 pointer-events-none"
         ></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-primary-custom/10 rounded-full blur-[200px] animate-[pulse-glow_5s_ease-in-out_infinite]"></div>
+        <MouseParallax intensity={14} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-primary-custom/10 rounded-full blur-[200px] animate-[pulse-glow_5s_ease-in-out_infinite]">
+          <span className="sr-only">glow</span>
+        </MouseParallax>
         <div className="relative z-10 text-center max-w-[700px] mx-auto px-6">
-          <div className="mb-8 flex justify-center">
+          <MouseParallax intensity={6} className="mb-8 flex justify-center">
             <LogoIcon className="w-20 h-20 drop-shadow-[0_0_30px_rgba(234,144,46,0.4)]" />
-          </div>
+          </MouseParallax>
 
           <h1 className="text-[clamp(28px,5vw,48px)] font-black leading-[1.1] mb-4 tracking-tight">
             Antes de qualquer coisa,
@@ -483,9 +485,11 @@ function StepsSection() {
           {steps.map((s, i) => (
             <Reveal key={i} delay={i * 0.1}>
               <div className="card-premium relative p-7 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_50px_-10px_rgba(224,140,50,0.45)] hover:border-primary-custom/40">
-                <span className="ghost-number absolute -top-4 -right-2">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
+                <Parallax speed={-0.5} className="absolute -top-4 -right-2 pointer-events-none">
+                  <span className="ghost-number block">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                </Parallax>
                 <div className="relative">
                   <div className="inline-flex items-center justify-center px-7 py-2 rounded-full bg-gradient-to-r from-primary-custom to-primary-light text-background text-[11px] font-black tracking-[0.3em] uppercase shadow-[0_4px_20px_-4px_rgba(224,140,50,0.6)] mb-5">
                     Passo {i + 1}
@@ -620,11 +624,13 @@ function FounderSection() {
           </div>
 
           <div className="relative rounded-lg overflow-hidden border-2 border-primary-custom/50 bg-card aspect-[4/5] max-w-[460px] mx-auto shadow-[0_0_60px_-10px_rgba(224,140,50,0.55)]">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(224,140,50,0.25),transparent_70%)]" />
-            <div className="absolute inset-0 bg-gradient-to-br from-primary-dark/30 via-transparent to-primary-custom/20" />
-            <div className="absolute inset-0 flex items-center justify-center">
+            <Parallax speed={-0.25} className="absolute inset-0">
+              <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(224,140,50,0.25),transparent_70%)]" />
+              <div className="absolute inset-0 bg-gradient-to-br from-primary-dark/30 via-transparent to-primary-custom/20" />
+            </Parallax>
+            <Parallax speed={0.15} className="absolute inset-0 flex items-center justify-center">
               <LogoIcon className="w-32 h-32 opacity-95 drop-shadow-[0_0_50px_rgba(224,140,50,0.6)]" />
-            </div>
+            </Parallax>
             <div className="absolute bottom-0 inset-x-0 p-6 bg-gradient-to-t from-background via-background/85 to-transparent">
               <span className="inline-block px-3 py-1 rounded-full bg-primary-custom/15 border border-primary-custom/40 text-[10px] font-black tracking-[0.3em] uppercase text-primary-custom mb-2">
                 Movimento ONN
@@ -695,9 +701,13 @@ function FinalCTA() {
       id="cta-final"
       className="py-32 relative overflow-hidden scroll-mt-20"
     >
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-custom/15 rounded-full blur-[180px] animate-[pulse-glow_6s_ease-in-out_infinite]"></div>
+      <Parallax speed={-0.4} className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-custom/15 rounded-full blur-[180px] animate-[pulse-glow_6s_ease-in-out_infinite]"></div>
+      </Parallax>
       <div className="bg-scanlines"></div>
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(224,140,50,0.08),transparent_70%)]"></div>
+      <Parallax speed={-0.2} className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(224,140,50,0.08),transparent_70%)]"></div>
+      </Parallax>
       <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
         <Reveal>
           <div className="w-20 h-20 rounded-full bg-background border border-primary-custom/40 flex items-center justify-center mx-auto mb-10 shadow-[0_0_50px_rgba(224,140,50,0.5)]">
@@ -807,10 +817,12 @@ function ParallaxLayer({
   children,
   offset = 70,
   scaleFrom = 0.95,
+  fade = true,
 }: {
   children: ReactNode;
   offset?: number;
   scaleFrom?: number;
+  fade?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -818,31 +830,108 @@ function ParallaxLayer({
     offset: ["start end", "end start"],
   });
 
-  // Spring para suavizar o scroll (sensação premium)
   const smooth = useSpring(scrollYProgress, {
     stiffness: 80,
     damping: 25,
     mass: 0.4,
   });
 
-  // Translação vertical: entra um pouco abaixo, sai um pouco acima
   const y = useTransform(smooth, [0, 0.5, 1], [offset, 0, -offset]);
-  // Zoom sutil: começa menor, atinge 1 no centro, volta a diminuir
   const scale = useTransform(smooth, [0, 0.5, 1], [scaleFrom, 1, scaleFrom]);
-  // Opacidade: fade-in/out nas pontas para reforçar profundidade
-  const opacity = useTransform(
-    smooth,
-    [0, 0.15, 0.85, 1],
-    [0.55, 1, 1, 0.55],
-  );
+  const opacityFade = useTransform(smooth, [0, 0.15, 0.85, 1], [0.55, 1, 1, 0.55]);
+  const opacityNone = useTransform(smooth, [0, 1], [1, 1]);
+  const opacity = fade ? opacityFade : opacityNone;
 
   return (
     <motion.div
       ref={ref}
-      style={{ y, scale, opacity, willChange: "transform, opacity" }}
+      className="will-parallax"
+      style={{ y, scale, opacity }}
     >
       {children}
     </motion.div>
+  );
+}
+
+/* ── Parallax: camada interna com velocidade configurável. Use para
+   fundos, ghost numbers e decorações — cria profundidade dentro da seção. ── */
+function Parallax({
+  children,
+  speed = -0.3,
+  className = "",
+}: {
+  children: ReactNode;
+  /** negativo = mais lento (sobe ao rolar), positivo = mais rápido */
+  speed?: number;
+  className?: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+  const smooth = useSpring(scrollYProgress, {
+    stiffness: 60,
+    damping: 22,
+    mass: 0.5,
+  });
+  const y = useTransform(smooth, [0, 1], [200 * speed, -200 * speed]);
+
+  return (
+    <motion.div ref={ref} className={`will-parallax ${className}`} style={{ y }}>
+      {children}
+    </motion.div>
+  );
+}
+
+/* ── MouseParallax: reage ao movimento do mouse (desktop apenas).
+   Microinteração sutil no hero. ── */
+function MouseParallax({
+  children,
+  intensity = 8,
+  className = "",
+}: {
+  children: ReactNode;
+  intensity?: number;
+  className?: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const el = ref.current;
+    if (!el) return;
+    let raf = 0;
+    let tx = 0;
+    let ty = 0;
+
+    const onMove = (e: MouseEvent) => {
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
+      tx = ((e.clientX - cx) / cx) * intensity;
+      ty = ((e.clientY - cy) / cy) * intensity;
+      if (!raf) {
+        raf = requestAnimationFrame(() => {
+          el.style.transform = `translate3d(${tx}px, ${ty}px, 0)`;
+          raf = 0;
+        });
+      }
+    };
+
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [intensity]);
+
+  return (
+    <div ref={ref} className={`will-parallax ${className}`}>
+      {children}
+    </div>
   );
 }
 
