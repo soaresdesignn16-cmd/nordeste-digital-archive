@@ -368,3 +368,29 @@
 .animate-section-rise {
   animation: section-rise 0.6s ease-out both;
 }
+
+/* ── Parallax helpers ── */
+.parallax-host {
+  position: relative;
+  overflow: hidden;
+}
+.will-parallax {
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}
+
+/* Acessibilidade: respeitar quem prefere menos movimento */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .will-parallax {
+    transform: none !important;
+  }
+}
