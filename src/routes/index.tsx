@@ -170,10 +170,10 @@ function NovosNordestinos() {
             <LogoIcon className="w-20 h-20 drop-shadow-[0_0_30px_rgba(234,144,46,0.4)]" />
           </div>
 
-          <h1 className="text-[clamp(28px,5vw,48px)] font-extrabold leading-[1.1] mb-4">
+          <h1 className="text-[clamp(28px,5vw,48px)] font-black leading-[1.1] mb-4 tracking-tight">
             Antes de qualquer coisa,
             <br />
-            <span className="bg-gradient-to-br from-primary-custom to-primary-light bg-clip-text text-transparent">
+            <span className="headline-gradient">
               assista isso.
             </span>
           </h1>
@@ -182,7 +182,7 @@ function NovosNordestinos() {
             se posiciona no digital.
           </p>
 
-          <div className="rounded-2xl overflow-hidden border border-primary-custom/20 bg-card shadow-[0_0_40px_-10px_rgba(234,144,46,0.4)] mb-6">
+          <div className="vsl-frame mb-6">
             <div className="aspect-video bg-dark-surface flex items-center justify-center relative">
               <div className="absolute inset-0 bg-gradient-to-br from-primary-custom/10 to-transparent"></div>
 
@@ -191,11 +191,11 @@ function NovosNordestinos() {
                   onClick={startVSL}
                   className="relative z-10 flex flex-col items-center gap-3 bg-none border-none cursor-pointer text-foreground group"
                 >
-                  <div className="w-24 h-24 rounded-full bg-primary-custom flex items-center justify-center relative shadow-[0_0_40px_rgba(234,144,46,0.5)] transition-transform duration-200 group-hover:scale-110">
-                    <div className="absolute inset-0 rounded-full bg-primary-custom/40 animate-[ping_1.5s_cubic-bezier(0,0,0.2,1)_infinite]"></div>
-                    <Play className="ml-1 text-white fill-current" size={36} />
+                  <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary-custom to-primary-light flex items-center justify-center relative shadow-[0_0_50px_rgba(224,140,50,0.55)] transition-transform duration-200 group-hover:scale-110">
+                    <div className="absolute inset-0 rounded-full border-2 border-primary-custom/50 animate-[ping_1.8s_cubic-bezier(0,0,0.2,1)_infinite]"></div>
+                    <Play className="ml-1 fill-current" style={{ color: "#0A0A0A" }} size={36} />
                   </div>
-                  <span className="text-[11px] text-foreground/80 flex items-center gap-1.5 uppercase tracking-widest">
+                  <span className="text-[11px] text-foreground/80 flex items-center gap-1.5 uppercase tracking-[0.25em] font-semibold">
                     🔊 Assista com som ativado
                   </span>
                 </button>
@@ -204,10 +204,10 @@ function NovosNordestinos() {
               {vslStatus === "watching" && (
                 <div className="relative z-10 flex flex-col items-center gap-3">
                   <div className="w-16 h-16 border-2 border-primary-custom/30 border-t-primary-custom rounded-full animate-spin"></div>
-                  <p className="text-[11px] text-muted-custom uppercase tracking-widest">
+                  <p className="text-[11px] text-cream-muted uppercase tracking-[0.25em] font-semibold">
                     Reproduzindo apresentação…
                   </p>
-                  <p className="text-xs font-mono text-primary-custom">
+                  <p className="text-xs font-mono text-primary-custom text-gold-glow">
                     {Math.floor(vslElapsed / 60)
                       .toString()
                       .padStart(2, "0")}
@@ -220,7 +220,7 @@ function NovosNordestinos() {
                 <div className="relative z-10 text-foreground">
                   <Sparkles
                     size={48}
-                    className="text-primary-custom mx-auto mb-4"
+                    className="text-primary-custom mx-auto mb-4 icon-gold-glow"
                   />
                   <p className="text-sm font-semibold mb-2">
                     Apresentação concluída!
@@ -230,7 +230,7 @@ function NovosNordestinos() {
             </div>
             <div className="h-1.5 bg-dark-surface relative overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-primary-custom to-primary-light transition-all duration-1000"
+                className="h-full bg-gradient-to-r from-primary-custom via-primary-light to-primary-custom bg-[length:200%_100%] transition-all duration-1000 animate-[shimmer_2s_linear_infinite]"
                 style={{
                   width: `${Math.min((vslElapsed / MIN_WATCH) * 100, 100)}%`,
                 }}
@@ -413,11 +413,8 @@ function HeroIntro() {
           <div className="mb-8 flex justify-center">
             <SectionPill>O Movimento</SectionPill>
           </div>
-          <h1 className="text-[clamp(34px,6vw,58px)] font-black leading-[1.08] tracking-tight mb-6">
-            Chegou a hora do Brasil conhecer os{" "}
-            <span className="bg-gradient-to-br from-primary-custom to-primary-light bg-clip-text text-transparent">
-              Novos Nordestinos.
-            </span>
+          <h1 className="text-[clamp(34px,6vw,58px)] font-black leading-[1.08] tracking-tight mb-6 headline-gradient">
+            Chegou a hora do Brasil conhecer os Novos Nordestinos.
           </h1>
           <p className="text-base text-cream-muted leading-relaxed max-w-[560px] mx-auto mb-8">
             Empresários e profissionais que já constroem resultado, mas agora
@@ -427,11 +424,11 @@ function HeroIntro() {
             </strong>{" "}
             no nível que realmente são.
           </p>
-          <div className="max-w-[420px] mx-auto p-6 rounded-2xl border border-primary-custom/30 bg-card/60 backdrop-blur-md shadow-[0_0_40px_-8px_rgba(234,144,46,0.35)]">
+          <div className="card-premium max-w-[420px] mx-auto p-6">
             <p className="text-sm text-foreground/90 mb-1">
               Você não precisa de mais clientes.
             </p>
-            <p className="text-sm font-black text-primary-custom uppercase tracking-wider">
+            <p className="text-sm font-black text-primary-custom uppercase tracking-wider text-gold-glow">
               Você precisa de clientes melhores.
             </p>
           </div>
@@ -484,17 +481,22 @@ function StepsSection() {
 
         <div className="flex flex-col gap-6">
           {steps.map((s, i) => (
-            <Reveal key={i} delay={i * 0.08}>
-              <div className="relative p-7 rounded-3xl border border-primary-custom/25 bg-card/60 backdrop-blur-md shadow-[0_0_40px_-12px_rgba(234,144,46,0.4)]">
-                <div className="inline-flex items-center justify-center px-7 py-2 rounded-full bg-gradient-to-r from-primary-dark via-primary-custom to-primary-light text-background text-[11px] font-black tracking-[0.3em] uppercase shadow-[0_4px_20px_-4px_rgba(234,144,46,0.6)] mb-5">
-                  Passo {i + 1}
+            <Reveal key={i} delay={i * 0.1}>
+              <div className="card-premium relative p-7 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_50px_-10px_rgba(224,140,50,0.45)] hover:border-primary-custom/40">
+                <span className="ghost-number absolute -top-4 -right-2">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div className="relative">
+                  <div className="inline-flex items-center justify-center px-7 py-2 rounded-full bg-gradient-to-r from-primary-custom to-primary-light text-background text-[11px] font-black tracking-[0.3em] uppercase shadow-[0_4px_20px_-4px_rgba(224,140,50,0.6)] mb-5">
+                    Passo {i + 1}
+                  </div>
+                  <h3 className="text-xl md:text-2xl font-black mb-3 leading-tight tracking-tight">
+                    {s.title}
+                  </h3>
+                  <p className="text-sm text-cream-muted leading-relaxed">
+                    {s.desc}
+                  </p>
                 </div>
-                <h3 className="text-xl md:text-2xl font-extrabold mb-3 leading-tight">
-                  {s.title}
-                </h3>
-                <p className="text-sm text-cream-muted leading-relaxed">
-                  {s.desc}
-                </p>
               </div>
             </Reveal>
           ))}
@@ -556,14 +558,15 @@ function AudienceSection() {
 
         <div className="flex flex-col gap-5">
           {profiles.map((p, i) => (
-            <Reveal key={i} delay={i * 0.08}>
-              <div className="p-7 rounded-3xl border border-primary-custom/15 bg-card/50 backdrop-blur-md">
-                <div className="w-11 h-11 rounded-xl bg-primary-custom/15 flex items-center justify-center text-primary-custom mb-4">
+            <Reveal key={i} delay={i * 0.1}>
+              <div className="card-premium p-7 transition-all duration-300 hover:-translate-y-1 hover:border-primary-custom/40 hover:shadow-[0_0_40px_-12px_rgba(224,140,50,0.4)]">
+                <div className="w-11 h-11 rounded-xl bg-primary-custom/15 border border-primary-custom/30 flex items-center justify-center text-primary-custom mb-4 shadow-[0_0_20px_-6px_rgba(224,140,50,0.5)]">
                   {p.icon}
                 </div>
-                <h3 className="text-lg md:text-xl font-extrabold mb-2 leading-tight">
+                <h3 className="text-lg md:text-xl font-black mb-2 leading-tight tracking-tight">
                   {p.title}
                 </h3>
+                <div className="w-10 h-px bg-primary-custom/40 mb-3" />
                 <p className="text-sm text-cream-muted leading-relaxed">
                   {p.desc}
                 </p>
@@ -589,14 +592,14 @@ function FounderSection() {
           <h2 className="text-[clamp(30px,5vw,48px)] font-black leading-[1.05] tracking-tight mb-6 text-left">
             Muito prazer,
             <br />
-            <span className="bg-gradient-to-br from-primary-custom to-primary-light bg-clip-text text-transparent">
+            <span className="headline-gradient">
               Os Novos Nordestinos.
             </span>
           </h2>
-          <p className="text-sm font-semibold text-primary-custom tracking-wide mb-5 uppercase">
+          <p className="text-sm font-semibold text-primary-custom tracking-[0.15em] mb-5 uppercase">
             Movimento de Posicionamento Digital • Especialistas em Autoridade de Marca
           </p>
-          <p className="text-sm md:text-base text-cream-muted leading-relaxed mb-8">
+          <p className="text-sm md:text-base text-cream-muted leading-relaxed mb-6">
             Nascemos com um propósito: mostrar pro Brasil que o Nordeste produz
             empresários sofisticados, negócios milionários e marcas no nível
             das maiores do país. Hoje, à frente do movimento, ajudamos
@@ -607,21 +610,25 @@ function FounderSection() {
             de ponta a ponta — transformando autoridade em ticket maior, mais
             tempo livre e respeito de mercado.
           </p>
+          <blockquote className="blockquote-gold mb-10 text-sm md:text-base">
+            Posicionamento não é vaidade. É a diferença entre ser escolhido pelo preço — ou pelo prestígio.
+          </blockquote>
           <div className="mb-10">
             <BrutalistButton href="#cta-final" size="lg">
               Quero entrar para o movimento <ArrowRight size={18} />
             </BrutalistButton>
           </div>
 
-          <div className="relative rounded-3xl overflow-hidden border border-primary-custom/30 bg-card aspect-[4/5] max-w-[460px] mx-auto shadow-[0_0_60px_-15px_rgba(234,144,46,0.5)]">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary-dark/40 via-background to-primary-custom/30" />
+          <div className="relative rounded-lg overflow-hidden border-2 border-primary-custom/50 bg-card aspect-[4/5] max-w-[460px] mx-auto shadow-[0_0_60px_-10px_rgba(224,140,50,0.55)]">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(224,140,50,0.25),transparent_70%)]" />
+            <div className="absolute inset-0 bg-gradient-to-br from-primary-dark/30 via-transparent to-primary-custom/20" />
             <div className="absolute inset-0 flex items-center justify-center">
-              <LogoIcon className="w-32 h-32 opacity-90 drop-shadow-[0_0_40px_rgba(234,144,46,0.5)]" />
+              <LogoIcon className="w-32 h-32 opacity-95 drop-shadow-[0_0_50px_rgba(224,140,50,0.6)]" />
             </div>
-            <div className="absolute bottom-0 inset-x-0 p-6 bg-gradient-to-t from-background via-background/80 to-transparent">
-              <p className="text-[11px] font-black tracking-[0.3em] uppercase text-primary-custom mb-1">
+            <div className="absolute bottom-0 inset-x-0 p-6 bg-gradient-to-t from-background via-background/85 to-transparent">
+              <span className="inline-block px-3 py-1 rounded-full bg-primary-custom/15 border border-primary-custom/40 text-[10px] font-black tracking-[0.3em] uppercase text-primary-custom mb-2">
                 Movimento ONN
-              </p>
+              </span>
               <p className="text-sm font-bold">
                 Reposicionamento Cultural & Autoridade Digital
               </p>
@@ -643,10 +650,10 @@ function SectionDivider() {
 
 function ImpactSection() {
   return (
-    <section className="py-24 relative">
+    <section className="py-24 relative section-warm">
       <div className="max-w-7xl mx-auto px-6 text-center">
         <Reveal>
-          <span className="text-[10px] font-bold tracking-widest uppercase text-primary-custom mb-12 block">
+          <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-primary-custom mb-12 block text-gold-glow">
             ⚙️ Como isso muda sua vida
           </span>
           <div className="grid md:grid-cols-2 gap-4 max-w-[800px] mx-auto mb-16">
@@ -656,27 +663,26 @@ function ImpactSection() {
               "Seu ticket médio sobe exponencialmente",
               "Sua agenda finalmente desafoga",
             ].map((text, i) => (
-              <div
-                key={i}
-                className="flex items-center gap-4 px-6 py-5 rounded-2xl border border-primary-custom/10 bg-card/40 text-left"
-              >
-                <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-custom/20 flex items-center justify-center text-primary-custom">
-                  <Check size={14} />
+              <Reveal key={i} delay={i * 0.08}>
+                <div className="card-premium flex items-center gap-4 px-6 py-5 text-left transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:border-primary-custom/45 hover:shadow-[0_0_35px_-10px_rgba(224,140,50,0.5)]">
+                  <div className="flex-shrink-0 w-7 h-7 rounded-full bg-primary-custom/15 border border-primary-custom/40 flex items-center justify-center text-primary-custom icon-gold-glow">
+                    <Check size={14} strokeWidth={3} />
+                  </div>
+                  <span className="text-sm font-semibold">{text}</span>
                 </div>
-                <span className="text-sm font-semibold">{text}</span>
-              </div>
+              </Reveal>
             ))}
           </div>
 
-          <div className="max-w-[440px] mx-auto p-8 rounded-2xl border border-primary-custom/20 bg-card">
-            <p className="text-sm font-medium mb-1">
+          <blockquote className="blockquote-gold max-w-[440px] mx-auto text-left">
+            <p className="text-sm font-medium mb-1 not-italic">
               Você deixa de viver no{" "}
               <strong className="text-foreground">volume exaustivo</strong>…
             </p>
-            <p className="text-base font-black text-primary-custom uppercase tracking-wide">
+            <p className="text-base font-black text-primary-custom uppercase tracking-wide not-italic">
               e passa a viver no valor premium.
             </p>
-          </div>
+          </blockquote>
         </Reveal>
       </div>
     </section>
@@ -690,26 +696,28 @@ function FinalCTA() {
       className="py-32 relative overflow-hidden scroll-mt-20"
     >
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-custom/15 rounded-full blur-[180px] animate-[pulse-glow_6s_ease-in-out_infinite]"></div>
+      <div className="bg-scanlines"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(224,140,50,0.08),transparent_70%)]"></div>
       <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
         <Reveal>
-          <div className="w-16 h-16 bg-gradient-to-br from-primary-custom to-primary-light rounded-[18px] text-[24px] font-black text-white flex items-center justify-center mx-auto mb-10 shadow-[0_0_40px_rgba(234,144,46,0.4)]">
-            N
+          <div className="w-20 h-20 rounded-full bg-background border border-primary-custom/40 flex items-center justify-center mx-auto mb-10 shadow-[0_0_50px_rgba(224,140,50,0.5)]">
+            <LogoIcon className="w-12 h-12 drop-shadow-[0_0_20px_rgba(224,140,50,0.7)]" />
           </div>
           <h2 className="text-[clamp(28px,6vw,60px)] font-black leading-[1] mb-6 tracking-tight">
             Durante anos, tentaram contar a nossa história.
           </h2>
-          <p className="text-xl font-black text-primary-custom italic mb-12 uppercase tracking-tight">
+          <blockquote className="blockquote-gold max-w-[560px] mx-auto mb-12 text-lg md:text-xl font-black uppercase tracking-tight">
             Agora é a nossa vez de ocupar o lugar certo.
-          </p>
+          </blockquote>
 
           <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-16">
             {["Atender menos", "Cobrar mais", "Ter mais tempo", "Ser reconhecido"].map(
               (text, i) => (
                 <div
                   key={i}
-                  className="flex items-center justify-center gap-2 text-sm font-bold opacity-80 uppercase tracking-widest text-[11px]"
+                  className="flex items-center justify-center gap-2 text-sm font-bold opacity-90 uppercase tracking-[0.2em] text-[11px]"
                 >
-                  <Check size={14} className="text-primary-custom" strokeWidth={3} />
+                  <Check size={14} className="text-primary-custom icon-gold-glow" strokeWidth={3} />
                   {text}
                 </div>
               ),
@@ -717,7 +725,7 @@ function FinalCTA() {
           </div>
 
           <div className="flex flex-col items-center gap-6">
-            <BrutalistButton href="#" size="lg">
+            <BrutalistButton href="#" size="xl">
               Solicitar minha avaliação estratégica →
             </BrutalistButton>
             <p className="max-w-[420px] text-[11px] text-muted-custom font-semibold tracking-wide leading-relaxed">
@@ -734,10 +742,10 @@ function FinalCTA() {
 
 function Footer() {
   return (
-    <footer className="py-20 border-t border-foreground/5 bg-background relative z-10 overflow-hidden">
+    <footer className="py-20 border-t border-primary-custom/25 bg-background relative z-10 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 text-center">
         <Reveal>
-          <p className="text-base text-muted-custom mb-10 leading-relaxed font-medium">
+          <p className="text-base text-cream-muted mb-10 leading-relaxed font-medium">
             Você não está contratando marketing comum.
             <br />
             <strong className="text-foreground">
@@ -749,16 +757,16 @@ function Footer() {
               (p, i) => (
                 <span
                   key={i}
-                  className="px-5 py-1.5 rounded-full border border-primary-custom/20 bg-primary-custom/5 text-[10px] font-black uppercase tracking-widest text-primary-custom"
+                  className="px-5 py-1.5 rounded-full border border-primary-custom/40 bg-primary-custom/10 text-[10px] font-black uppercase tracking-[0.25em] text-primary-custom shadow-[0_0_18px_-6px_rgba(224,140,50,0.5)]"
                 >
                   {p}
                 </span>
               ),
             )}
           </div>
-          <div className="flex items-center justify-center gap-3 text-muted-custom/60">
-            <LogoIcon className="w-6 h-6 text-primary-custom/60" />
-            <span className="text-[10px] font-bold tracking-[0.2em] uppercase">
+          <div className="flex items-center justify-center gap-3 text-cream-muted/70">
+            <LogoIcon className="w-7 h-7 drop-shadow-[0_0_12px_rgba(224,140,50,0.5)]" />
+            <span className="text-[10px] font-black tracking-[0.25em] uppercase">
               Os Novos Nordestinos
             </span>
           </div>
@@ -838,8 +846,7 @@ function ParallaxLayer({
   );
 }
 
-/* ── Botão estilo "GumRoad" (neo-brutalist) — sombra dura deslocada,
-   no hover translada e revela a sombra; no active "afunda" ── */
+/* ── GoldCTA — botão dourado editorial premium (substitui o Brutalist) ── */
 function BrutalistButton({
   href,
   onClick,
@@ -850,40 +857,22 @@ function BrutalistButton({
   href?: string;
   onClick?: () => void;
   children: ReactNode;
-  size?: "md" | "lg";
+  size?: "md" | "lg" | "xl";
   className?: string;
 }) {
-  const sizeClasses =
-    size === "lg"
-      ? "px-10 py-5 text-base"
-      : "px-6 py-3.5 text-sm";
-
-  // Estado neutro: botão "pousado" sobre a sombra (sem offset, sombra colada).
-  // Hover/touch: o botão "levanta" — translada para cima/esquerda revelando a sombra dura.
-  // Active (clique): volta a pousar.
-  const baseClasses = `relative inline-flex items-center justify-center gap-2 rounded-xl font-bold uppercase tracking-wide
-    bg-gradient-to-r from-primary-custom to-primary-light text-white
-    border-2 border-primary-dark
-    translate-x-0 translate-y-0
-    shadow-[0px_0px_0_0_var(--primary-dark)]
-    transition-all duration-200 ease-out
-    hover:-translate-x-[3px] hover:-translate-y-[3px]
-    hover:shadow-[6px_6px_0_0_var(--primary-dark)]
-    focus-visible:-translate-x-[3px] focus-visible:-translate-y-[3px]
-    focus-visible:shadow-[6px_6px_0_0_var(--primary-dark)]
-    active:translate-x-0 active:translate-y-0
-    active:shadow-[0px_0px_0_0_var(--primary-dark)]
-    cursor-pointer select-none outline-none ${sizeClasses} ${className}`;
+  const sizeClass =
+    size === "xl" ? "btn-gold-xl" : size === "lg" ? "btn-gold-lg" : "";
+  const cls = `btn-gold ${sizeClass} ${className}`.trim();
 
   if (href) {
     return (
-      <a href={href} className={baseClasses}>
+      <a href={href} className={cls}>
         {children}
       </a>
     );
   }
   return (
-    <button onClick={onClick} className={baseClasses}>
+    <button onClick={onClick} className={cls}>
       {children}
     </button>
   );
