@@ -696,26 +696,28 @@ function FinalCTA() {
       className="py-32 relative overflow-hidden scroll-mt-20"
     >
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-custom/15 rounded-full blur-[180px] animate-[pulse-glow_6s_ease-in-out_infinite]"></div>
+      <div className="bg-scanlines"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(224,140,50,0.08),transparent_70%)]"></div>
       <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
         <Reveal>
-          <div className="w-16 h-16 bg-gradient-to-br from-primary-custom to-primary-light rounded-[18px] text-[24px] font-black text-white flex items-center justify-center mx-auto mb-10 shadow-[0_0_40px_rgba(234,144,46,0.4)]">
-            N
+          <div className="w-20 h-20 rounded-full bg-background border border-primary-custom/40 flex items-center justify-center mx-auto mb-10 shadow-[0_0_50px_rgba(224,140,50,0.5)]">
+            <LogoIcon className="w-12 h-12 drop-shadow-[0_0_20px_rgba(224,140,50,0.7)]" />
           </div>
           <h2 className="text-[clamp(28px,6vw,60px)] font-black leading-[1] mb-6 tracking-tight">
             Durante anos, tentaram contar a nossa história.
           </h2>
-          <p className="text-xl font-black text-primary-custom italic mb-12 uppercase tracking-tight">
+          <blockquote className="blockquote-gold max-w-[560px] mx-auto mb-12 text-lg md:text-xl font-black uppercase tracking-tight">
             Agora é a nossa vez de ocupar o lugar certo.
-          </p>
+          </blockquote>
 
           <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-16">
             {["Atender menos", "Cobrar mais", "Ter mais tempo", "Ser reconhecido"].map(
               (text, i) => (
                 <div
                   key={i}
-                  className="flex items-center justify-center gap-2 text-sm font-bold opacity-80 uppercase tracking-widest text-[11px]"
+                  className="flex items-center justify-center gap-2 text-sm font-bold opacity-90 uppercase tracking-[0.2em] text-[11px]"
                 >
-                  <Check size={14} className="text-primary-custom" strokeWidth={3} />
+                  <Check size={14} className="text-primary-custom icon-gold-glow" strokeWidth={3} />
                   {text}
                 </div>
               ),
@@ -723,7 +725,7 @@ function FinalCTA() {
           </div>
 
           <div className="flex flex-col items-center gap-6">
-            <BrutalistButton href="#" size="lg">
+            <BrutalistButton href="#" size="xl">
               Solicitar minha avaliação estratégica →
             </BrutalistButton>
             <p className="max-w-[420px] text-[11px] text-muted-custom font-semibold tracking-wide leading-relaxed">
