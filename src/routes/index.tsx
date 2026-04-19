@@ -807,10 +807,12 @@ function ParallaxLayer({
   children,
   offset = 70,
   scaleFrom = 0.95,
+  fade = true,
 }: {
   children: ReactNode;
   offset?: number;
   scaleFrom?: number;
+  fade?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -818,31 +820,108 @@ function ParallaxLayer({
     offset: ["start end", "end start"],
   });
 
-  // Spring para suavizar o scroll (sensação premium)
   const smooth = useSpring(scrollYProgress, {
     stiffness: 80,
     damping: 25,
     mass: 0.4,
   });
 
-  // Translação vertical: entra um pouco abaixo, sai um pouco acima
   const y = useTransform(smooth, [0, 0.5, 1], [offset, 0, -offset]);
-  // Zoom sutil: começa menor, atinge 1 no centro, volta a diminuir
   const scale = useTransform(smooth, [0, 0.5, 1], [scaleFrom, 1, scaleFrom]);
-  // Opacidade: fade-in/out nas pontas para reforçar profundidade
-  const opacity = useTransform(
-    smooth,
-    [0, 0.15, 0.85, 1],
-    [0.55, 1, 1, 0.55],
-  );
+  const opacityFade = useTransform(smooth, [0, 0.15, 0.85, 1], [0.55, 1, 1, 0.55]);
+  const opacityNone = useTransform(smooth, [0, 1], [1, 1]);
+  const opacity = fade ? opacityFade : opacityNone;
 
   return (
     <motion.div
       ref={ref}
-      style={{ y, scale, opacity, willChange: "transform, opacity" }}
+      className="will-parallax"
+      style={{ y, scale, opacity }}
     >
       {children}
     </motion.div>
+  );
+}
+
+/* ── Parallax: camada interna com velocidade configurável. Use para
+   fundos, ghost numbers e decorações — cria profundidade dentro da seção. ── */
+function Parallax({
+  children,
+  speed = -0.3,
+  className = "",
+}: {
+  children: ReactNode;
+  /** negativo = mais lento (sobe ao rolar), positivo = mais rápido */
+  speed?: number;
+  className?: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+  const smooth = useSpring(scrollYProgress, {
+    stiffness: 60,
+    damping: 22,
+    mass: 0.5,
+  });
+  const y = useTransform(smooth, [0, 1], [200 * speed, -200 * speed]);
+
+  return (
+    <motion.div ref={ref} className={`will-parallax ${className}`} style={{ y }}>
+      {children}
+    </motion.div>
+  );
+}
+
+/* ── MouseParallax: reage ao movimento do mouse (desktop apenas).
+   Microinteração sutil no hero. ── */
+function MouseParallax({
+  children,
+  intensity = 8,
+  className = "",
+}: {
+  children: ReactNode;
+  intensity?: number;
+  className?: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const el = ref.current;
+    if (!el) return;
+    let raf = 0;
+    let tx = 0;
+    let ty = 0;
+
+    const onMove = (e: MouseEvent) => {
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
+      tx = ((e.clientX - cx) / cx) * intensity;
+      ty = ((e.clientY - cy) / cy) * intensity;
+      if (!raf) {
+        raf = requestAnimationFrame(() => {
+          el.style.transform = `translate3d(${tx}px, ${ty}px, 0)`;
+          raf = 0;
+        });
+      }
+    };
+
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [intensity]);
+
+  return (
+    <div ref={ref} className={`will-parallax ${className}`}>
+      {children}
+    </div>
   );
 }
 
