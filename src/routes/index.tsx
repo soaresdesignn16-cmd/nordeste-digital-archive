@@ -592,14 +592,14 @@ function FounderSection() {
           <h2 className="text-[clamp(30px,5vw,48px)] font-black leading-[1.05] tracking-tight mb-6 text-left">
             Muito prazer,
             <br />
-            <span className="bg-gradient-to-br from-primary-custom to-primary-light bg-clip-text text-transparent">
+            <span className="headline-gradient">
               Os Novos Nordestinos.
             </span>
           </h2>
-          <p className="text-sm font-semibold text-primary-custom tracking-wide mb-5 uppercase">
+          <p className="text-sm font-semibold text-primary-custom tracking-[0.15em] mb-5 uppercase">
             Movimento de Posicionamento Digital • Especialistas em Autoridade de Marca
           </p>
-          <p className="text-sm md:text-base text-cream-muted leading-relaxed mb-8">
+          <p className="text-sm md:text-base text-cream-muted leading-relaxed mb-6">
             Nascemos com um propósito: mostrar pro Brasil que o Nordeste produz
             empresários sofisticados, negócios milionários e marcas no nível
             das maiores do país. Hoje, à frente do movimento, ajudamos
@@ -610,21 +610,25 @@ function FounderSection() {
             de ponta a ponta — transformando autoridade em ticket maior, mais
             tempo livre e respeito de mercado.
           </p>
+          <blockquote className="blockquote-gold mb-10 text-sm md:text-base">
+            Posicionamento não é vaidade. É a diferença entre ser escolhido pelo preço — ou pelo prestígio.
+          </blockquote>
           <div className="mb-10">
             <BrutalistButton href="#cta-final" size="lg">
               Quero entrar para o movimento <ArrowRight size={18} />
             </BrutalistButton>
           </div>
 
-          <div className="relative rounded-3xl overflow-hidden border border-primary-custom/30 bg-card aspect-[4/5] max-w-[460px] mx-auto shadow-[0_0_60px_-15px_rgba(234,144,46,0.5)]">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary-dark/40 via-background to-primary-custom/30" />
+          <div className="relative rounded-lg overflow-hidden border-2 border-primary-custom/50 bg-card aspect-[4/5] max-w-[460px] mx-auto shadow-[0_0_60px_-10px_rgba(224,140,50,0.55)]">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(224,140,50,0.25),transparent_70%)]" />
+            <div className="absolute inset-0 bg-gradient-to-br from-primary-dark/30 via-transparent to-primary-custom/20" />
             <div className="absolute inset-0 flex items-center justify-center">
-              <LogoIcon className="w-32 h-32 opacity-90 drop-shadow-[0_0_40px_rgba(234,144,46,0.5)]" />
+              <LogoIcon className="w-32 h-32 opacity-95 drop-shadow-[0_0_50px_rgba(224,140,50,0.6)]" />
             </div>
-            <div className="absolute bottom-0 inset-x-0 p-6 bg-gradient-to-t from-background via-background/80 to-transparent">
-              <p className="text-[11px] font-black tracking-[0.3em] uppercase text-primary-custom mb-1">
+            <div className="absolute bottom-0 inset-x-0 p-6 bg-gradient-to-t from-background via-background/85 to-transparent">
+              <span className="inline-block px-3 py-1 rounded-full bg-primary-custom/15 border border-primary-custom/40 text-[10px] font-black tracking-[0.3em] uppercase text-primary-custom mb-2">
                 Movimento ONN
-              </p>
+              </span>
               <p className="text-sm font-bold">
                 Reposicionamento Cultural & Autoridade Digital
               </p>
