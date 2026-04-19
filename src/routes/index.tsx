@@ -563,7 +563,7 @@ function AudienceSection() {
         <div className="flex flex-col gap-5">
           {profiles.map((p, i) => (
             <Reveal key={i} delay={i * 0.1}>
-              <div className="card-premium p-7 transition-all duration-300 hover:-translate-y-1 hover:border-primary-custom/40 hover:shadow-[0_0_40px_-12px_rgba(224,140,50,0.4)]">
+              <TiltCard tilt spotlight intensity={3} className="card-premium p-7 transition-shadow duration-300 hover:border-primary-custom/40 hover:shadow-[0_0_40px_-12px_rgba(224,140,50,0.4)]">
                 <div className="w-11 h-11 rounded-xl bg-primary-custom/15 border border-primary-custom/30 flex items-center justify-center text-primary-custom mb-4 shadow-[0_0_20px_-6px_rgba(224,140,50,0.5)]">
                   {p.icon}
                 </div>
@@ -574,7 +574,7 @@ function AudienceSection() {
                 <p className="text-sm text-cream-muted leading-relaxed">
                   {p.desc}
                 </p>
-              </div>
+              </TiltCard>
             </Reveal>
           ))}
         </div>
