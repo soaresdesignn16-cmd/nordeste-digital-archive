@@ -426,14 +426,14 @@ function HeroIntro() {
             </strong>{" "}
             no nível que realmente são.
           </p>
-          <div className="card-premium max-w-[420px] mx-auto p-6">
+          <TiltCard tilt={false} spotlight className="card-premium max-w-[420px] mx-auto p-6">
             <p className="text-sm text-foreground/90 mb-1">
               Você não precisa de mais clientes.
             </p>
             <p className="text-sm font-black text-primary-custom uppercase tracking-wider text-gold-glow">
               Você precisa de clientes melhores.
             </p>
-          </div>
+          </TiltCard>
         </Reveal>
       </div>
     </section>
