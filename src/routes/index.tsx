@@ -413,11 +413,8 @@ function HeroIntro() {
           <div className="mb-8 flex justify-center">
             <SectionPill>O Movimento</SectionPill>
           </div>
-          <h1 className="text-[clamp(34px,6vw,58px)] font-black leading-[1.08] tracking-tight mb-6">
-            Chegou a hora do Brasil conhecer os{" "}
-            <span className="bg-gradient-to-br from-primary-custom to-primary-light bg-clip-text text-transparent">
-              Novos Nordestinos.
-            </span>
+          <h1 className="text-[clamp(34px,6vw,58px)] font-black leading-[1.08] tracking-tight mb-6 headline-gradient">
+            Chegou a hora do Brasil conhecer os Novos Nordestinos.
           </h1>
           <p className="text-base text-cream-muted leading-relaxed max-w-[560px] mx-auto mb-8">
             Empresários e profissionais que já constroem resultado, mas agora
@@ -427,11 +424,11 @@ function HeroIntro() {
             </strong>{" "}
             no nível que realmente são.
           </p>
-          <div className="max-w-[420px] mx-auto p-6 rounded-2xl border border-primary-custom/30 bg-card/60 backdrop-blur-md shadow-[0_0_40px_-8px_rgba(234,144,46,0.35)]">
+          <div className="card-premium max-w-[420px] mx-auto p-6">
             <p className="text-sm text-foreground/90 mb-1">
               Você não precisa de mais clientes.
             </p>
-            <p className="text-sm font-black text-primary-custom uppercase tracking-wider">
+            <p className="text-sm font-black text-primary-custom uppercase tracking-wider text-gold-glow">
               Você precisa de clientes melhores.
             </p>
           </div>
