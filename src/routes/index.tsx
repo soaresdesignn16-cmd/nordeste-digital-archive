@@ -426,14 +426,14 @@ function HeroIntro() {
             </strong>{" "}
             no nível que realmente são.
           </p>
-          <div className="card-premium max-w-[420px] mx-auto p-6">
+          <TiltCard tilt={false} spotlight className="card-premium max-w-[420px] mx-auto p-6">
             <p className="text-sm text-foreground/90 mb-1">
               Você não precisa de mais clientes.
             </p>
             <p className="text-sm font-black text-primary-custom uppercase tracking-wider text-gold-glow">
               Você precisa de clientes melhores.
             </p>
-          </div>
+          </TiltCard>
         </Reveal>
       </div>
     </section>
@@ -484,7 +484,7 @@ function StepsSection() {
         <div className="flex flex-col gap-6">
           {steps.map((s, i) => (
             <Reveal key={i} delay={i * 0.1}>
-              <div className="card-premium relative p-7 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_50px_-10px_rgba(224,140,50,0.45)] hover:border-primary-custom/40">
+              <TiltCard tilt spotlight intensity={3} className="card-premium relative p-7 overflow-hidden transition-shadow duration-300 hover:shadow-[0_0_50px_-10px_rgba(224,140,50,0.45)] hover:border-primary-custom/40">
                 <Parallax speed={-0.5} className="absolute -top-4 -right-2 pointer-events-none">
                   <span className="ghost-number block">
                     {String(i + 1).padStart(2, "0")}
@@ -501,7 +501,7 @@ function StepsSection() {
                     {s.desc}
                   </p>
                 </div>
-              </div>
+              </TiltCard>
             </Reveal>
           ))}
         </div>
@@ -563,7 +563,7 @@ function AudienceSection() {
         <div className="flex flex-col gap-5">
           {profiles.map((p, i) => (
             <Reveal key={i} delay={i * 0.1}>
-              <div className="card-premium p-7 transition-all duration-300 hover:-translate-y-1 hover:border-primary-custom/40 hover:shadow-[0_0_40px_-12px_rgba(224,140,50,0.4)]">
+              <TiltCard tilt spotlight intensity={3} className="card-premium p-7 transition-shadow duration-300 hover:border-primary-custom/40 hover:shadow-[0_0_40px_-12px_rgba(224,140,50,0.4)]">
                 <div className="w-11 h-11 rounded-xl bg-primary-custom/15 border border-primary-custom/30 flex items-center justify-center text-primary-custom mb-4 shadow-[0_0_20px_-6px_rgba(224,140,50,0.5)]">
                   {p.icon}
                 </div>
@@ -574,7 +574,7 @@ function AudienceSection() {
                 <p className="text-sm text-cream-muted leading-relaxed">
                   {p.desc}
                 </p>
-              </div>
+              </TiltCard>
             </Reveal>
           ))}
         </div>
@@ -623,7 +623,7 @@ function FounderSection() {
             </BrutalistButton>
           </div>
 
-          <div className="relative rounded-lg overflow-hidden border-2 border-primary-custom/50 bg-card aspect-[4/5] max-w-[460px] mx-auto shadow-[0_0_60px_-10px_rgba(224,140,50,0.55)]">
+          <TiltCard tilt spotlight intense intensity={4} className="relative rounded-lg overflow-hidden border-2 border-primary-custom/50 bg-card aspect-[4/5] max-w-[460px] mx-auto shadow-[0_0_60px_-10px_rgba(224,140,50,0.55)]">
             <Parallax speed={-0.25} className="absolute inset-0">
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(224,140,50,0.25),transparent_70%)]" />
               <div className="absolute inset-0 bg-gradient-to-br from-primary-dark/30 via-transparent to-primary-custom/20" />
@@ -639,7 +639,7 @@ function FounderSection() {
                 Reposicionamento Cultural & Autoridade Digital
               </p>
             </div>
-          </div>
+          </TiltCard>
         </Reveal>
       </div>
     </section>
@@ -670,12 +670,12 @@ function ImpactSection() {
               "Sua agenda finalmente desafoga",
             ].map((text, i) => (
               <Reveal key={i} delay={i * 0.08}>
-                <div className="card-premium flex items-center gap-4 px-6 py-5 text-left transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:border-primary-custom/45 hover:shadow-[0_0_35px_-10px_rgba(224,140,50,0.5)]">
+                <TiltCard tilt={false} spotlight className="card-premium flex items-center gap-4 px-6 py-5 text-left transition-shadow duration-300 hover:border-primary-custom/45 hover:shadow-[0_0_35px_-10px_rgba(224,140,50,0.5)]">
                   <div className="flex-shrink-0 w-7 h-7 rounded-full bg-primary-custom/15 border border-primary-custom/40 flex items-center justify-center text-primary-custom icon-gold-glow">
                     <Check size={14} strokeWidth={3} />
                   </div>
                   <span className="text-sm font-semibold">{text}</span>
-                </div>
+                </TiltCard>
               </Reveal>
             ))}
           </div>
@@ -931,6 +931,104 @@ function MouseParallax({
   return (
     <div ref={ref} className={`will-parallax ${className}`}>
       {children}
+    </div>
+  );
+}
+
+/* ── TiltCard — wrapper com Tilt 3D sutil + Spotlight dourado seguindo o cursor.
+   Ambos efeitos opcionais. Desabilitados em touch / reduced-motion. ── */
+function TiltCard({
+  children,
+  className = "",
+  tilt = true,
+  spotlight = true,
+  intensity = 3,
+  intense = false,
+}: {
+  children: ReactNode;
+  className?: string;
+  tilt?: boolean;
+  spotlight?: boolean;
+  /** graus máximos de inclinação */
+  intensity?: number;
+  /** spotlight mais forte (para cards isolados/grandes) */
+  intense?: boolean;
+}) {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const isTouch = window.matchMedia("(pointer: coarse)").matches;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) return;
+
+    const wrap = wrapRef.current;
+    const card = cardRef.current;
+    if (!wrap || !card) return;
+
+    let raf = 0;
+    let rx = 0;
+    let ry = 0;
+
+    const onMove = (e: MouseEvent) => {
+      const rect = wrap.getBoundingClientRect();
+      const px = (e.clientX - rect.left) / rect.width;
+      const py = (e.clientY - rect.top) / rect.height;
+
+      if (spotlight) {
+        card.style.setProperty("--mx", `${px * 100}%`);
+        card.style.setProperty("--my", `${py * 100}%`);
+      }
+
+      if (tilt && !isTouch) {
+        ry = (px - 0.5) * intensity * 2;
+        rx = (0.5 - py) * intensity * 2;
+        if (!raf) {
+          raf = requestAnimationFrame(() => {
+            card.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+            raf = 0;
+          });
+        }
+      }
+    };
+
+    const onEnter = () => {
+      if (spotlight) card.style.setProperty("--spot-opacity", "1");
+    };
+    const onLeave = () => {
+      if (spotlight) card.style.setProperty("--spot-opacity", "0");
+      if (tilt && !isTouch) {
+        card.style.transform = "rotateX(0deg) rotateY(0deg)";
+      }
+    };
+
+    wrap.addEventListener("mousemove", onMove, { passive: true });
+    wrap.addEventListener("mouseenter", onEnter);
+    wrap.addEventListener("mouseleave", onLeave);
+    return () => {
+      wrap.removeEventListener("mousemove", onMove);
+      wrap.removeEventListener("mouseenter", onEnter);
+      wrap.removeEventListener("mouseleave", onLeave);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [tilt, spotlight, intensity]);
+
+  const wrapCls = tilt ? "tilt-wrap" : "";
+  const cardCls = [
+    tilt ? "tilt-card" : "",
+    spotlight ? "spotlight-card" : "",
+    spotlight && intense ? "spotlight-card-intense" : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  return (
+    <div ref={wrapRef} className={wrapCls}>
+      <div ref={cardRef} className={cardCls}>
+        {children}
+      </div>
     </div>
   );
 }
