@@ -742,10 +742,10 @@ function FinalCTA() {
 
 function Footer() {
   return (
-    <footer className="py-20 border-t border-foreground/5 bg-background relative z-10 overflow-hidden">
+    <footer className="py-20 border-t border-primary-custom/25 bg-background relative z-10 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 text-center">
         <Reveal>
-          <p className="text-base text-muted-custom mb-10 leading-relaxed font-medium">
+          <p className="text-base text-cream-muted mb-10 leading-relaxed font-medium">
             Você não está contratando marketing comum.
             <br />
             <strong className="text-foreground">
@@ -757,16 +757,16 @@ function Footer() {
               (p, i) => (
                 <span
                   key={i}
-                  className="px-5 py-1.5 rounded-full border border-primary-custom/20 bg-primary-custom/5 text-[10px] font-black uppercase tracking-widest text-primary-custom"
+                  className="px-5 py-1.5 rounded-full border border-primary-custom/40 bg-primary-custom/10 text-[10px] font-black uppercase tracking-[0.25em] text-primary-custom shadow-[0_0_18px_-6px_rgba(224,140,50,0.5)]"
                 >
                   {p}
                 </span>
               ),
             )}
           </div>
-          <div className="flex items-center justify-center gap-3 text-muted-custom/60">
-            <LogoIcon className="w-6 h-6 text-primary-custom/60" />
-            <span className="text-[10px] font-bold tracking-[0.2em] uppercase">
+          <div className="flex items-center justify-center gap-3 text-cream-muted/70">
+            <LogoIcon className="w-7 h-7 drop-shadow-[0_0_12px_rgba(224,140,50,0.5)]" />
+            <span className="text-[10px] font-black tracking-[0.25em] uppercase">
               Os Novos Nordestinos
             </span>
           </div>
