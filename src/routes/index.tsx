@@ -623,7 +623,7 @@ function FounderSection() {
             </BrutalistButton>
           </div>
 
-          <div className="relative rounded-lg overflow-hidden border-2 border-primary-custom/50 bg-card aspect-[4/5] max-w-[460px] mx-auto shadow-[0_0_60px_-10px_rgba(224,140,50,0.55)]">
+          <TiltCard tilt spotlight intense intensity={4} className="relative rounded-lg overflow-hidden border-2 border-primary-custom/50 bg-card aspect-[4/5] max-w-[460px] mx-auto shadow-[0_0_60px_-10px_rgba(224,140,50,0.55)]">
             <Parallax speed={-0.25} className="absolute inset-0">
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(224,140,50,0.25),transparent_70%)]" />
               <div className="absolute inset-0 bg-gradient-to-br from-primary-dark/30 via-transparent to-primary-custom/20" />
@@ -639,7 +639,7 @@ function FounderSection() {
                 Reposicionamento Cultural & Autoridade Digital
               </p>
             </div>
-          </div>
+          </TiltCard>
         </Reveal>
       </div>
     </section>
