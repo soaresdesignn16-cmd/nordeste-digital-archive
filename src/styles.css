@@ -217,13 +217,15 @@
 
   /* CTA principal — botão dourado premium */
   .btn-gold {
+    position: relative;
     background: linear-gradient(135deg, #C97B2A, #E08C32);
     color: #0A0A0A;
     font-family: 'Poppins', sans-serif;
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    padding: 18px 40px;
+    padding: 14px 28px;
+    font-size: 12px;
     border-radius: 4px;
     box-shadow: 0 0 32px rgba(201, 123, 42, 0.35);
     transition: all 0.3s ease;
@@ -233,10 +235,46 @@
     gap: 0.5rem;
     cursor: pointer;
     border: none;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .btn-gold::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 30%, rgba(255, 240, 220, 0.4) 50%, transparent 70%);
+    transform: translateX(-100%);
+    transition: transform 0.7s ease;
+    z-index: -1;
   }
   .btn-gold:hover {
     box-shadow: 0 0 48px rgba(224, 140, 50, 0.6);
     transform: translateY(-2px);
+  }
+  .btn-gold:hover::before {
+    transform: translateX(100%);
+  }
+  .btn-gold-lg {
+    padding: 18px 40px;
+    font-size: 14px;
+  }
+  .btn-gold-xl {
+    padding: 22px 52px;
+    font-size: 16px;
+    letter-spacing: 0.1em;
+  }
+
+  /* Ghost number gigante — outline dourado para profundidade editorial */
+  .ghost-number {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 900;
+    font-size: clamp(120px, 18vw, 200px);
+    line-height: 0.85;
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(201, 123, 42, 0.18);
+    user-select: none;
+    pointer-events: none;
+    letter-spacing: -0.04em;
   }
 
   /* Card / bloco premium translúcido */
