@@ -484,7 +484,7 @@ function StepsSection() {
         <div className="flex flex-col gap-6">
           {steps.map((s, i) => (
             <Reveal key={i} delay={i * 0.1}>
-              <div className="card-premium relative p-7 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_50px_-10px_rgba(224,140,50,0.45)] hover:border-primary-custom/40">
+              <TiltCard tilt spotlight intensity={3} className="card-premium relative p-7 overflow-hidden transition-shadow duration-300 hover:shadow-[0_0_50px_-10px_rgba(224,140,50,0.45)] hover:border-primary-custom/40">
                 <Parallax speed={-0.5} className="absolute -top-4 -right-2 pointer-events-none">
                   <span className="ghost-number block">
                     {String(i + 1).padStart(2, "0")}
@@ -501,7 +501,7 @@ function StepsSection() {
                     {s.desc}
                   </p>
                 </div>
-              </div>
+              </TiltCard>
             </Reveal>
           ))}
         </div>
