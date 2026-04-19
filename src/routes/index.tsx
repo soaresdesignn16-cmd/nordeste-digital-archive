@@ -838,8 +838,7 @@ function ParallaxLayer({
   );
 }
 
-/* ── Botão estilo "GumRoad" (neo-brutalist) — sombra dura deslocada,
-   no hover translada e revela a sombra; no active "afunda" ── */
+/* ── GoldCTA — botão dourado editorial premium (substitui o Brutalist) ── */
 function BrutalistButton({
   href,
   onClick,
@@ -850,40 +849,22 @@ function BrutalistButton({
   href?: string;
   onClick?: () => void;
   children: ReactNode;
-  size?: "md" | "lg";
+  size?: "md" | "lg" | "xl";
   className?: string;
 }) {
-  const sizeClasses =
-    size === "lg"
-      ? "px-10 py-5 text-base"
-      : "px-6 py-3.5 text-sm";
-
-  // Estado neutro: botão "pousado" sobre a sombra (sem offset, sombra colada).
-  // Hover/touch: o botão "levanta" — translada para cima/esquerda revelando a sombra dura.
-  // Active (clique): volta a pousar.
-  const baseClasses = `relative inline-flex items-center justify-center gap-2 rounded-xl font-bold uppercase tracking-wide
-    bg-gradient-to-r from-primary-custom to-primary-light text-white
-    border-2 border-primary-dark
-    translate-x-0 translate-y-0
-    shadow-[0px_0px_0_0_var(--primary-dark)]
-    transition-all duration-200 ease-out
-    hover:-translate-x-[3px] hover:-translate-y-[3px]
-    hover:shadow-[6px_6px_0_0_var(--primary-dark)]
-    focus-visible:-translate-x-[3px] focus-visible:-translate-y-[3px]
-    focus-visible:shadow-[6px_6px_0_0_var(--primary-dark)]
-    active:translate-x-0 active:translate-y-0
-    active:shadow-[0px_0px_0_0_var(--primary-dark)]
-    cursor-pointer select-none outline-none ${sizeClasses} ${className}`;
+  const sizeClass =
+    size === "xl" ? "btn-gold-xl" : size === "lg" ? "btn-gold-lg" : "";
+  const cls = `btn-gold ${sizeClass} ${className}`.trim();
 
   if (href) {
     return (
-      <a href={href} className={baseClasses}>
+      <a href={href} className={cls}>
         {children}
       </a>
     );
   }
   return (
-    <button onClick={onClick} className={baseClasses}>
+    <button onClick={onClick} className={cls}>
       {children}
     </button>
   );
