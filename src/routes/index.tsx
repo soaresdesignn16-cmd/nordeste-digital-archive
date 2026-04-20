@@ -60,6 +60,7 @@ function NovosNordestinos() {
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [loadProgress, setLoadProgress] = useState(0);
+  const [scrollPrompt, setScrollPrompt] = useState(false);
 
   // VSL Logic
   const MIN_WATCH = 30;
@@ -81,8 +82,27 @@ function NovosNordestinos() {
 
   const startVSL = () => setVslStatus("watching");
 
+  // Após a VSL, mostramos apenas o prompt "Role para baixo".
+  // O loader inline só dispara quando o lead rola a página.
   const unlockContent = () => {
-    setIsLoading(true);
+    setScrollPrompt(true);
+  };
+
+  // Quando o prompt está visível, dispara o loader inline ao primeiro scroll > 80px.
+  useEffect(() => {
+    if (!scrollPrompt || isLoading || isUnlocked) return;
+    const handleScroll = () => {
+      if (window.scrollY > 80) {
+        setIsLoading(true);
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [scrollPrompt, isLoading, isUnlocked]);
+
+  // Quando isLoading vira true, anima a barra 0→100% e desbloqueia o conteúdo.
+  useEffect(() => {
+    if (!isLoading) return;
     let progress = 0;
     const interval = setInterval(() => {
       progress += Math.random() * 5;
@@ -96,7 +116,8 @@ function NovosNordestinos() {
       }
       setLoadProgress(progress);
     }, 50);
-  };
+    return () => clearInterval(interval);
+  }, [isLoading]);
 
   if (!isUnlocked) {
     if (isLoading) {
