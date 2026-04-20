@@ -672,11 +672,12 @@ function FounderSection() {
           <div className="mb-8 flex justify-center">
             <SectionPill>Quem Está Por Trás</SectionPill>
           </div>
-          <h2 className="text-[clamp(30px,5vw,48px)] font-black leading-[1.05] tracking-tight mb-6 text-left">
-            Muito prazer,
-            <br />
-            <span className="headline-gradient">
-              Os Novos Nordestinos.
+          <h2 className="mb-6 text-left">
+            <span className="block headline-gradient font-black uppercase tracking-tight leading-[0.95] text-[clamp(38px,7vw,72px)] drop-shadow-[0_0_30px_rgba(224,140,50,0.35)]">
+              Os Novos Nordestinos
+            </span>
+            <span className="block mt-3 italic font-normal text-cream-muted/95 text-[clamp(18px,2.6vw,26px)] tracking-tight">
+              Muito prazer,
             </span>
           </h2>
           <p className="text-sm font-semibold text-primary-custom tracking-[0.15em] mb-5 uppercase">
