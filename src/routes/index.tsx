@@ -368,41 +368,41 @@ function NovosNordestinos() {
             </div>
           </section>
         )}
-      </>
-    );
-  }
 
-  return (
-    <div className="relative">
-      <PremiumBackground />
-      <Navbar />
-      <main>
-        <ParallaxLayer offset={50} scaleFrom={0.97}>
-          <HeroIntro />
-        </ParallaxLayer>
-        <SectionDivider />
-        <ParallaxLayer offset={70} scaleFrom={0.95}>
-          <StepsSection />
-        </ParallaxLayer>
-        <SectionDivider />
-        <ParallaxLayer offset={70} scaleFrom={0.95}>
-          <AudienceSection />
-        </ParallaxLayer>
-        <SectionDivider />
-        <ParallaxLayer offset={70} scaleFrom={0.95}>
-          <FounderSection />
-        </ParallaxLayer>
-        <SectionDivider />
-        <ParallaxLayer offset={60} scaleFrom={0.96}>
-          <ImpactSection />
-        </ParallaxLayer>
-        <SectionDivider />
-        <ParallaxLayer offset={60} scaleFrom={0.96}>
-          <FinalCTA />
-        </ParallaxLayer>
-        <Footer />
-      </main>
-    </div>
+      {isUnlocked && (
+        <div className="relative">
+          <PremiumBackground />
+          <main>
+            <ParallaxLayer offset={50} scaleFrom={0.97}>
+              <div id="hero-intro">
+                <HeroIntro />
+              </div>
+            </ParallaxLayer>
+            <SectionDivider />
+            <ParallaxLayer offset={70} scaleFrom={0.95}>
+              <StepsSection />
+            </ParallaxLayer>
+            <SectionDivider />
+            <ParallaxLayer offset={70} scaleFrom={0.95}>
+              <AudienceSection />
+            </ParallaxLayer>
+            <SectionDivider />
+            <ParallaxLayer offset={70} scaleFrom={0.95}>
+              <FounderSection />
+            </ParallaxLayer>
+            <SectionDivider />
+            <ParallaxLayer offset={60} scaleFrom={0.96}>
+              <ImpactSection />
+            </ParallaxLayer>
+            <SectionDivider />
+            <ParallaxLayer offset={60} scaleFrom={0.96}>
+              <FinalCTA />
+            </ParallaxLayer>
+            <Footer />
+          </main>
+        </div>
+      )}
+    </>
   );
 }
 
