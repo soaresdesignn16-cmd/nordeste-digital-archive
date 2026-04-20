@@ -191,7 +191,6 @@ function NovosNordestinos() {
 
   return (
     <>
-      {isUnlocked && <Navbar />}
       <section
         id="vsl-gate"
         className="min-h-[100svh] flex items-center justify-center pt-12 md:pt-16 pb-24 md:pb-20 relative overflow-hidden bg-background vsl-hero"
@@ -202,9 +201,6 @@ function NovosNordestinos() {
           style={{ backgroundImage: `url(${vslBg})` }}
         />
         <div className="vsl-hero__vignette" aria-hidden="true" />
-        <div className="vsl-hero__brand" aria-hidden="true">
-          <span>ONN</span>
-        </div>
 
         <div className="relative z-10 text-center max-w-[700px] mx-auto px-6 py-8 md:py-4">
           <h1 className="leading-[1.05] mb-5 tracking-tight text-center font-light text-white text-2xl">
@@ -400,23 +396,7 @@ function PremiumBackground() {
   );
 }
 
-function Navbar() {
-  return (
-    <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-3xl bg-background/70 border-b border-primary-custom/15">
-      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <LogoIcon className="w-6 h-6" />
-          <span className="text-[11px] font-bold tracking-[0.15em] uppercase">
-            Os Novos Nordestinos
-          </span>
-        </div>
-        <BrutalistButton href="#cta-final" className="!px-4 !py-2 !text-[11px]">
-          Solicitar Avaliação
-        </BrutalistButton>
-      </div>
-    </nav>
-  );
-}
+
 
 
 
