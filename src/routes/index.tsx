@@ -26,6 +26,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import logoOnn from "@/assets/logo-onn.png";
+import vslBg from "@/assets/vsl-bg.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -192,42 +193,39 @@ function NovosNordestinos() {
       {isUnlocked ? <Navbar /> : <VslNavbar />}
       <section
         id="vsl-gate"
-        className="min-h-[100svh] flex items-center justify-center pt-36 md:pt-32 pb-24 md:pb-20 relative overflow-hidden bg-background"
+        className="min-h-[100svh] flex items-center justify-center pt-36 md:pt-32 pb-24 md:pb-20 relative overflow-hidden bg-background vsl-hero"
       >
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-primary-custom/10 rounded-full blur-[200px]">
-          <span className="sr-only">glow</span>
-        </div>
-        <div className="relative z-10 text-center max-w-[700px] mx-auto px-6 py-8 md:py-4">
-          <div className="mb-8 flex justify-center">
-            <LogoIcon className="w-20 h-20 drop-shadow-[0_0_30px_rgba(234,144,46,0.4)]" />
-          </div>
+        <div
+          className="vsl-hero__bg"
+          aria-hidden="true"
+          style={{ backgroundImage: `url(${vslBg})` }}
+        />
+        <div className="vsl-hero__vignette" aria-hidden="true" />
 
-          <h1 className="text-[clamp(28px,5vw,48px)] leading-[1.1] mb-4 tracking-tight text-center font-light">
+        <div className="relative z-10 text-center max-w-[700px] mx-auto px-6 py-8 md:py-4">
+          <h1 className="text-[clamp(28px,6vw,52px)] leading-[1.05] mb-5 tracking-tight text-center font-light text-white">
             Antes de qualquer coisa,
             <br />
-            <span className="headline-gradient text-5xl font-bold text-white bg-white opacity-100">
+            <span className="block font-extrabold text-primary-custom tracking-tight text-[clamp(36px,8vw,68px)] leading-none mt-1">
               ASSISTA ISSO
             </span>
           </h1>
-          <p className="text-sm text-cream-muted max-w-[480px] mx-auto mb-8">
+          <p className="text-sm text-white/70 max-w-[480px] mx-auto mb-10 leading-relaxed">
             O que você vai ver nos próximos minutos pode mudar a forma como você
             se posiciona no digital.
           </p>
 
-          <div className="vsl-frame mb-6">
-            <div className="aspect-video bg-dark-surface flex items-center justify-center relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary-custom/10 to-transparent"></div>
-
+          <div className="vsl-frame-ref mb-8">
+            <div className="aspect-video flex items-center justify-center relative">
               {vslStatus === "idle" && (
                 <button
                   onClick={startVSL}
-                  className="relative z-10 flex flex-col items-center gap-3 bg-none border-none cursor-pointer text-foreground group"
+                  className="relative z-10 flex flex-col items-center gap-6 bg-none border-none cursor-pointer text-foreground group"
                 >
-                  <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary-custom to-primary-light flex items-center justify-center relative shadow-[0_0_50px_rgba(224,140,50,0.55)] transition-transform duration-200 group-hover:scale-110">
-                    <div className="absolute inset-0 rounded-full border-2 border-primary-custom/50 animate-[ping_1.8s_cubic-bezier(0,0,0.2,1)_infinite]"></div>
-                    <Play className="ml-1 fill-current" style={{ color: "#0A0A0A" }} size={36} />
+                  <div className="w-20 h-20 rounded-full bg-primary-custom flex items-center justify-center transition-transform duration-200 group-hover:scale-110">
+                    <Play className="ml-1 fill-current" style={{ color: "#0A0A0A" }} size={28} />
                   </div>
-                  <span className="text-[11px] text-foreground/80 flex items-center gap-1.5 uppercase tracking-[0.25em] font-semibold">
+                  <span className="text-[12px] text-white flex items-center gap-2 uppercase tracking-[0.25em] font-medium">
                     🔊 Assista com som ativado
                   </span>
                 </button>
@@ -236,10 +234,10 @@ function NovosNordestinos() {
               {vslStatus === "watching" && (
                 <div className="relative z-10 flex flex-col items-center gap-3">
                   <div className="w-16 h-16 border-2 border-primary-custom/30 border-t-primary-custom rounded-full animate-spin"></div>
-                  <p className="text-[11px] text-cream-muted uppercase tracking-[0.25em] font-semibold">
+                  <p className="text-[11px] text-white/70 uppercase tracking-[0.25em] font-semibold">
                     Reproduzindo apresentação…
                   </p>
-                  <p className="text-xs font-mono text-primary-custom text-gold-glow">
+                  <p className="text-xs font-mono text-primary-custom">
                     {Math.floor(vslElapsed / 60)
                       .toString()
                       .padStart(2, "0")}
@@ -260,43 +258,37 @@ function NovosNordestinos() {
                 </div>
               )}
             </div>
-            <div className="h-1.5 bg-dark-surface relative overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-primary-custom via-primary-light to-primary-custom bg-[length:200%_100%] transition-all duration-1000 animate-[shimmer_2s_linear_infinite]"
-                style={{
-                  width: `${Math.min((vslElapsed / MIN_WATCH) * 100, 100)}%`,
-                }}
-              />
-            </div>
+            {vslStatus === "watching" && (
+              <div className="h-1 bg-white/5 relative overflow-hidden">
+                <div
+                  className="h-full bg-primary-custom transition-all duration-1000"
+                  style={{
+                    width: `${Math.min((vslElapsed / MIN_WATCH) * 100, 100)}%`,
+                  }}
+                />
+              </div>
+            )}
           </div>
 
-          <AnimatePresence mode="wait">
-            {vslStatus === "idle" && (
-              <motion.div
-                key="hint-play"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="text-[11px] text-muted-custom uppercase tracking-widest"
-              >
-                ▶ Inicie a apresentação para liberar o restante da página
-              </motion.div>
-            )}
+          {/* Prompt "Deslize para baixo" — sempre visível como na referência */}
+          <div className="mt-12 flex flex-col items-center gap-1">
+            <p className="text-[13px] text-primary-custom uppercase tracking-[0.45em] font-medium">
+              Deslize para baixo
+            </p>
+            <motion.div
+              animate={{ y: [0, 6, 0] }}
+              transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+              className="motion-reduce:animate-none"
+            >
+              <ChevronDown
+                size={22}
+                className="text-primary-custom"
+                strokeWidth={2}
+              />
+            </motion.div>
+          </div>
 
-            {vslStatus === "watching" && (
-              <motion.div
-                key="hint-waiting"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="text-[11px] text-muted-custom flex items-center justify-center gap-2"
-              >
-                <Lock size={12} /> O conteúdo será liberado em instantes…
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Prompt "Role para baixo" — aparece quando a VSL termina */}
+          {/* Loader prompt quando libera */}
           <AnimatePresence>
             {scrollPrompt && !isLoading && (
               <motion.div
@@ -305,25 +297,9 @@ function NovosNordestinos() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
-                className="mt-10 flex flex-col items-center gap-3"
+                className="mt-6 text-[11px] text-white/60 uppercase tracking-[0.25em]"
               >
-                <motion.div
-                  animate={{ y: [0, 8, 0] }}
-                  transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-                  className="motion-reduce:animate-none"
-                >
-                  <ChevronDown
-                    size={36}
-                    className="text-primary-custom drop-shadow-[0_0_18px_rgba(234,144,46,0.55)]"
-                    strokeWidth={2.5}
-                  />
-                </motion.div>
-                <h2 className="text-[clamp(24px,4.5vw,40px)] font-black tracking-tight headline-gradient leading-none">
-                  Role para baixo
-                </h2>
-                <p className="text-[11px] text-cream-muted uppercase tracking-[0.25em]">
-                  O conteúdo foi liberado
-                </p>
+                O conteúdo foi liberado
               </motion.div>
             )}
           </AnimatePresence>

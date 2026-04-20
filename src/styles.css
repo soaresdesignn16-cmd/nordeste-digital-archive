@@ -351,6 +351,41 @@
     overflow: hidden;
   }
 
+  /* ── VSL Hero (referência) — fundo com formas geométricas ── */
+  .vsl-hero {
+    isolation: isolate;
+    background-color: #000;
+  }
+  .vsl-hero__bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.95;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .vsl-hero__vignette {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 50%, transparent 0%, rgba(0,0,0,0.55) 100%),
+      linear-gradient(180deg, rgba(0,0,0,0.4) 0%, transparent 30%, transparent 70%, rgba(0,0,0,0.55) 100%);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* Moldura do vídeo da referência: borda brasa fina + cantos arredondados, sem brilho */
+  .vsl-frame-ref {
+    border: 1.5px solid hsl(30, 68%, 48%);
+    border-radius: 14px;
+    overflow: hidden;
+    background-color: rgba(10, 10, 10, 0.55);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+  }
+
   /* ── Tilt 3D — perspective wrapper ── */
   .tilt-wrap {
     perspective: 1000px;
