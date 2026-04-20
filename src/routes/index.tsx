@@ -327,7 +327,7 @@ function NovosNordestinos() {
             <div className="w-full max-w-[420px] flex flex-col gap-2 px-6">
               <div className="w-full h-[2px] bg-foreground/10 rounded-full overflow-hidden relative">
                 <div
-                  className="absolute left-0 top-0 h-full bg-gradient-to-r from-primary-custom to-primary-light transition-[width] duration-75"
+                  className="absolute left-0 top-0 h-full bg-gradient-to-r from-primary-custom to-primary-light transition-[width] duration-200 ease-out"
                   style={{ width: `${loadProgress}%` }}
                 />
               </div>
