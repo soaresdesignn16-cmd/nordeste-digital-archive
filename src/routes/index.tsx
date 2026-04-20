@@ -787,8 +787,7 @@ function FinalCTA() {
   return (
     <section
       id="cta-final"
-      className="cta-stack relative overflow-hidden scroll-mt-20"
-      style={{ minHeight: "260vh" }}
+      className="cta-stack relative overflow-hidden scroll-mt-20 py-24"
     >
       {/* Glow ambiente */}
       <div className="absolute inset-0 pointer-events-none">
@@ -799,28 +798,16 @@ function FinalCTA() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(224,140,50,0.08),transparent_70%)]"></div>
       </div>
 
-      {/* HERO HORIZONTAL — texto gigante deslizando + collage de imagens flutuantes
-          (efeito inspirado em "Moss" — typography wall + floating cards) */}
-      <ScrollingHistoryHero />
-
-      {/* LOGO ONN GIGANTE de fundo (sticky watermark — fica fixa no centro durante o scroll da seção) */}
-      <div className="sticky top-0 h-0 z-0 pointer-events-none">
-        <div className="h-screen flex items-center justify-center">
-          <LogoIcon className="w-[90vw] max-w-[900px] h-auto opacity-[0.10] drop-shadow-[0_0_80px_rgba(224,140,50,0.35)]" />
-        </div>
-      </div>
-
-      {/* Track de pílulas — passam por cima do título e da logo */}
-      <div className="relative z-30 max-w-3xl mx-auto px-6 pt-[10vh] pb-[10vh]">
+      {/* Track de pílulas — espaçamento compacto */}
+      <div className="relative z-30 max-w-3xl mx-auto px-6 pt-8 pb-12 flex flex-col items-center gap-4">
         {phrases.map((phrase, i) => (
           <motion.div
             key={i}
-            initial={{ opacity: 0, y: 80 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.6 }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.5, delay: i * 0.05, ease: [0.22, 1, 0.36, 1] }}
             className="flex justify-center"
-            style={{ minHeight: "60vh", alignItems: "center" }}
           >
             <div className="cta-pill">
               <span className="pill-dot" />
@@ -831,7 +818,7 @@ function FinalCTA() {
       </div>
 
       {/* CTA final centralizado */}
-      <div className="relative z-30 max-w-3xl mx-auto px-6 pb-32 text-center">
+      <div className="relative z-30 max-w-3xl mx-auto px-6 pb-20 text-center">
         <Reveal>
           <div className="flex flex-col items-center gap-6">
             <blockquote className="blockquote-gold max-w-[560px] mx-auto mb-2 text-base md:text-lg font-black uppercase tracking-tight">
