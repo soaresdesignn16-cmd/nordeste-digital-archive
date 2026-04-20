@@ -616,12 +616,22 @@ function AudienceSection() {
           </p>
         </Reveal>
 
-        <div className="flex flex-col gap-5">
+        <div className="stack-zone" style={{ ["--stack-count" as string]: profiles.length }}>
           {profiles.map((p, i) => (
-            <Reveal key={i} delay={i * 0.1}>
-              <TiltCard tilt spotlight intensity={3} className="card-premium p-7 transition-shadow duration-300 hover:border-primary-custom/40 hover:shadow-[0_0_40px_-12px_rgba(224,140,50,0.4)]">
+            <div
+              key={i}
+              className="stack-card"
+              style={{
+                ["--stack-index" as string]: i,
+                zIndex: i + 1,
+              }}
+            >
+              <TiltCard tilt spotlight intensity={3} className="card-premium stack-card-inner p-7 transition-shadow duration-300 hover:border-primary-custom/40 hover:shadow-[0_0_40px_-12px_rgba(224,140,50,0.4)]">
                 <div className="w-11 h-11 rounded-xl bg-primary-custom/15 border border-primary-custom/30 flex items-center justify-center text-primary-custom mb-4 shadow-[0_0_20px_-6px_rgba(224,140,50,0.5)]">
                   {p.icon}
+                </div>
+                <div className="editorial-meta mb-3 opacity-70">
+                  0{i + 1} / 0{profiles.length}
                 </div>
                 <h3 className="text-lg md:text-xl font-black mb-2 leading-tight tracking-tight">
                   {p.title}
@@ -631,7 +641,7 @@ function AudienceSection() {
                   {p.desc}
                 </p>
               </TiltCard>
-            </Reveal>
+            </div>
           ))}
         </div>
       </div>
