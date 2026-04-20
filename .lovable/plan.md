@@ -1,42 +1,76 @@
 
 
-## Plano — Sticky Stack Scroll nos cards de "Esse movimento faz sentido pra você se:"
+## Plano — Pós-VSL: "Role para baixo" → carregamento contínuo na mesma página
 
-### O efeito (baseado no vídeo)
-Conforme o usuário rola, cada card dos 4 perfis **gruda no topo** (sticky) e o próximo card sobe por cima dele, criando uma pilha cinematográfica — a pessoa lê **um bloco por vez**, no ritmo do scroll. Quando chega no último, a pilha toda libera e a página segue.
+### Comportamento atual (o que tira)
+Hoje, quando os 30s acabam:
+1. Aparece "Liberando acesso…"
+2. Tela inteira vira o **brand-loader fullscreen** (overlay preto com "ONN" preenchendo + barra 0-100%)
+3. Quando bate 100%, troca pra tela do conteúdo
 
-Isso dá pausa editorial, força a leitura completa de cada perfil (aumenta comprehension/conversão) e comunica autoridade.
+Isso **parece que abriu outra página** — é o que você quer eliminar.
 
-### Escopo preservado
-- ✅ O título **"Esse movimento faz sentido pra você se:"** + subtítulo ficam **exatamente como estão** (fora do efeito, acima da pilha).
-- ✅ Copy, ícones, ordem e estilo dos 4 cards preservados.
-- ✅ Efeitos atuais (TiltCard/spotlight) continuam funcionando em cada card.
+### Comportamento novo (o que faz)
 
-### Implementação (CSS puro `position: sticky` — sem JS, performático)
+**Etapa 1 — VSL acaba (≥30s):**
+- Em vez de "Liberando acesso…" + loader fullscreen automático, aparece **logo abaixo da VSL**, dentro da mesma seção:
+  - Texto chamativo de tamanho médio: **"Role para baixo"** (estilo dourado, com seta animada ↓ pulsando suavemente)
+  - Subtexto pequeno: "O conteúdo foi liberado"
+- A página **continua a mesma** — sem overlay, sem troca de tela.
 
-No `AudienceSection` (linhas 619-636):
-- Envolver a lista `.flex.flex-col.gap-5` em uma **"stack zone"** com `position: relative` e altura suficiente para acomodar o scroll de todos os cards (`~ 4 × 90vh`).
-- Cada card vira um wrapper com `position: sticky; top: 100px` (abaixo do navbar) e `height: calc(100vh - 140px)` ou altura fixa confortável.
-- Cada card recebe `z-index` crescente (`1, 2, 3, 4`) para que o próximo sempre cubra o anterior.
-- Adicionar um leve `scale-down` + offset progressivo ao card "de baixo" via CSS var por índice, pra parecer que ele "afunda" quando o próximo chega (efeito de deck de cartas).
-- Transição sutil de `transform`/`opacity` ligada ao progresso do scroll via `animation-timeline: view()` (suportado no Chrome/Edge/Safari 26+) com fallback graceful: quem não suporta vê simples sticky sem deck-depth, e ainda funciona perfeito.
+**Etapa 2 — Lead rola para baixo:**
+- Ao detectar o primeiro scroll significativo (ex: 80px abaixo do topo da VSL), **dispara o loader inline**:
+  - Aparece **uma seção de altura ~100vh** logo após a VSL, com o mesmo visual atual do loader (ONN gigante + barra 0→100% + "Carregando experiência")
+  - Mas agora **inline, não fullscreen** — faz parte do fluxo natural do scroll
+  - A barra anima 0→100% em ~1.5s
 
-### Mobile (484px atual)
-- Mantém sticky stack (funciona igual), mas com `top: 72px` e altura menor (`calc(100svh - 100px)`) pra caber no viewport do celular.
-- `gap` zerado dentro da stack zone (os cards se sobrepõem, não se empilham com espaço).
+**Etapa 3 — Loader chega a 100%:**
+- A seção do loader **dá fade-out suave** (ou colapsa altura) e o conteúdo do site (`HeroIntro`, `StepsSection`, etc.) aparece logo abaixo, **na mesma rolagem contínua**.
+- Sensação final: tudo numa página só, sem corte, sem flash de "outra página".
+
+### Mudanças técnicas
+
+**Arquivo: `src/routes/index.tsx`**
+
+1. **Novo state**: `scrollPrompt` (boolean) — vira `true` quando VSL termina
+2. **Modificar `unlockContent()`**: em vez de disparar o loader imediatamente, só seta `scrollPrompt = true` (mostra o "Role para baixo")
+3. **Adicionar `useEffect` de scroll**: quando `scrollPrompt === true` e o usuário rolar > 80px, dispara o `setIsLoading(true)` que começa a barra 0→100%
+4. **Trocar bloco de "Liberando acesso…"** por:
+   ```
+   - Ícone seta ↓ pulsante grande
+   - "Role para baixo" (clamp 28-40px, peso 900, gradient dourado)
+   - "O conteúdo foi liberado" (cream-muted pequeno)
+   ```
+5. **Mudar o loader de fullscreen → inline**:
+   - Trocar `fixed inset-0 z-[100]` por uma `<section>` normal (`min-h-[100svh] flex flex-col items-center justify-center`)
+   - Renderizar **junto** com a VSL (não substituir): VSL fica em cima, loader-section fica logo abaixo
+6. **Quando `isUnlocked === true`**: a loader-section sai com fade/collapse e o conteúdo principal fica visível na sequência
+
+**Estrutura do render quando `vslStatus === "finished"`:**
+```
+<VslNavbar />
+<section id="vsl-gate"> ... VSL com prompt "Role para baixo" embaixo ... </section>
+{scrollPrompt && (
+  <section id="brand-loader-inline"> ... ONN + barra 0-100% ... </section>
+)}
+{isUnlocked && <main>...HeroIntro, Steps, Audience...</main>}
+```
+
+### Mobile (488px atual)
+- "Role para baixo": tamanho responsivo (clamp 24-36px), seta 32px, com bom espaçamento (`mt-8 mb-6`)
+- Loader inline mantém `min-h-[100svh]` pra ocupar a tela e forçar sensação de carregamento real
 
 ### Acessibilidade
-- `@media (prefers-reduced-motion: reduce)` → desativa sticky e cai pro layout atual (flex column normal com gap).
-
-### Arquivos afetados
-- `src/routes/index.tsx` — refatorar o `<div className="flex flex-col gap-5">` do `AudienceSection` para a "sticky stack zone" com wrappers por card.
-- `src/styles.css` — adicionar utilitários `.stack-zone`, `.stack-card`, animation-timeline com `view()` pra deck-depth, e fallback.
+- Seta pulsante respeita `prefers-reduced-motion`
+- Loader inline tem `aria-live="polite"` + `aria-busy`
 
 ### Garantias
-- ✅ Copy 100% preservada
-- ✅ Título e subtítulo intactos (efeito começa só nos cards)
-- ✅ 4 cards lidos um por vez conforme scroll
-- ✅ Compatível com TiltCard/spotlight existentes
+- ✅ Visual atual do loader (ONN + barra) **100% preservado** — só muda de fullscreen pra inline
+- ✅ VSL e fluxo dos 30s **intactos**
+- ✅ Sem troca de página — tudo num scroll contínuo
 - ✅ Mobile e desktop
-- ✅ Reduced-motion desativa
+- ✅ Funciona mesmo se o usuário rolar antes de terminar a VSL (o prompt só aparece após `finished`)
+
+### Arquivos afetados
+- `src/routes/index.tsx` — lógica do gate, novo prompt, loader inline
 
