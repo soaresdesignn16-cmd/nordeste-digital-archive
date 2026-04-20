@@ -68,6 +68,10 @@
   --color-muted-custom: var(--muted-custom);
   --color-cream-muted: var(--cream-muted);
   --color-dark-surface: var(--dark-surface);
+  --color-territorio: var(--territorio);
+  --color-superficie: var(--superficie);
+  --color-borda-warm: var(--borda-warm);
+  --color-cinza-quente: var(--cinza-quente);
 
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
