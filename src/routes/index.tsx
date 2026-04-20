@@ -490,19 +490,25 @@ function HeroIntro() {
             />
 
             {/* Camada 3 — conteúdo */}
-            <div className="absolute inset-x-0 bottom-0 px-6 md:px-12 pb-10 md:pb-14 text-center">
-              <div className="mb-5 flex justify-center">
+            <div className="absolute inset-x-0 bottom-0 px-5 md:px-12 pb-9 md:pb-14 text-center">
+              <div className="mb-4 flex justify-center">
                 <SectionPill>O Movimento</SectionPill>
               </div>
-              <h1 className="font-black leading-[1.1] tracking-tight text-[clamp(26px,4.8vw,52px)]">
-                <span className="block text-cream-base">
-                  Chegou a hora do Brasil conhecer
-                </span>
-                <span className="block text-primary-custom drop-shadow-[0_2px_20px_rgba(224,140,50,0.5)]">
-                  Os Novos Nordestinos
+
+              {/* Linha de introdução — pequena, espaçada, em caps */}
+              <p className="font-semibold uppercase tracking-[0.18em] text-cream-muted text-[clamp(11px,1.6vw,14px)] mb-3">
+                Chegou a hora do Brasil conhecer
+              </p>
+
+              {/* Manchete principal — Poppins Black, encorpada, duas linhas */}
+              <h1 className="font-black leading-[0.92] tracking-[-0.02em] text-[clamp(40px,10vw,96px)]">
+                <span className="block text-cream-base">OS NOVOS</span>
+                <span className="block text-primary-custom drop-shadow-[0_2px_24px_rgba(224,140,50,0.55)]">
+                  NORDESTINOS
                 </span>
               </h1>
-              <p className="text-cream-muted text-[clamp(14px,2.2vw,18px)] leading-relaxed max-w-[680px] mx-auto mt-5">
+
+              <p className="text-cream-muted text-[clamp(13px,2vw,17px)] leading-relaxed max-w-[620px] mx-auto mt-6">
                 Empresários e profissionais que já constroem resultado, mas
                 agora decidiram ser{" "}
                 <strong className="text-foreground">
