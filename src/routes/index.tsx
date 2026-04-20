@@ -26,7 +26,6 @@ import {
   ArrowRight,
 } from "lucide-react";
 import logoOnn from "@/assets/logo-onn.png";
-import heroBgFlame from "@/assets/vsl-bg-skyline.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -49,13 +48,6 @@ export const Route = createFileRoute("/")({
       { property: "og:type", content: "website" },
     ],
     links: [
-      // Preload da imagem de fundo da VSL para que apareça já com a página
-      {
-        rel: "preload",
-        as: "image",
-        href: heroBgFlame,
-        fetchpriority: "high",
-      },
       {
         rel: "preload",
         as: "image",
@@ -183,44 +175,25 @@ function NovosNordestinos() {
     return () => clearInterval(interval);
   }, [isLoading]);
 
-  // Quando desbloqueia, garante que o conteúdo apareça do topo
-  // (sem flash de "outra página" — começa exatamente em "Chegou a hora…")
+  // Quando desbloqueia, rola suavemente para o início do conteúdo principal,
+  // mas mantém a VSL no DOM acima — o lead pode rolar pra cima e revê-la.
   useEffect(() => {
     if (!isUnlocked) return;
-    // espera o React montar o <main> antes de rolar
     requestAnimationFrame(() => {
-      window.scrollTo({ top: 0, behavior: "auto" });
+      const target = document.getElementById("hero-intro");
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
     });
   }, [isUnlocked]);
 
-  if (!isUnlocked) {
-    return (
-      <>
-        <VslNavbar />
-        <section
-          id="vsl-gate"
-          className="min-h-[100svh] flex items-center justify-center pt-36 md:pt-32 pb-24 md:pb-20 relative overflow-hidden bg-background"
-        >
-        {/* Foto de fundo (skyline ao pôr-do-sol) com fade nas bordas */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 z-0 pointer-events-none"
-          style={{
-            backgroundImage: `url(${heroBgFlame})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            opacity: 0.6,
-            maskImage:
-              "radial-gradient(ellipse 80% 75% at 50% 50%, black 35%, transparent 88%)",
-            WebkitMaskImage:
-              "radial-gradient(ellipse 80% 75% at 50% 50%, black 35%, transparent 88%)",
-          }}
-        ></div>
-        {/* Overlay escuro para legibilidade */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 z-0 bg-background/60 pointer-events-none"
-        ></div>
+  return (
+    <>
+      {isUnlocked ? <Navbar /> : <VslNavbar />}
+      <section
+        id="vsl-gate"
+        className="min-h-[100svh] flex items-center justify-center pt-36 md:pt-32 pb-24 md:pb-20 relative overflow-hidden bg-background"
+      >
         <MouseParallax intensity={14} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-primary-custom/10 rounded-full blur-[200px] animate-[pulse-glow_5s_ease-in-out_infinite]">
           <span className="sr-only">glow</span>
         </MouseParallax>
@@ -395,41 +368,41 @@ function NovosNordestinos() {
             </div>
           </section>
         )}
-      </>
-    );
-  }
 
-  return (
-    <div className="relative">
-      <PremiumBackground />
-      <Navbar />
-      <main>
-        <ParallaxLayer offset={50} scaleFrom={0.97}>
-          <HeroIntro />
-        </ParallaxLayer>
-        <SectionDivider />
-        <ParallaxLayer offset={70} scaleFrom={0.95}>
-          <StepsSection />
-        </ParallaxLayer>
-        <SectionDivider />
-        <ParallaxLayer offset={70} scaleFrom={0.95}>
-          <AudienceSection />
-        </ParallaxLayer>
-        <SectionDivider />
-        <ParallaxLayer offset={70} scaleFrom={0.95}>
-          <FounderSection />
-        </ParallaxLayer>
-        <SectionDivider />
-        <ParallaxLayer offset={60} scaleFrom={0.96}>
-          <ImpactSection />
-        </ParallaxLayer>
-        <SectionDivider />
-        <ParallaxLayer offset={60} scaleFrom={0.96}>
-          <FinalCTA />
-        </ParallaxLayer>
-        <Footer />
-      </main>
-    </div>
+      {isUnlocked && (
+        <div className="relative">
+          <PremiumBackground />
+          <main>
+            <ParallaxLayer offset={50} scaleFrom={0.97}>
+              <div id="hero-intro">
+                <HeroIntro />
+              </div>
+            </ParallaxLayer>
+            <SectionDivider />
+            <ParallaxLayer offset={70} scaleFrom={0.95}>
+              <StepsSection />
+            </ParallaxLayer>
+            <SectionDivider />
+            <ParallaxLayer offset={70} scaleFrom={0.95}>
+              <AudienceSection />
+            </ParallaxLayer>
+            <SectionDivider />
+            <ParallaxLayer offset={70} scaleFrom={0.95}>
+              <FounderSection />
+            </ParallaxLayer>
+            <SectionDivider />
+            <ParallaxLayer offset={60} scaleFrom={0.96}>
+              <ImpactSection />
+            </ParallaxLayer>
+            <SectionDivider />
+            <ParallaxLayer offset={60} scaleFrom={0.96}>
+              <FinalCTA />
+            </ParallaxLayer>
+            <Footer />
+          </main>
+        </div>
+      )}
+    </>
   );
 }
 
