@@ -191,10 +191,10 @@ function NovosNordestinos() {
 
   return (
     <>
-      {isUnlocked ? <Navbar /> : <VslNavbar />}
+      {isUnlocked && <Navbar />}
       <section
         id="vsl-gate"
-        className="min-h-[100svh] flex items-center justify-center pt-36 md:pt-32 pb-24 md:pb-20 relative overflow-hidden bg-background vsl-hero"
+        className="min-h-[100svh] flex items-center justify-center pt-12 md:pt-16 pb-24 md:pb-20 relative overflow-hidden bg-background vsl-hero"
       >
         <div
           className="vsl-hero__bg"
@@ -202,6 +202,9 @@ function NovosNordestinos() {
           style={{ backgroundImage: `url(${vslBg})` }}
         />
         <div className="vsl-hero__vignette" aria-hidden="true" />
+        <div className="vsl-hero__brand" aria-hidden="true">
+          <span>ONN</span>
+        </div>
 
         <div className="relative z-10 text-center max-w-[700px] mx-auto px-6 py-8 md:py-4">
           <h1 className="leading-[1.05] mb-5 tracking-tight text-center font-light text-white text-2xl">
@@ -415,18 +418,6 @@ function Navbar() {
   );
 }
 
-function VslNavbar() {
-  return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-xl">
-      <div className="max-w-7xl mx-auto px-5 h-16 flex items-center justify-center gap-3">
-        <LogoIcon className="w-8 h-8 shrink-0" />
-        <span className="text-[26px] font-black tracking-tight uppercase text-white leading-none">
-          ONN
-        </span>
-      </div>
-    </nav>
-  );
-}
 
 
 function LogoIcon({ className }: { className?: string }) {
