@@ -869,13 +869,15 @@ function FinalCTA() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(224,140,50,0.08),transparent_70%)]"></div>
       </div>
 
-      {/* LOGO ONN GIGANTE de fundo (sticky watermark) */}
-      <div className="absolute inset-0 flex justify-center pointer-events-none">
-        <LogoIcon className="logo-watermark" />
+      {/* LOGO ONN GIGANTE de fundo (sticky watermark — fica fixa no centro durante o scroll da seção) */}
+      <div className="sticky top-0 h-0 z-0 pointer-events-none">
+        <div className="h-screen flex items-center justify-center">
+          <LogoIcon className="w-[90vw] max-w-[900px] h-auto opacity-[0.10] drop-shadow-[0_0_80px_rgba(224,140,50,0.35)]" />
+        </div>
       </div>
 
       {/* Título FIXO no topo da seção (sticky) */}
-      <div className="sticky top-[18vh] z-20 px-6 text-center pointer-events-none">
+      <div className="sticky top-[14vh] z-20 px-6 text-center pointer-events-none -mt-[100vh]">
         <h2 className="text-[clamp(28px,6vw,60px)] font-black leading-[1.05] tracking-tight max-w-[900px] mx-auto headline-gradient">
           Durante anos tentaram contar a nossa história.
         </h2>
