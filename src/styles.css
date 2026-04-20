@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;600;900&family=Syne:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@1,400;1,500;1,600&family=Lora:ital,wght@1,400;1,500&display=swap');
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
@@ -8,11 +8,25 @@
 /*
  * Design system — Os Novos Nordestinos
  * Dark luxury, dourado editorial, premium do Nordeste.
- * Paleta: preto profundo + dourado (#C97B2A / #E08C32) + cream off-white (#F2F0EB).
+ * Paleta: preto profundo + dourado (#C97326 / #E08C32) + cream off-white (#F2F0E6).
  */
 
 @theme inline {
-  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  /* === Sistema tipográfico ONN ===
+   * Display (títulos hero / impacto): Bebas Neue — caixa alta, alta presença
+   * Impact (h1-h2 grandes alternativos):  Poppins Black 900
+   * Body / interface:                     Syne — botões, menus, parágrafos curtos
+   * Long-form / leitura:                  Poppins Regular
+   * Editorial italic:                     Cormorant Garamond italic
+   * Quote editorial:                      Lora italic
+   */
+  --font-sans: "Syne", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Bebas Neue", "Syne", ui-sans-serif, sans-serif;
+  --font-impact: "Poppins", "Syne", ui-sans-serif, sans-serif;
+  --font-body: "Syne", ui-sans-serif, system-ui, sans-serif;
+  --font-italic: "Cormorant Garamond", "Lora", Georgia, serif;
+  --font-quote: "Lora", "Cormorant Garamond", Georgia, serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -50,6 +64,10 @@
   --color-muted-custom: var(--muted-custom);
   --color-cream-muted: var(--cream-muted);
   --color-dark-surface: var(--dark-surface);
+  --color-territorio: var(--territorio);
+  --color-superficie: var(--superficie);
+  --color-borda-warm: var(--borda-warm);
+  --color-cinza-quente: var(--cinza-quente);
 
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
@@ -69,55 +87,62 @@
 :root {
   --radius: 0.375rem; /* 6px — mais editorial / sóbrio */
 
-  /* === NOVA PALETA ===
-   * bg:        #0A0A0A  → oklch(0.13 0 0)
-   * gold:      #C97B2A  → oklch(0.6 0.13 55)
-   * gold-warm: #E08C32  → oklch(0.68 0.155 55)
-   * cream:     #F2F0EB  → oklch(0.95 0.008 80)
-   * surface:   #0f0d0a  → oklch(0.16 0.005 60)
+  /* === PALETA OFICIAL ONN ===
+   * VAZIO       #0A0A0A   bg principal
+   * BRASA       #C97326   primary (cor de acento, CTA, links)
+   * BRASA VIVA  #E08C32   accent (variação quente / brilho / hover)
+   * PERGAMINHO  #F2F0E6   foreground (texto cream off-white)
+   * TERRITÓRIO  #1a2218   surface escura com toque verde-musgo
+   * SUPERFÍCIE  #1f2a1d   card / superfície elevada
+   * BORDA       #2a3527   bordas suaves verde-territoriais
+   * CINZA QUENTE #6a6a66  textos auxiliares warm gray
    */
 
-  --background: oklch(0.13 0 0);            /* #0A0A0A */
-  --foreground: oklch(0.95 0.008 80);       /* #F2F0EB cream */
-  --card: oklch(0.16 0.005 60);             /* #0f0d0a surface quente */
-  --card-foreground: oklch(0.95 0.008 80);
-  --popover: oklch(0.16 0.005 60);
-  --popover-foreground: oklch(0.95 0.008 80);
-  --primary: oklch(0.6 0.13 55);            /* dourado #C97B2A */
-  --primary-foreground: oklch(0.13 0 0);    /* texto sobre dourado = preto */
-  --secondary: oklch(0.18 0.005 60);
-  --secondary-foreground: oklch(0.95 0.008 80);
-  --muted: oklch(0.18 0.005 60);
-  --muted-foreground: oklch(0.72 0.02 70);
-  --accent: oklch(0.68 0.155 55);           /* dourado quente #E08C32 */
+  --background: oklch(0.13 0 0);            /* #0A0A0A vazio */
+  --foreground: oklch(0.95 0.005 85);       /* #F2F0E6 pergaminho */
+  --card: oklch(0.21 0.012 145);            /* #1f2a1d superfície verde-musgo */
+  --card-foreground: oklch(0.95 0.005 85);
+  --popover: oklch(0.18 0.012 145);         /* #1a2218 território */
+  --popover-foreground: oklch(0.95 0.005 85);
+  --primary: oklch(0.625 0.135 50);         /* #C97326 brasa */
+  --primary-foreground: oklch(0.13 0 0);    /* texto sobre brasa = preto */
+  --secondary: oklch(0.21 0.012 145);       /* superfície verde */
+  --secondary-foreground: oklch(0.95 0.005 85);
+  --muted: oklch(0.21 0.012 145);
+  --muted-foreground: oklch(0.62 0.01 80);  /* cinza quente */
+  --accent: oklch(0.7 0.155 55);            /* #E08C32 brasa viva */
   --accent-foreground: oklch(0.13 0 0);
   --destructive: oklch(0.62 0.22 27);
   --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.6 0.13 55 / 0.25);      /* dourado 25% — separadores */
-  --input: oklch(0.6 0.13 55 / 0.2);
-  --ring: oklch(0.6 0.13 55);
+  --border: oklch(0.28 0.015 145 / 0.6);    /* borda verde-territorial */
+  --input: oklch(0.28 0.015 145 / 0.5);
+  --ring: oklch(0.625 0.135 50);
 
-  --primary-custom: oklch(0.6 0.13 55);
-  --primary-light: oklch(0.68 0.155 55);
-  --primary-dark: oklch(0.45 0.1 50);
-  --muted-custom: oklch(0.55 0.05 60);
-  --cream-muted: oklch(0.78 0.015 75);
-  --dark-surface: oklch(0.16 0.005 60);
+  --primary-custom: oklch(0.625 0.135 50);  /* BRASA #C97326 */
+  --primary-light: oklch(0.7 0.155 55);     /* BRASA VIVA #E08C32 */
+  --primary-dark: oklch(0.48 0.11 48);
+  --muted-custom: oklch(0.62 0.01 80);      /* CINZA QUENTE */
+  --cream-muted: oklch(0.82 0.012 80);      /* pergaminho rebaixado */
+  --dark-surface: oklch(0.21 0.012 145);    /* SUPERFÍCIE verde-musgo */
+  --territorio: oklch(0.18 0.012 145);      /* TERRITÓRIO #1a2218 */
+  --superficie: oklch(0.21 0.012 145);      /* SUPERFÍCIE #1f2a1d */
+  --borda-warm: oklch(0.28 0.015 145);      /* BORDA #2a3527 */
+  --cinza-quente: oklch(0.62 0.01 80);      /* CINZA QUENTE */
 
-  --chart-1: oklch(0.6 0.13 55);
-  --chart-2: oklch(0.68 0.155 55);
-  --chart-3: oklch(0.45 0.1 50);
-  --chart-4: oklch(0.78 0.015 75);
-  --chart-5: oklch(0.55 0.05 60);
+  --chart-1: oklch(0.625 0.135 50);
+  --chart-2: oklch(0.7 0.155 55);
+  --chart-3: oklch(0.48 0.11 48);
+  --chart-4: oklch(0.82 0.012 80);
+  --chart-5: oklch(0.62 0.01 80);
 
   --sidebar: oklch(0.13 0 0);
-  --sidebar-foreground: oklch(0.95 0.008 80);
-  --sidebar-primary: oklch(0.6 0.13 55);
+  --sidebar-foreground: oklch(0.95 0.005 85);
+  --sidebar-primary: oklch(0.625 0.135 50);
   --sidebar-primary-foreground: oklch(0.13 0 0);
-  --sidebar-accent: oklch(0.18 0.005 60);
-  --sidebar-accent-foreground: oklch(0.95 0.008 80);
-  --sidebar-border: oklch(0.6 0.13 55 / 0.25);
-  --sidebar-ring: oklch(0.6 0.13 55);
+  --sidebar-accent: oklch(0.21 0.012 145);
+  --sidebar-accent-foreground: oklch(0.95 0.005 85);
+  --sidebar-border: oklch(0.28 0.015 145 / 0.6);
+  --sidebar-ring: oklch(0.625 0.135 50);
 }
 
 .dark {
@@ -133,26 +158,52 @@
   html,
   body {
     background-color: #0A0A0A;
-    color: #F2F0EB;
-    font-family: var(--font-sans);
+    color: #F2F0E6;
+    font-family: var(--font-body);
     font-weight: 400;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
   }
 
-  /* Tipografia editorial */
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-sans);
-    font-weight: 900;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-    color: #F2F0EB;
+  /* Tipografia editorial — Bebas Neue para títulos display
+   * (caixa alta, alta presença), Poppins Black como impacto alternativo,
+   * Syne para body / interface. */
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: 0.005em;
+    line-height: 1.0;
+    color: #F2F0E6;
+    text-transform: uppercase;
   }
 
-  p, li, span, a {
-    line-height: 1.5;
+  h4, h5, h6 {
+    font-family: var(--font-impact);
+    font-weight: 900;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+    color: #F2F0E6;
+  }
+
+  p, li, span, a, button, label, input, textarea, select {
+    font-family: var(--font-body);
+    line-height: 1.55;
+  }
+
+  /* Itálico editorial sempre vira Cormorant — momento de elegância */
+  em, i, .italic {
+    font-family: var(--font-italic);
+    font-style: italic;
+    font-weight: 500;
+  }
+
+  /* Quote-block opcional — Lora italic */
+  blockquote {
+    font-family: var(--font-quote);
+    font-style: italic;
+    font-weight: 400;
   }
 
   /* Noise / grain overlay global — profundidade premium */
@@ -173,61 +224,62 @@
     clip-path: inset(0 100% 0 0);
   }
 
-  /* Headline com degrade cream → dourado */
+  /* Headline com degrade pergaminho → brasa */
   .headline-gradient {
-    background: linear-gradient(180deg, #F2F0EB 0%, #C97B2A 100%);
+    background: linear-gradient(180deg, #F2F0E6 0%, #C97326 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
   }
 
-  /* Section alternada — surface quente */
+  /* Section alternada — superfície verde-musgo (TERRITÓRIO) */
   .section-warm {
-    background-color: #0f0d0a;
+    background-color: #1a2218;
   }
 
-  /* Separador dourado entre seções */
+  /* Separador brasa entre seções */
   .section-divider-gold {
-    border-top: 1px solid rgba(201, 123, 42, 0.3);
+    border-top: 1px solid rgba(201, 115, 38, 0.3);
   }
 
-  /* Blockquote editorial */
+  /* Blockquote editorial — Lora italic */
   .blockquote-gold {
-    border-left: 3px solid #C97B2A;
-    background: rgba(201, 123, 42, 0.06);
+    border-left: 3px solid #C97326;
+    background: rgba(201, 115, 38, 0.06);
     padding: 1.5rem 1.75rem;
+    font-family: var(--font-quote);
     font-style: italic;
     font-weight: 400;
-    color: #F2F0EB;
+    color: #F2F0E6;
   }
 
-  /* Check / bullet com glow dourado */
+  /* Check / bullet com glow brasa */
   .icon-gold {
-    color: #C97B2A;
+    color: #C97326;
   }
   .icon-gold-glow {
-    color: #C97B2A;
+    color: #C97326;
     filter: drop-shadow(0 0 12px rgba(224, 140, 50, 0.5));
   }
   .text-gold-glow {
-    color: #C97B2A;
+    color: #C97326;
     text-shadow: 0 0 12px rgba(224, 140, 50, 0.5);
   }
 
-  /* CTA principal — botão dourado premium */
+  /* CTA principal — botão brasa premium (Syne para interface) */
   .btn-gold {
     position: relative;
-    background: linear-gradient(135deg, #C97B2A, #E08C32);
+    background: linear-gradient(135deg, #C97326, #E08C32);
     color: #0A0A0A;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 900;
+    font-family: var(--font-body);
+    font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     padding: 14px 28px;
     font-size: 12px;
     border-radius: 4px;
-    box-shadow: 0 0 32px rgba(201, 123, 42, 0.35);
+    box-shadow: 0 0 32px rgba(201, 115, 38, 0.35);
     transition: all 0.3s ease;
     display: inline-flex;
     align-items: center;
@@ -264,23 +316,23 @@
     letter-spacing: 0.1em;
   }
 
-  /* Ghost number gigante — outline dourado para profundidade editorial */
+  /* Ghost number gigante — Bebas Neue, outline brasa para profundidade editorial */
   .ghost-number {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 900;
+    font-family: var(--font-display);
+    font-weight: 400;
     font-size: clamp(120px, 18vw, 200px);
     line-height: 0.85;
     color: transparent;
-    -webkit-text-stroke: 1.5px rgba(201, 123, 42, 0.18);
+    -webkit-text-stroke: 1.5px rgba(201, 115, 38, 0.18);
     user-select: none;
     pointer-events: none;
-    letter-spacing: -0.04em;
+    letter-spacing: 0.005em;
   }
 
-  /* Card / bloco premium translúcido */
+  /* Card / bloco premium translúcido — borda verde-territorial */
   .card-premium {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(201, 123, 42, 0.2);
+    background: rgba(31, 42, 29, 0.35);
+    border: 1px solid rgba(201, 115, 38, 0.2);
     border-radius: 6px;
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
@@ -288,8 +340,8 @@
 
   /* VSL / vídeo placeholder — moldura dourada */
   .vsl-frame {
-    border: 2px solid rgba(201, 123, 42, 0.5);
-    box-shadow: 0 0 40px rgba(201, 123, 42, 0.15);
+    border: 2px solid rgba(201, 115, 38, 0.5);
+    box-shadow: 0 0 40px rgba(201, 115, 38, 0.15);
     border-radius: 8px;
     overflow: hidden;
   }
@@ -415,7 +467,7 @@
   .stack-card-inner {
     transform-origin: top center;
     transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-    box-shadow: 0 -1px 0 rgba(201, 123, 42, 0.15), 0 20px 60px -20px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 -1px 0 rgba(201, 115, 38, 0.15), 0 20px 60px -20px rgba(0, 0, 0, 0.8);
   }
 
   /* Deck-depth: cards "de baixo" afundam levemente conforme são cobertos */
@@ -515,17 +567,17 @@
   inset: 0;
   background:
     radial-gradient(ellipse 80% 60% at 50% 0%, #1a1000 0%, transparent 70%),
-    radial-gradient(ellipse 60% 40% at 15% 30%, rgba(201, 123, 42, 0.08), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 15% 30%, rgba(201, 115, 38, 0.08), transparent 60%),
     radial-gradient(ellipse 60% 40% at 85% 70%, rgba(224, 140, 50, 0.06), transparent 60%),
-    linear-gradient(180deg, #0A0A0A 0%, #0f0d0a 50%, #0A0A0A 100%);
+    linear-gradient(180deg, #0A0A0A 0%, #1a2218 50%, #0A0A0A 100%);
 }
 
 .bg-grid {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(201, 123, 42, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(201, 123, 42, 0.08) 1px, transparent 1px);
+    linear-gradient(rgba(201, 115, 38, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201, 115, 38, 0.08) 1px, transparent 1px);
   background-size: 40px 40px;
   opacity: 0.3;
 }
@@ -537,8 +589,8 @@
     0deg,
     transparent,
     transparent 3px,
-    rgba(201, 123, 42, 0.015) 3px,
-    rgba(201, 123, 42, 0.015) 4px
+    rgba(201, 115, 38, 0.015) 3px,
+    rgba(201, 115, 38, 0.015) 4px
   );
   opacity: 0.5;
 }
