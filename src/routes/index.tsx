@@ -191,7 +191,6 @@ function NovosNordestinos() {
 
   return (
     <>
-      {isUnlocked && <Navbar />}
       <section
         id="vsl-gate"
         className="min-h-[100svh] flex items-center justify-center pt-12 md:pt-16 pb-24 md:pb-20 relative overflow-hidden bg-background vsl-hero"
@@ -202,9 +201,6 @@ function NovosNordestinos() {
           style={{ backgroundImage: `url(${vslBg})` }}
         />
         <div className="vsl-hero__vignette" aria-hidden="true" />
-        <div className="vsl-hero__brand" aria-hidden="true">
-          <span>ONN</span>
-        </div>
 
         <div className="relative z-10 text-center max-w-[700px] mx-auto px-6 py-8 md:py-4">
           <h1 className="leading-[1.05] mb-5 tracking-tight text-center font-light text-white text-2xl">
