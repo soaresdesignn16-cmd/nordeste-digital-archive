@@ -449,8 +449,6 @@ function StepsSection() {
       fragments: [
         { type: "badge" as const, icon: <Target size={14} />, label: "AUDIT", speed: -0.6, pos: "top-2 right-[26%] md:right-[28%]" },
         { type: "badge" as const, icon: <Shield size={14} />, label: "BRAND", speed: 0.4, pos: "bottom-3 right-[12%] md:right-[18%]" },
-        { type: "meta" as const, label: "01.04 / SISTEMA", speed: -0.35, pos: "top-3 left-3 md:left-6" },
-        { type: "pulse" as const, label: "LIVE", speed: 0.55, pos: "bottom-5 right-[42%]" },
       ],
     },
     {
@@ -459,8 +457,6 @@ function StepsSection() {
       fragments: [
         { type: "badge" as const, icon: <Users size={14} />, label: "ICP", speed: -0.5, pos: "top-4 right-[30%] md:right-[32%]" },
         { type: "badge" as const, icon: <TrendingUp size={14} />, label: "TICKET", speed: 0.5, pos: "bottom-2 right-[10%] md:right-[14%]" },
-        { type: "meta" as const, label: "02.04 / AUDIENCE", speed: -0.4, pos: "top-3 left-3 md:left-6" },
-        { type: "pulse" as const, label: "MATCH", speed: 0.6, pos: "bottom-6 right-[44%]" },
       ],
     },
     {
@@ -469,8 +465,6 @@ function StepsSection() {
       fragments: [
         { type: "badge" as const, icon: <Sparkles size={14} />, label: "ESTÉTICA", speed: -0.7, pos: "top-3 right-[28%] md:right-[30%]" },
         { type: "badge" as const, icon: <Briefcase size={14} />, label: "NARRATIVA", speed: 0.45, pos: "bottom-4 right-[10%] md:right-[16%]" },
-        { type: "meta" as const, label: "03.04 / IDENTIDADE", speed: -0.32, pos: "top-3 left-3 md:left-6" },
-        { type: "pulse" as const, label: "BUILD", speed: 0.5, pos: "bottom-7 right-[46%]" },
       ],
     },
     {
@@ -479,8 +473,6 @@ function StepsSection() {
       fragments: [
         { type: "badge" as const, icon: <Cpu size={14} />, label: "24/7", speed: -0.55, pos: "top-2 right-[32%] md:right-[34%]" },
         { type: "badge" as const, icon: <Zap size={14} />, label: "AUTO", speed: 0.5, pos: "bottom-3 right-[8%] md:right-[12%]" },
-        { type: "meta" as const, label: "04.04 / DEPLOY", speed: -0.38, pos: "top-3 left-3 md:left-6" },
-        { type: "pulse" as const, label: "ONLINE", speed: 0.58, pos: "bottom-5 right-[44%]" },
       ],
     },
   ];
