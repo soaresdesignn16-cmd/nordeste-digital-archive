@@ -506,7 +506,24 @@ function StepsSection() {
                     {String(i + 1).padStart(2, "0")}
                   </span>
                 </Parallax>
-                <div className="relative">
+
+                {/* ── Editorial fragments — mini-cards flutuantes scattered ao redor do ghost number (estilo collage Pinterest/Moss) ── */}
+                {s.fragments.map((f, fi) => (
+                  <Parallax
+                    key={fi}
+                    speed={f.speed}
+                    className={`absolute ${f.pos} pointer-events-none hidden md:block z-[1]`}
+                  >
+                    <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-background/70 border border-primary-custom/30 backdrop-blur-md shadow-[0_4px_20px_-6px_rgba(0,0,0,0.6)]">
+                      <span className="text-primary-light">{f.icon}</span>
+                      <span className="text-[9px] font-black tracking-[0.18em] text-cream-muted uppercase">
+                        {f.label}
+                      </span>
+                    </div>
+                  </Parallax>
+                ))}
+
+                <div className="relative z-[2]">
                   <div className="inline-flex items-center justify-center px-7 py-2 rounded-full bg-gradient-to-r from-primary-custom to-primary-light text-background text-[11px] font-black tracking-[0.3em] uppercase shadow-[0_4px_20px_-4px_rgba(224,140,50,0.6)] mb-5">
                     Passo {i + 1}
                   </div>
