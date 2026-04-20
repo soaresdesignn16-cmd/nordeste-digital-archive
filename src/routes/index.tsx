@@ -829,7 +829,7 @@ function FinalCTA() {
               Agora é a nossa vez de ocupar o lugar certo.
             </blockquote>
             <BrutalistButton href="#" size="xl">
-              Solicitar minha avaliação estratégica →
+              Solicitar minha avaliação estratégica <span aria-hidden="true" className="text-[0.85em] leading-none translate-y-[1px]">▶</span>
             </BrutalistButton>
             <p className="max-w-[420px] text-[11px] text-muted-custom font-semibold tracking-wide leading-relaxed">
               Entre para o movimento exclusivo de empresários que estão
