@@ -91,18 +91,67 @@ function NovosNordestinos() {
   // Quando o prompt está visível, dispara o loader inline ao primeiro scroll > 80px.
   useEffect(() => {
     if (!scrollPrompt || isLoading || isUnlocked) return;
-    const handleScroll = () => {
-      if (window.scrollY > 80) {
-        setIsLoading(true);
+
+    let touchStartY: number | null = null;
+    const trigger = () => setIsLoading(true);
+
+    const onScroll = () => {
+      if (window.scrollY > 40) trigger();
+    };
+    const onWheel = (e: WheelEvent) => {
+      if (e.deltaY > 4) trigger();
+    };
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0]?.clientY ?? null;
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      if (touchStartY == null) return;
+      const dy = touchStartY - (e.touches[0]?.clientY ?? touchStartY);
+      if (dy > 20) trigger();
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (
+        e.key === "ArrowDown" ||
+        e.key === "PageDown" ||
+        e.key === " " ||
+        e.key === "End"
+      ) {
+        trigger();
       }
     };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("wheel", onWheel, { passive: true });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
+    window.addEventListener("keydown", onKey);
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("keydown", onKey);
+    };
   }, [scrollPrompt, isLoading, isUnlocked]);
 
   // Quando isLoading vira true, anima a barra 0→100% e desbloqueia o conteúdo.
   useEffect(() => {
     if (!isLoading) return;
+
+    // Garante que o lead veja o loader inline (rola pra ele suavemente)
+    requestAnimationFrame(() => {
+      const target = document.getElementById("brand-loader-inline");
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        window.scrollTo({
+          top: window.innerHeight,
+          behavior: "smooth",
+        });
+      }
+    });
+
     let progress = 0;
     const interval = setInterval(() => {
       progress += Math.random() * 5;
