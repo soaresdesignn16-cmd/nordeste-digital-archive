@@ -22,7 +22,6 @@ import {
   Briefcase,
   TrendingUp,
   Scale,
-  ArrowRight,
   Volume2,
 } from "lucide-react";
 import logoOnn from "@/assets/logo-onn.png";
@@ -172,17 +171,20 @@ function NovosNordestinos() {
 
     let progress = 0;
     const interval = setInterval(() => {
-      progress += 8;
+      // Easing: começa devagar, acelera no final → ~3.5s total (cinematográfico)
+      const remaining = 100 - progress;
+      const step = Math.max(0.6, remaining * 0.025);
+      progress = Math.min(100, progress + step);
       if (progress >= 100) {
         progress = 100;
         clearInterval(interval);
         setTimeout(() => {
           setIsLoading(false);
           setIsUnlocked(true);
-        }, 200);
+        }, 400);
       }
       setLoadProgress(progress);
-    }, 40);
+    }, 35);
     return () => clearInterval(interval);
   }, [isLoading]);
 
@@ -324,7 +326,7 @@ function NovosNordestinos() {
             <div className="w-full max-w-[420px] flex flex-col gap-2 px-6">
               <div className="w-full h-[2px] bg-foreground/10 rounded-full overflow-hidden relative">
                 <div
-                  className="absolute left-0 top-0 h-full bg-gradient-to-r from-primary-custom to-primary-light transition-[width] duration-75"
+                  className="absolute left-0 top-0 h-full bg-gradient-to-r from-primary-custom to-primary-light transition-[width] duration-200 ease-out"
                   style={{ width: `${loadProgress}%` }}
                 />
               </div>
@@ -364,6 +366,10 @@ function NovosNordestinos() {
               <ImpactSection />
             </ParallaxLayer>
             <SectionDivider />
+            <ParallaxLayer offset={50} scaleFrom={0.97}>
+              <DuranteAnosHeadline />
+            </ParallaxLayer>
+            <SectionDivider />
             <ParallaxLayer offset={60} scaleFrom={0.96}>
               <FinalCTA />
             </ParallaxLayer>
@@ -392,14 +398,36 @@ function PremiumBackground() {
 
 
 
-function LogoIcon({ className }: { className?: string }) {
+function LogoIcon({ className, eager = false }: { className?: string; eager?: boolean }) {
   return (
     <img
       src={logoOnn}
       alt="Os Novos Nordestinos"
       className={className}
       style={{ objectFit: "contain" }}
+      loading={eager ? "eager" : "lazy"}
+      decoding="async"
     />
+  );
+}
+
+/* ── DURANTE ANOS HEADLINE — manchete editorial estática antes do CTA final ── */
+function DuranteAnosHeadline() {
+  return (
+    <section className="relative py-24 md:py-32 px-6">
+      <div className="max-w-[1100px] mx-auto text-center">
+        <Reveal>
+          <h2 className="font-black uppercase tracking-tight leading-[0.98] text-[clamp(34px,7vw,68px)] headline-gradient">
+            Durante anos tentaram contar a nossa história.
+          </h2>
+        </Reveal>
+        <Reveal delay={0.15}>
+          <p className="mt-6 text-sm md:text-base font-semibold tracking-[0.25em] uppercase text-primary-custom/90">
+            Agora é a nossa vez.
+          </p>
+        </Reveal>
+      </div>
+    </section>
   );
 }
 
@@ -575,7 +603,7 @@ function StepsSection() {
         <Reveal delay={0.2}>
           <div className="flex justify-center mt-12">
             <BrutalistButton href="#cta-final" size="lg">
-              Quero ser selecionado <ArrowRight size={18} />
+              Quero ser selecionado <span aria-hidden="true" className="text-[0.85em] leading-none translate-y-[1px]">▶</span>
             </BrutalistButton>
           </div>
         </Reveal>
@@ -669,11 +697,12 @@ function FounderSection() {
           <div className="mb-8 flex justify-center">
             <SectionPill>Quem Está Por Trás</SectionPill>
           </div>
-          <h2 className="text-[clamp(30px,5vw,48px)] font-black leading-[1.05] tracking-tight mb-6 text-left">
-            Muito prazer,
-            <br />
-            <span className="headline-gradient">
-              Os Novos Nordestinos.
+          <h2 className="mb-6 text-left">
+            <span className="block headline-gradient font-black uppercase tracking-tight leading-[0.95] text-[clamp(38px,7vw,72px)] drop-shadow-[0_0_30px_rgba(224,140,50,0.35)]">
+              Os Novos Nordestinos
+            </span>
+            <span className="block mt-3 italic font-normal text-cream-muted/95 text-[clamp(18px,2.6vw,26px)] tracking-tight">
+              Muito prazer,
             </span>
           </h2>
           <p className="text-sm font-semibold text-primary-custom tracking-[0.15em] mb-5 uppercase">
@@ -695,7 +724,7 @@ function FounderSection() {
           </blockquote>
           <div className="mb-10">
             <BrutalistButton href="#cta-final" size="lg">
-              Quero entrar para o movimento <ArrowRight size={18} />
+              Quero entrar para o movimento <span aria-hidden="true" className="text-[0.85em] leading-none translate-y-[1px]">▶</span>
             </BrutalistButton>
           </div>
 
@@ -825,7 +854,7 @@ function FinalCTA() {
               Agora é a nossa vez de ocupar o lugar certo.
             </blockquote>
             <BrutalistButton href="#" size="xl">
-              Solicitar minha avaliação estratégica →
+              Solicitar minha avaliação estratégica <span aria-hidden="true" className="text-[0.85em] leading-none translate-y-[1px]">▶</span>
             </BrutalistButton>
             <p className="max-w-[420px] text-[11px] text-muted-custom font-semibold tracking-wide leading-relaxed">
               Entre para o movimento exclusivo de empresários que estão
@@ -921,16 +950,29 @@ function ParallaxLayer({
   });
 
   const smooth = useSpring(scrollYProgress, {
-    stiffness: 80,
-    damping: 25,
+    stiffness: 60,
+    damping: 28,
     mass: 0.4,
   });
 
-  const y = useTransform(smooth, [0, 0.5, 1], [offset, 0, -offset]);
-  const scale = useTransform(smooth, [0, 0.5, 1], [scaleFrom, 1, scaleFrom]);
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setReduced(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  const effectiveOffset = reduced ? 0 : offset;
+  const effectiveScaleFrom = reduced ? 1 : scaleFrom;
+
+  const y = useTransform(smooth, [0, 0.5, 1], [effectiveOffset, 0, -effectiveOffset]);
+  const scale = useTransform(smooth, [0, 0.5, 1], [effectiveScaleFrom, 1, effectiveScaleFrom]);
   const opacityFade = useTransform(smooth, [0, 0.15, 0.85, 1], [0.55, 1, 1, 0.55]);
   const opacityNone = useTransform(smooth, [0, 1], [1, 1]);
-  const opacity = fade ? opacityFade : opacityNone;
+  const opacity = fade && !reduced ? opacityFade : opacityNone;
 
   return (
     <motion.div
