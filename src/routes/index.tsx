@@ -74,25 +74,32 @@ function NovosNordestinos() {
   const [loadProgress, setLoadProgress] = useState(0);
   const [scrollPrompt, setScrollPrompt] = useState(false);
 
-  // VSL Logic
+  // VSL Logic — driven by REAL Vimeo playback events, not a fake timer.
+  // We unlock when the viewer has watched at least MIN_WATCH seconds of real
+  // playback time, OR the video reaches its natural end.
   const MIN_WATCH = 30;
-  useEffect(() => {
-    let interval: ReturnType<typeof setInterval> | undefined;
-    if (vslStatus === "watching" && vslElapsed < MIN_WATCH) {
-      interval = setInterval(() => {
-        setVslElapsed((prev) => prev + 1);
-      }, 1000);
-    } else if (vslStatus === "watching" && vslElapsed >= MIN_WATCH) {
+  const hasUnlockedRef = useRef(false);
+
+  const handleVslPlay = () => {
+    setVslStatus((prev) => (prev === "idle" ? "watching" : prev));
+  };
+
+  const handleVslTime = (seconds: number) => {
+    setVslElapsed((prev) => (seconds > prev ? seconds : prev));
+    if (!hasUnlockedRef.current && seconds >= MIN_WATCH) {
+      hasUnlockedRef.current = true;
       setVslStatus("finished");
       unlockContent();
     }
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [vslStatus, vslElapsed]);
+  };
 
-  const startVSL = () => setVslStatus("watching");
+  const handleVslEnded = () => {
+    if (!hasUnlockedRef.current) {
+      hasUnlockedRef.current = true;
+      setVslStatus("finished");
+      unlockContent();
+    }
+  };
 
   // Após a VSL, mostramos apenas o prompt "Role para baixo".
   // O loader inline só dispara quando o lead rola a página.
