@@ -194,9 +194,9 @@ function NovosNordestinos() {
         id="vsl-gate"
         className="min-h-[100svh] flex items-center justify-center pt-36 md:pt-32 pb-24 md:pb-20 relative overflow-hidden bg-background"
       >
-        <MouseParallax intensity={14} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-primary-custom/10 rounded-full blur-[200px] animate-[pulse-glow_5s_ease-in-out_infinite]">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-primary-custom/10 rounded-full blur-[200px]">
           <span className="sr-only">glow</span>
-        </MouseParallax>
+        </div>
         <div className="relative z-10 text-center max-w-[700px] mx-auto px-6 py-8 md:py-4">
           <div className="mb-8 flex justify-center">
             <LogoIcon className="w-20 h-20 drop-shadow-[0_0_30px_rgba(234,144,46,0.4)]" />
