@@ -436,6 +436,19 @@
   }
 }
 
+@keyframes fragment-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.96);
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
 @keyframes stack-sink {
   0% {
     transform: scale(1) translateY(0);
