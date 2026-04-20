@@ -373,6 +373,20 @@
     animation: pulse-glow 1.8s ease-in-out infinite;
   }
 
+  /* Stagger fade-in dos fragmentos editoriais — dashboard se montando */
+  .fragment-stagger {
+    opacity: 0;
+    transform: translateY(6px) scale(0.96);
+    animation: fragment-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fragment-stagger {
+      opacity: 1;
+      transform: none;
+      animation: none;
+    }
+  }
+
   /* ── Sticky Stack Scroll — AudienceSection cards pilhados ── */
   .stack-zone {
     position: relative;
