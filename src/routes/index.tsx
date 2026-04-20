@@ -198,9 +198,9 @@ function NovosNordestinos() {
           <span className="sr-only">glow</span>
         </MouseParallax>
         <div className="relative z-10 text-center max-w-[700px] mx-auto px-6 py-8 md:py-4">
-          <MouseParallax intensity={6} className="mb-8 flex justify-center">
+          <div className="mb-8 flex justify-center">
             <LogoIcon className="w-20 h-20 drop-shadow-[0_0_30px_rgba(234,144,46,0.4)]" />
-          </MouseParallax>
+          </div>
 
           <h1 className="text-[clamp(28px,5vw,48px)] leading-[1.1] mb-4 tracking-tight text-center font-light">
             Antes de qualquer coisa,
