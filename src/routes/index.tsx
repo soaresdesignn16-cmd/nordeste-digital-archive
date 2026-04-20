@@ -773,7 +773,7 @@ function SectionDivider() {
 
 function ImpactSection() {
   return (
-    <section className="py-24 relative section-warm">
+    <section className="py-24 relative bg-background">
       <div className="max-w-7xl mx-auto px-6 text-center">
         <Reveal>
           <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-primary-custom mb-12 block text-gold-glow">
