@@ -375,23 +375,26 @@
     z-index: 1;
     pointer-events: none;
   }
-  /* Marca d'água "ONN" gigante na parte inferior — branco translúcido como na referência */
-  .vsl-hero__watermark {
+  /* Marca "ONN" sobre a imagem de fundo — mesma tipografia da navbar antiga */
+  .vsl-hero__brand {
     position: absolute;
     left: 50%;
-    bottom: -2vw;
+    bottom: 4%;
     transform: translateX(-50%);
-    font-family: "Poppins", sans-serif;
-    font-weight: 900;
-    font-size: clamp(140px, 32vw, 360px);
-    line-height: 0.8;
-    letter-spacing: -0.04em;
-    color: rgba(255, 255, 255, 0.06);
-    text-transform: uppercase;
-    white-space: nowrap;
-    z-index: 1;
+    z-index: 2;
     pointer-events: none;
     user-select: none;
+    line-height: 0.85;
+  }
+  .vsl-hero__brand span {
+    display: block;
+    font-family: "Poppins", sans-serif;
+    font-weight: 900;
+    font-size: clamp(120px, 28vw, 320px);
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.92);
+    line-height: 0.85;
   }
 
   /* Moldura do vídeo da referência: borda brasa fina + cantos arredondados, sem brilho */
