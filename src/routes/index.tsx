@@ -30,6 +30,7 @@ import logoOnn from "@/assets/logo-onn.png";
 import vslBg from "@/assets/vsl-bg.png";
 import heroFlame from "@/assets/hero-bg-flame.jpg";
 import vslSkyline from "@/assets/vsl-bg-skyline.jpg";
+import founderHero from "@/assets/founder-hero.jpg";
 import { VSLPlayer } from "@/components/VSLPlayer";
 
 export const Route = createFileRoute("/")({
@@ -458,25 +459,66 @@ function ArrowDivider() {
 /* ── HERO INTRO — bloco de abertura após o VSL ── */
 function HeroIntro() {
   return (
-    <section className="relative pt-24 pb-12 px-6">
-      <div className="max-w-[760px] mx-auto text-center">
+    <section className="relative pt-16 pb-12 px-4 md:px-6">
+      <div className="max-w-[1100px] mx-auto">
         <Reveal>
           <ArrowDivider />
-          <div className="mb-8 flex justify-center">
-            <SectionPill>O Movimento</SectionPill>
-          </div>
-          <h1 className="text-[clamp(34px,6vw,58px)] font-black leading-[1.08] tracking-tight mb-6 headline-gradient">
-            Chegou a hora do Brasil conhecer os Novos Nordestinos.
-          </h1>
-          <p className="text-base text-cream-muted leading-relaxed max-w-[560px] mx-auto mb-8">
-            Empresários e profissionais que já constroem resultado, mas agora
-            decidiram ser{" "}
-            <strong className="text-foreground">
-              vistos, valorizados e respeitados
-            </strong>{" "}
-            no nível que realmente são.
-          </p>
-          <TiltCard tilt={false} spotlight className="card-premium max-w-[420px] mx-auto p-6">
+          <TiltCard
+            tilt
+            spotlight
+            className="relative overflow-hidden rounded-[24px] border border-primary-custom/15 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.85)] min-h-[520px] sm:min-h-[600px] md:min-h-[680px]"
+          >
+            {/* Camada 1 — foto do idealizador (com "OWN" embutido) */}
+            <img
+              src={founderHero}
+              alt="Idealizador d'Os Novos Nordestinos"
+              loading="eager"
+              decoding="async"
+              className="absolute inset-0 w-full h-full object-cover object-[center_30%]"
+            />
+
+            {/* Camada 2 — gradiente vertical (profundidade + legibilidade) */}
+            <div
+              aria-hidden
+              className="absolute inset-0 bg-gradient-to-b from-black/15 via-black/50 to-black"
+            />
+
+            {/* Camada 2b — vinheta radial sutil (foco no rosto) */}
+            <div
+              aria-hidden
+              className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(0,0,0,0.45)_100%)]"
+            />
+
+            {/* Camada 3 — conteúdo */}
+            <div className="absolute inset-x-0 bottom-0 px-6 md:px-12 pb-10 md:pb-14 text-center">
+              <div className="mb-5 flex justify-center">
+                <SectionPill>O Movimento</SectionPill>
+              </div>
+              <h1 className="font-black leading-[1.1] tracking-tight text-[clamp(26px,4.8vw,52px)]">
+                <span className="block text-cream-base">
+                  Chegou a hora do Brasil conhecer
+                </span>
+                <span className="block text-primary-custom drop-shadow-[0_2px_20px_rgba(224,140,50,0.5)]">
+                  Os Novos Nordestinos
+                </span>
+              </h1>
+              <p className="text-cream-muted text-[clamp(14px,2.2vw,18px)] leading-relaxed max-w-[680px] mx-auto mt-5">
+                Empresários e profissionais que já constroem resultado, mas
+                agora decidiram ser{" "}
+                <strong className="text-foreground">
+                  vistos, valorizados e respeitados
+                </strong>{" "}
+                no nível que realmente são.
+              </p>
+            </div>
+          </TiltCard>
+
+          {/* Card "clientes melhores" — fora do visual, abaixo */}
+          <TiltCard
+            tilt={false}
+            spotlight
+            className="card-premium max-w-[420px] mx-auto p-6 mt-10 text-center"
+          >
             <p className="text-sm text-foreground/90 mb-1">
               Você não precisa de mais clientes.
             </p>
