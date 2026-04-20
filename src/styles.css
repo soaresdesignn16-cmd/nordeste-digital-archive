@@ -224,61 +224,62 @@
     clip-path: inset(0 100% 0 0);
   }
 
-  /* Headline com degrade cream → dourado */
+  /* Headline com degrade pergaminho → brasa */
   .headline-gradient {
-    background: linear-gradient(180deg, #F2F0EB 0%, #C97B2A 100%);
+    background: linear-gradient(180deg, #F2F0E6 0%, #C97326 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
   }
 
-  /* Section alternada — surface quente */
+  /* Section alternada — superfície verde-musgo (TERRITÓRIO) */
   .section-warm {
-    background-color: #0f0d0a;
+    background-color: #1a2218;
   }
 
-  /* Separador dourado entre seções */
+  /* Separador brasa entre seções */
   .section-divider-gold {
-    border-top: 1px solid rgba(201, 123, 42, 0.3);
+    border-top: 1px solid rgba(201, 115, 38, 0.3);
   }
 
-  /* Blockquote editorial */
+  /* Blockquote editorial — Lora italic */
   .blockquote-gold {
-    border-left: 3px solid #C97B2A;
-    background: rgba(201, 123, 42, 0.06);
+    border-left: 3px solid #C97326;
+    background: rgba(201, 115, 38, 0.06);
     padding: 1.5rem 1.75rem;
+    font-family: var(--font-quote);
     font-style: italic;
     font-weight: 400;
-    color: #F2F0EB;
+    color: #F2F0E6;
   }
 
-  /* Check / bullet com glow dourado */
+  /* Check / bullet com glow brasa */
   .icon-gold {
-    color: #C97B2A;
+    color: #C97326;
   }
   .icon-gold-glow {
-    color: #C97B2A;
+    color: #C97326;
     filter: drop-shadow(0 0 12px rgba(224, 140, 50, 0.5));
   }
   .text-gold-glow {
-    color: #C97B2A;
+    color: #C97326;
     text-shadow: 0 0 12px rgba(224, 140, 50, 0.5);
   }
 
-  /* CTA principal — botão dourado premium */
+  /* CTA principal — botão brasa premium (Syne para interface) */
   .btn-gold {
     position: relative;
-    background: linear-gradient(135deg, #C97B2A, #E08C32);
+    background: linear-gradient(135deg, #C97326, #E08C32);
     color: #0A0A0A;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 900;
+    font-family: var(--font-body);
+    font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     padding: 14px 28px;
     font-size: 12px;
     border-radius: 4px;
-    box-shadow: 0 0 32px rgba(201, 123, 42, 0.35);
+    box-shadow: 0 0 32px rgba(201, 115, 38, 0.35);
     transition: all 0.3s ease;
     display: inline-flex;
     align-items: center;
@@ -315,23 +316,23 @@
     letter-spacing: 0.1em;
   }
 
-  /* Ghost number gigante — outline dourado para profundidade editorial */
+  /* Ghost number gigante — Bebas Neue, outline brasa para profundidade editorial */
   .ghost-number {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 900;
+    font-family: var(--font-display);
+    font-weight: 400;
     font-size: clamp(120px, 18vw, 200px);
     line-height: 0.85;
     color: transparent;
-    -webkit-text-stroke: 1.5px rgba(201, 123, 42, 0.18);
+    -webkit-text-stroke: 1.5px rgba(201, 115, 38, 0.18);
     user-select: none;
     pointer-events: none;
-    letter-spacing: -0.04em;
+    letter-spacing: 0.005em;
   }
 
-  /* Card / bloco premium translúcido */
+  /* Card / bloco premium translúcido — borda verde-territorial */
   .card-premium {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(201, 123, 42, 0.2);
+    background: rgba(31, 42, 29, 0.35);
+    border: 1px solid rgba(201, 115, 38, 0.2);
     border-radius: 6px;
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
