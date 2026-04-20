@@ -353,6 +353,25 @@
     .tilt-card { transform: none !important; }
     .spotlight-card::after { display: none; }
   }
+
+  /* ── Editorial fragments — colagem viva (StepsSection) ── */
+  .editorial-meta {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    color: rgba(242, 240, 235, 0.55);
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .editorial-glyph {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+    background: #E08C32;
+    box-shadow: 0 0 8px rgba(224, 140, 50, 0.9), 0 0 16px rgba(224, 140, 50, 0.5);
+    animation: pulse-glow 1.8s ease-in-out infinite;
+  }
 }
 
 /* ── PREMIUM BACKGROUND — radial dourado sutil no hero ── */
