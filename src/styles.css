@@ -375,6 +375,24 @@
     z-index: 1;
     pointer-events: none;
   }
+  /* Marca d'água "ONN" gigante na parte inferior — branco translúcido como na referência */
+  .vsl-hero__watermark {
+    position: absolute;
+    left: 50%;
+    bottom: -2vw;
+    transform: translateX(-50%);
+    font-family: "Poppins", sans-serif;
+    font-weight: 900;
+    font-size: clamp(140px, 32vw, 360px);
+    line-height: 0.8;
+    letter-spacing: -0.04em;
+    color: rgba(255, 255, 255, 0.06);
+    text-transform: uppercase;
+    white-space: nowrap;
+    z-index: 1;
+    pointer-events: none;
+    user-select: none;
+  }
 
   /* Moldura do vídeo da referência: borda brasa fina + cantos arredondados, sem brilho */
   .vsl-frame-ref {
