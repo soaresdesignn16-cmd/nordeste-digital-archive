@@ -26,7 +26,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import logoOnn from "@/assets/logo-onn.png";
-import heroBgFlame from "@/assets/hero-bg-flame.jpg";
+import heroBgFlame from "@/assets/vsl-bg-skyline.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -142,9 +142,9 @@ function NovosNordestinos() {
         <VslNavbar />
         <section
           id="vsl-gate"
-          className="min-h-screen flex items-center justify-center pt-28 pb-16 relative overflow-hidden bg-background"
+          className="min-h-[100svh] flex items-center justify-center pt-36 md:pt-32 pb-24 md:pb-20 relative overflow-hidden bg-background"
         >
-        {/* Foto de fundo (chama nordestina) com fade nas bordas */}
+        {/* Foto de fundo (skyline ao pôr-do-sol) com fade nas bordas */}
         <div
           aria-hidden="true"
           className="absolute inset-0 z-0 pointer-events-none"
@@ -152,22 +152,22 @@ function NovosNordestinos() {
             backgroundImage: `url(${heroBgFlame})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
-            opacity: 0.55,
+            opacity: 0.6,
             maskImage:
-              "radial-gradient(ellipse 75% 70% at 50% 45%, black 35%, transparent 85%)",
+              "radial-gradient(ellipse 80% 75% at 50% 50%, black 35%, transparent 88%)",
             WebkitMaskImage:
-              "radial-gradient(ellipse 75% 70% at 50% 45%, black 35%, transparent 85%)",
+              "radial-gradient(ellipse 80% 75% at 50% 50%, black 35%, transparent 88%)",
           }}
         ></div>
         {/* Overlay escuro para legibilidade */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 z-0 bg-background/55 pointer-events-none"
+          className="absolute inset-0 z-0 bg-background/60 pointer-events-none"
         ></div>
         <MouseParallax intensity={14} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-primary-custom/10 rounded-full blur-[200px] animate-[pulse-glow_5s_ease-in-out_infinite]">
           <span className="sr-only">glow</span>
         </MouseParallax>
-        <div className="relative z-10 text-center max-w-[700px] mx-auto px-6">
+        <div className="relative z-10 text-center max-w-[700px] mx-auto px-6 py-8 md:py-4">
           <MouseParallax intensity={6} className="mb-8 flex justify-center">
             <LogoIcon className="w-20 h-20 drop-shadow-[0_0_30px_rgba(234,144,46,0.4)]" />
           </MouseParallax>
