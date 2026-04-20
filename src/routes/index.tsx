@@ -951,16 +951,29 @@ function ParallaxLayer({
   });
 
   const smooth = useSpring(scrollYProgress, {
-    stiffness: 80,
-    damping: 25,
+    stiffness: 60,
+    damping: 28,
     mass: 0.4,
   });
 
-  const y = useTransform(smooth, [0, 0.5, 1], [offset, 0, -offset]);
-  const scale = useTransform(smooth, [0, 0.5, 1], [scaleFrom, 1, scaleFrom]);
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setReduced(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  const effectiveOffset = reduced ? 0 : offset;
+  const effectiveScaleFrom = reduced ? 1 : scaleFrom;
+
+  const y = useTransform(smooth, [0, 0.5, 1], [effectiveOffset, 0, -effectiveOffset]);
+  const scale = useTransform(smooth, [0, 0.5, 1], [effectiveScaleFrom, 1, effectiveScaleFrom]);
   const opacityFade = useTransform(smooth, [0, 0.15, 0.85, 1], [0.55, 1, 1, 0.55]);
   const opacityNone = useTransform(smooth, [0, 1], [1, 1]);
-  const opacity = fade ? opacityFade : opacityNone;
+  const opacity = fade && !reduced ? opacityFade : opacityNone;
 
   return (
     <motion.div
