@@ -399,14 +399,36 @@ function PremiumBackground() {
 
 
 
-function LogoIcon({ className }: { className?: string }) {
+function LogoIcon({ className, eager = false }: { className?: string; eager?: boolean }) {
   return (
     <img
       src={logoOnn}
       alt="Os Novos Nordestinos"
       className={className}
       style={{ objectFit: "contain" }}
+      loading={eager ? "eager" : "lazy"}
+      decoding="async"
     />
+  );
+}
+
+/* ── DURANTE ANOS HEADLINE — manchete editorial estática antes do CTA final ── */
+function DuranteAnosHeadline() {
+  return (
+    <section className="relative py-24 md:py-32 px-6">
+      <div className="max-w-[1100px] mx-auto text-center">
+        <Reveal>
+          <h2 className="font-black uppercase tracking-tight leading-[0.98] text-[clamp(34px,7vw,68px)] headline-gradient">
+            Durante anos tentaram contar a nossa história.
+          </h2>
+        </Reveal>
+        <Reveal delay={0.15}>
+          <p className="mt-6 text-sm md:text-base font-semibold tracking-[0.25em] uppercase text-primary-custom/90">
+            Agora é a nossa vez.
+          </p>
+        </Reveal>
+      </div>
+    </section>
   );
 }
 
