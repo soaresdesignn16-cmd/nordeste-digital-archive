@@ -27,7 +27,7 @@ import {
   Volume2,
 } from "lucide-react";
 import logoOnn from "@/assets/logo-onn.png";
-import vslBg from "@/assets/vsl-bg.jpg";
+import vslBg from "@/assets/vsl-bg.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -202,7 +202,6 @@ function NovosNordestinos() {
           style={{ backgroundImage: `url(${vslBg})` }}
         />
         <div className="vsl-hero__vignette" aria-hidden="true" />
-        <div className="vsl-hero__watermark" aria-hidden="true">ONN</div>
 
         <div className="relative z-10 text-center max-w-[700px] mx-auto px-6 py-8 md:py-4">
           <h1 className="leading-[1.05] mb-5 tracking-tight text-center font-light text-white text-2xl">
