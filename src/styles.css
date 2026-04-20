@@ -277,8 +277,9 @@
     position: relative;
     background: linear-gradient(180deg, #F39238 0%, #D97324 100%);
     color: #0A0A0A;
-    font-family: var(--font-body);
+    font-family: var(--font-display);
     font-weight: 900;
+    font-style: normal;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     padding: 16px 30px;
