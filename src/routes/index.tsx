@@ -23,6 +23,8 @@ import {
   TrendingUp,
   Scale,
   Volume2,
+  DollarSign,
+  Clock,
 } from "lucide-react";
 import logoOnn from "@/assets/logo-onn.png";
 import vslBg from "@/assets/vsl-bg.png";
