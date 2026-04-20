@@ -452,8 +452,8 @@ function VslNavbar() {
             </span>
           </div>
         </div>
-        <BrutalistButton href="#vsl-gate" className="!flex-col !text-[13px] !leading-tight !gap-0 px-[20px] py-px">
-          <span className="text-sm font-bold">Solicitar</span>
+        <BrutalistButton href="#vsl-gate" className="!flex-col !text-[13px] !leading-tight !gap-0 py-px px-[23px]">
+          <span className="text-sm font-bold mx-0">Solicitar</span>
           <span className="font-bold">Avaliação</span>
         </BrutalistButton>
       </div>
