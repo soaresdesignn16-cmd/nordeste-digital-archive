@@ -373,12 +373,27 @@
     animation: pulse-glow 1.8s ease-in-out infinite;
   }
 
-  /* Stagger fade-in dos fragmentos editoriais — dashboard se montando */
+  /* ── Editorial collage — fragmentos entram/saem ciclicamente como moodboard vivo ──
+   * Inspirado no vídeo do Pinterest: cartas de colagem que aparecem,
+   * permanecem e somem com translate + scale + rotate sutil.
+   * Cada fragmento pulsa em loop infinito — dashboard se montando e remontando. */
   .fragment-stagger {
     opacity: 0;
-    transform: translateY(6px) scale(0.96);
-    animation: fragment-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+    transform: translateY(8px) scale(0.9) rotate(var(--frag-rot, 0deg));
+    animation:
+      fragment-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both,
+      fragment-breathe 6.5s ease-in-out infinite;
+    animation-delay: var(--frag-delay, 0ms), calc(var(--frag-delay, 0ms) + 0.7s);
+    will-change: transform, opacity, filter;
   }
+
+  /* Variantes de "direção de entrada" — cada fragmento vem de um lado,
+   * como as cartas do moodboard do vídeo */
+  .fragment-enter-tl { --frag-from-x: -14px; --frag-from-y: -10px; --frag-rot: -4deg; }
+  .fragment-enter-tr { --frag-from-x:  14px; --frag-from-y: -10px; --frag-rot:  3deg; }
+  .fragment-enter-bl { --frag-from-x: -16px; --frag-from-y:  12px; --frag-rot: -2deg; }
+  .fragment-enter-br { --frag-from-x:  16px; --frag-from-y:  12px; --frag-rot:  5deg; }
+
   @media (prefers-reduced-motion: reduce) {
     .fragment-stagger {
       opacity: 1;
