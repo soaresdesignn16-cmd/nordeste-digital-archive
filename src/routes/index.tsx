@@ -706,21 +706,21 @@ function AudienceSection() {
                 zIndex: i + 1,
               }}
             >
-              <TiltCard tilt spotlight intensity={3} className="card-premium stack-card-inner p-7 transition-shadow duration-300 hover:border-primary-custom/40 hover:shadow-[0_0_40px_-12px_rgba(224,140,50,0.4)]">
-                <div className="w-11 h-11 rounded-xl bg-primary-custom/15 border border-primary-custom/30 flex items-center justify-center text-primary-custom mb-4 shadow-[0_0_20px_-6px_rgba(224,140,50,0.5)]">
+              <div className="stack-card-inner p-8 md:p-10">
+                <div className="w-11 h-11 rounded-xl bg-primary-custom/15 border border-primary-custom/30 flex items-center justify-center text-primary-custom mb-5 shadow-[0_0_20px_-6px_rgba(224,140,50,0.5)]">
                   {p.icon}
                 </div>
                 <div className="editorial-meta mb-3 opacity-70">
                   0{i + 1} / 0{profiles.length}
                 </div>
-                <h3 className="text-lg md:text-xl font-black mb-2 leading-tight tracking-tight">
+                <h3 className="text-xl md:text-2xl font-black mb-3 leading-tight tracking-tight">
                   {p.title}
                 </h3>
-                <div className="w-10 h-px bg-primary-custom/40 mb-3" />
-                <p className="text-sm text-cream-muted leading-relaxed">
+                <div className="w-10 h-px bg-primary-custom/40 mb-4" />
+                <p className="text-sm md:text-base text-cream-muted leading-relaxed">
                   {p.desc}
                 </p>
-              </TiltCard>
+              </div>
             </div>
           ))}
         </div>
@@ -845,45 +845,71 @@ function ImpactSection() {
 }
 
 function FinalCTA() {
+  const phrases = [
+    "Cobrar mais",
+    "Atender menos",
+    "Ter mais tempo",
+    "Ser reconhecido",
+    "Posicionamento real",
+    "Autoridade construída",
+  ];
+
   return (
     <section
       id="cta-final"
-      className="py-32 relative overflow-hidden scroll-mt-20"
+      className="cta-stack relative overflow-hidden scroll-mt-20"
+      style={{ minHeight: "260vh" }}
     >
-      <Parallax speed={-0.4} className="absolute inset-0 pointer-events-none">
+      {/* Glow ambiente */}
+      <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-custom/15 rounded-full blur-[180px] animate-[pulse-glow_6s_ease-in-out_infinite]"></div>
-      </Parallax>
+      </div>
       <div className="bg-scanlines"></div>
-      <Parallax speed={-0.2} className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(224,140,50,0.08),transparent_70%)]"></div>
-      </Parallax>
-      <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
+      </div>
+
+      {/* LOGO ONN GIGANTE de fundo (sticky watermark — fica fixa no centro durante o scroll da seção) */}
+      <div className="sticky top-0 h-0 z-0 pointer-events-none">
+        <div className="h-screen flex items-center justify-center">
+          <LogoIcon className="w-[90vw] max-w-[900px] h-auto opacity-[0.10] drop-shadow-[0_0_80px_rgba(224,140,50,0.35)]" />
+        </div>
+      </div>
+
+      {/* Título FIXO no topo da seção (sticky) */}
+      <div className="sticky top-[14vh] z-20 px-6 text-center pointer-events-none -mt-[100vh]">
+        <h2 className="text-[clamp(28px,6vw,60px)] font-black leading-[1.05] tracking-tight max-w-[900px] mx-auto headline-gradient">
+          Durante anos tentaram contar a nossa história.
+        </h2>
+      </div>
+
+      {/* Track de pílulas — passam por cima do título e da logo */}
+      <div className="relative z-30 max-w-3xl mx-auto px-6 pt-[40vh] pb-[10vh]">
+        {phrases.map((phrase, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 80 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.6 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="flex justify-center"
+            style={{ minHeight: "60vh", alignItems: "center" }}
+          >
+            <div className="cta-pill">
+              <span className="pill-dot" />
+              {phrase}
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* CTA final centralizado */}
+      <div className="relative z-30 max-w-3xl mx-auto px-6 pb-32 text-center">
         <Reveal>
-          <div className="w-20 h-20 rounded-full bg-background border border-primary-custom/40 flex items-center justify-center mx-auto mb-10 shadow-[0_0_50px_rgba(224,140,50,0.5)]">
-            <LogoIcon className="w-12 h-12 drop-shadow-[0_0_20px_rgba(224,140,50,0.7)]" />
-          </div>
-          <h2 className="text-[clamp(28px,6vw,60px)] font-black leading-[1] mb-6 tracking-tight">
-            Durante anos, tentaram contar a nossa história.
-          </h2>
-          <blockquote className="blockquote-gold max-w-[560px] mx-auto mb-12 text-lg md:text-xl font-black uppercase tracking-tight">
-            Agora é a nossa vez de ocupar o lugar certo.
-          </blockquote>
-
-          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-16">
-            {["Atender menos", "Cobrar mais", "Ter mais tempo", "Ser reconhecido"].map(
-              (text, i) => (
-                <div
-                  key={i}
-                  className="flex items-center justify-center gap-2 text-sm font-bold opacity-90 uppercase tracking-[0.2em] text-[11px]"
-                >
-                  <Check size={14} className="text-primary-custom icon-gold-glow" strokeWidth={3} />
-                  {text}
-                </div>
-              ),
-            )}
-          </div>
-
           <div className="flex flex-col items-center gap-6">
+            <blockquote className="blockquote-gold max-w-[560px] mx-auto mb-2 text-base md:text-lg font-black uppercase tracking-tight">
+              Agora é a nossa vez de ocupar o lugar certo.
+            </blockquote>
             <BrutalistButton href="#" size="xl">
               Solicitar minha avaliação estratégica →
             </BrutalistButton>
