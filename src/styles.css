@@ -380,11 +380,9 @@
   .fragment-stagger {
     opacity: 0;
     transform: translateY(8px) scale(0.9) rotate(var(--frag-rot, 0deg));
-    animation:
-      fragment-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both,
-      fragment-breathe 6.5s ease-in-out infinite;
-    animation-delay: var(--frag-delay, 0ms), calc(var(--frag-delay, 0ms) + 0.7s);
-    will-change: transform, opacity, filter;
+    animation: fragment-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--frag-delay, 0ms);
+    will-change: transform, opacity;
   }
 
   /* Variantes de "direção de entrada" — cada fragmento vem de um lado,
