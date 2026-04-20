@@ -168,6 +168,16 @@ function NovosNordestinos() {
     return () => clearInterval(interval);
   }, [isLoading]);
 
+  // Quando desbloqueia, garante que o conteúdo apareça do topo
+  // (sem flash de "outra página" — começa exatamente em "Chegou a hora…")
+  useEffect(() => {
+    if (!isUnlocked) return;
+    // espera o React montar o <main> antes de rolar
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: "auto" });
+    });
+  }, [isUnlocked]);
+
   if (!isUnlocked) {
     return (
       <>
