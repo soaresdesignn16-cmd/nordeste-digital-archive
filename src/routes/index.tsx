@@ -205,7 +205,7 @@ function NovosNordestinos() {
         <div className="vsl-hero__watermark" aria-hidden="true">ONN</div>
 
         <div className="relative z-10 text-center max-w-[700px] mx-auto px-6 py-8 md:py-4">
-          <h1 className="text-[clamp(28px,6vw,52px)] leading-[1.05] mb-5 tracking-tight text-center font-light text-white">
+          <h1 className="leading-[1.05] mb-5 tracking-tight text-center font-light text-white text-2xl">
             Antes de qualquer coisa,
             <br />
             <span className="block font-extrabold text-primary-custom tracking-tight text-[clamp(36px,8vw,68px)] leading-none mt-1">
