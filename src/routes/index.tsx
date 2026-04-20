@@ -27,7 +27,7 @@ import {
   Volume2,
 } from "lucide-react";
 import logoOnn from "@/assets/logo-onn.png";
-import vslBg from "@/assets/vsl-bg.jpg";
+import vslBg from "@/assets/vsl-bg.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
