@@ -418,18 +418,6 @@ function Navbar() {
   );
 }
 
-function VslNavbar() {
-  return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-xl">
-      <div className="max-w-7xl mx-auto px-5 h-16 flex items-center justify-center gap-3">
-        <LogoIcon className="w-8 h-8 shrink-0" />
-        <span className="text-[26px] font-black tracking-tight uppercase text-white leading-none">
-          ONN
-        </span>
-      </div>
-    </nav>
-  );
-}
 
 
 function LogoIcon({ className }: { className?: string }) {
