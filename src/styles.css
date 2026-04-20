@@ -464,15 +464,26 @@
   }
   .stack-card {
     position: sticky;
-    top: 100px;
-    display: block;
-    padding-bottom: 2rem;
-    min-height: 85vh;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100svh;
+    padding: 1rem 0;
   }
   .stack-card-inner {
+    width: 100%;
+    /* 100% opaco — cobre completamente o card anterior */
+    background-color: hsl(24 18% 8%);
+    border: 1px solid rgba(201, 115, 38, 0.28);
+    border-radius: 1.25rem;
     transform-origin: top center;
     transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-    box-shadow: 0 -1px 0 rgba(201, 115, 38, 0.15), 0 20px 60px -20px rgba(0, 0, 0, 0.8);
+    /* Shadow forte por cima — sensação de "lâmina" subindo sobre a outra */
+    box-shadow:
+      0 -20px 40px -10px rgba(0, 0, 0, 0.9),
+      0 30px 60px -20px rgba(0, 0, 0, 0.85),
+      0 0 0 1px rgba(201, 115, 38, 0.08);
   }
 
   /* Deck-depth: cards "de baixo" afundam levemente conforme são cobertos */
@@ -486,9 +497,8 @@
 
   @media (max-width: 768px) {
     .stack-card {
-      top: 72px;
-      padding-bottom: 1.25rem;
-      min-height: 80svh;
+      min-height: 90svh;
+      padding: 0.5rem 0;
     }
   }
 
@@ -496,13 +506,63 @@
     .stack-card {
       position: relative;
       top: auto;
-      padding-bottom: 1.25rem;
       min-height: 0;
+      padding: 0.75rem 0;
     }
     .stack-card-inner {
       animation: none !important;
       transform: none !important;
     }
+  }
+
+  /* ── Final CTA — logo watermark + cilindros (pílulas) ── */
+  .cta-stack {
+    position: relative;
+  }
+  .logo-watermark {
+    position: sticky;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 90vw;
+    max-width: 900px;
+    height: auto;
+    margin: 0 auto;
+    opacity: 0.10;
+    pointer-events: none;
+    filter: drop-shadow(0 0 80px rgba(224, 140, 50, 0.35));
+  }
+  @media (max-width: 768px) {
+    .logo-watermark {
+      width: 110vw;
+      max-width: none;
+      opacity: 0.12;
+    }
+  }
+  .cta-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.85rem 1.6rem;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, rgba(224, 140, 50, 0.95), rgba(201, 115, 38, 0.95));
+    border: 1px solid rgba(255, 220, 170, 0.35);
+    color: #fff;
+    font-weight: 800;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    box-shadow:
+      0 20px 50px -15px rgba(224, 140, 50, 0.55),
+      0 0 0 1px rgba(0, 0, 0, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(6px);
+  }
+  .cta-pill .pill-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: #fff;
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.85);
   }
 }
 
