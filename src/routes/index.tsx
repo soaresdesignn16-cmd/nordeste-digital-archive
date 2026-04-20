@@ -138,6 +138,20 @@ function NovosNordestinos() {
   // Quando isLoading vira true, anima a barra 0→100% e desbloqueia o conteúdo.
   useEffect(() => {
     if (!isLoading) return;
+
+    // Garante que o lead veja o loader inline (rola pra ele suavemente)
+    requestAnimationFrame(() => {
+      const target = document.getElementById("brand-loader-inline");
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        window.scrollTo({
+          top: window.innerHeight,
+          behavior: "smooth",
+        });
+      }
+    });
+
     let progress = 0;
     const interval = setInterval(() => {
       progress += Math.random() * 5;
