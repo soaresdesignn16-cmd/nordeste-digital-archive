@@ -787,8 +787,7 @@ function FinalCTA() {
   return (
     <section
       id="cta-final"
-      className="cta-stack relative overflow-hidden scroll-mt-20"
-      style={{ minHeight: "260vh" }}
+      className="cta-stack relative overflow-hidden scroll-mt-20 py-24"
     >
       {/* Glow ambiente */}
       <div className="absolute inset-0 pointer-events-none">
@@ -799,28 +798,16 @@ function FinalCTA() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(224,140,50,0.08),transparent_70%)]"></div>
       </div>
 
-      {/* HERO HORIZONTAL — texto gigante deslizando + collage de imagens flutuantes
-          (efeito inspirado em "Moss" — typography wall + floating cards) */}
-      <ScrollingHistoryHero />
-
-      {/* LOGO ONN GIGANTE de fundo (sticky watermark — fica fixa no centro durante o scroll da seção) */}
-      <div className="sticky top-0 h-0 z-0 pointer-events-none">
-        <div className="h-screen flex items-center justify-center">
-          <LogoIcon className="w-[90vw] max-w-[900px] h-auto opacity-[0.10] drop-shadow-[0_0_80px_rgba(224,140,50,0.35)]" />
-        </div>
-      </div>
-
-      {/* Track de pílulas — passam por cima do título e da logo */}
-      <div className="relative z-30 max-w-3xl mx-auto px-6 pt-[10vh] pb-[10vh]">
+      {/* Track de pílulas — espaçamento compacto */}
+      <div className="relative z-30 max-w-3xl mx-auto px-6 pt-8 pb-12 flex flex-col items-center gap-4">
         {phrases.map((phrase, i) => (
           <motion.div
             key={i}
-            initial={{ opacity: 0, y: 80 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.6 }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.5, delay: i * 0.05, ease: [0.22, 1, 0.36, 1] }}
             className="flex justify-center"
-            style={{ minHeight: "60vh", alignItems: "center" }}
           >
             <div className="cta-pill">
               <span className="pill-dot" />
@@ -831,7 +818,7 @@ function FinalCTA() {
       </div>
 
       {/* CTA final centralizado */}
-      <div className="relative z-30 max-w-3xl mx-auto px-6 pb-32 text-center">
+      <div className="relative z-30 max-w-3xl mx-auto px-6 pb-20 text-center">
         <Reveal>
           <div className="flex flex-col items-center gap-6">
             <blockquote className="blockquote-gold max-w-[560px] mx-auto mb-2 text-base md:text-lg font-black uppercase tracking-tight">
@@ -852,93 +839,6 @@ function FinalCTA() {
   );
 }
 
-/* ── ScrollingHistoryHero ──────────────────────────────────────────────────
-   Bloco de abertura da seção "Durante anos tentaram contar a nossa história."
-   Inspirado em sites como Moss / Pinterest reference: o título vira uma faixa
-   tipográfica GIGANTE que desliza horizontalmente, com cartões de imagens
-   colados por cima (collage), criando profundidade. A faixa anda devagar de
-   forma autônoma; ao rolar a página, a velocidade aumenta sutilmente.
-*/
-function ScrollingHistoryHero() {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-  // Deslocamento horizontal da faixa de texto, conforme a página rola.
-  const xText = useTransform(scrollYProgress, [0, 1], ["0%", "-25%"]);
-  // Movimentos sutis dos cards
-  const yA = useTransform(scrollYProgress, [0, 1], [40, -40]);
-  const yB = useTransform(scrollYProgress, [0, 1], [-30, 50]);
-  const yC = useTransform(scrollYProgress, [0, 1], [60, -20]);
-  const yD = useTransform(scrollYProgress, [0, 1], [-50, 30]);
-  const yE = useTransform(scrollYProgress, [0, 1], [20, -60]);
-
-  return (
-    <div
-      ref={ref}
-      className="relative h-[100vh] w-full overflow-hidden flex items-center"
-    >
-      {/* Faixa de texto gigante que desliza */}
-      <motion.div
-        style={{ x: xText }}
-        className="relative z-10 whitespace-nowrap will-change-transform"
-      >
-        <div className="flex items-center gap-12 history-marquee">
-          <span className="history-headline">
-            Durante anos tentaram contar a nossa história
-          </span>
-          <span className="history-headline history-headline--ghost">
-            • Agora somos nós •
-          </span>
-          <span className="history-headline">
-            Durante anos tentaram contar a nossa história
-          </span>
-          <span className="history-headline history-headline--ghost">
-            • Agora somos nós •
-          </span>
-        </div>
-      </motion.div>
-
-      {/* Cards de imagens flutuando POR CIMA do texto (collage) */}
-      <div className="absolute inset-0 z-20 pointer-events-none">
-        <motion.div
-          style={{ y: yA, rotate: -6 }}
-          className="history-card history-card--a"
-        >
-          <img src={vslSkyline} alt="" />
-        </motion.div>
-        <motion.div
-          style={{ y: yB, rotate: 4 }}
-          className="history-card history-card--b"
-        >
-          <img src={heroFlame} alt="" />
-        </motion.div>
-        <motion.div
-          style={{ y: yC, rotate: -3 }}
-          className="history-card history-card--c"
-        >
-          <img src={vslBg} alt="" />
-        </motion.div>
-        <motion.div
-          style={{ y: yD, rotate: 7 }}
-          className="history-card history-card--d"
-        >
-          <img src={heroFlame} alt="" />
-        </motion.div>
-        <motion.div
-          style={{ y: yE, rotate: -8 }}
-          className="history-card history-card--e"
-        >
-          <img src={vslSkyline} alt="" />
-        </motion.div>
-      </div>
-
-      {/* Vinheta para integrar à seção */}
-      <div className="absolute inset-0 z-30 pointer-events-none bg-[radial-gradient(ellipse_70%_60%_at_50%_50%,transparent_30%,rgba(5,5,5,0.55)_100%)]" />
-    </div>
-  );
-}
 
 function Footer() {
   return (
