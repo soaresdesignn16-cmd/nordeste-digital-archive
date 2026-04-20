@@ -446,18 +446,34 @@ function StepsSection() {
     {
       title: "Diagnóstico de Posicionamento",
       desc: "Vamos analisar como o mercado realmente enxerga você hoje — onde está sua autoridade, onde estão os ruídos e onde mora o dinheiro escondido na sua percepção.",
+      fragments: [
+        { icon: <Target size={14} />, label: "AUDIT", speed: -0.6, pos: "top-2 right-[28%]" },
+        { icon: <Shield size={14} />, label: "BRAND", speed: 0.4, pos: "bottom-3 right-[18%]" },
+      ],
     },
     {
       title: "Mapeamento da Audiência Premium",
       desc: "Identificamos exatamente quem é o cliente que paga mais e respeita mais — para você parar de atender qualquer um e começar a atrair os melhores.",
+      fragments: [
+        { icon: <Users size={14} />, label: "ICP", speed: -0.5, pos: "top-4 right-[32%]" },
+        { icon: <TrendingUp size={14} />, label: "TICKET", speed: 0.5, pos: "bottom-2 right-[14%]" },
+      ],
     },
     {
       title: "Arquitetura de Marca Pessoal",
       desc: "Construímos a estrutura completa da sua presença digital: comunicação, estética, narrativa e conteúdo no nível de quem você realmente é.",
+      fragments: [
+        { icon: <Sparkles size={14} />, label: "ESTÉTICA", speed: -0.7, pos: "top-3 right-[30%]" },
+        { icon: <Briefcase size={14} />, label: "NARRATIVA", speed: 0.45, pos: "bottom-4 right-[16%]" },
+      ],
     },
     {
       title: "Implementação do Clone Digital",
       desc: "Ativamos o sistema que trabalha seu posicionamento 24/7 — sem exigir seu tempo, sem você precisar gravar nada, sem aparecer se não quiser.",
+      fragments: [
+        { icon: <Cpu size={14} />, label: "24/7", speed: -0.55, pos: "top-2 right-[34%]" },
+        { icon: <Zap size={14} />, label: "AUTO", speed: 0.5, pos: "bottom-3 right-[12%]" },
+      ],
     },
   ];
 
@@ -490,7 +506,24 @@ function StepsSection() {
                     {String(i + 1).padStart(2, "0")}
                   </span>
                 </Parallax>
-                <div className="relative">
+
+                {/* ── Editorial fragments — mini-cards flutuantes scattered ao redor do ghost number (estilo collage Pinterest/Moss) ── */}
+                {s.fragments.map((f, fi) => (
+                  <Parallax
+                    key={fi}
+                    speed={f.speed}
+                    className={`absolute ${f.pos} pointer-events-none hidden md:block z-[1]`}
+                  >
+                    <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-background/70 border border-primary-custom/30 backdrop-blur-md shadow-[0_4px_20px_-6px_rgba(0,0,0,0.6)]">
+                      <span className="text-primary-light">{f.icon}</span>
+                      <span className="text-[9px] font-black tracking-[0.18em] text-cream-muted uppercase">
+                        {f.label}
+                      </span>
+                    </div>
+                  </Parallax>
+                ))}
+
+                <div className="relative z-[2]">
                   <div className="inline-flex items-center justify-center px-7 py-2 rounded-full bg-gradient-to-r from-primary-custom to-primary-light text-background text-[11px] font-black tracking-[0.3em] uppercase shadow-[0_4px_20px_-4px_rgba(224,140,50,0.6)] mb-5">
                     Passo {i + 1}
                   </div>
