@@ -28,10 +28,6 @@
   --font-quote: "Lora", "Cormorant Garamond", Georgia, serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
-  --color-font-display: var(--font-display);
-  --color-font-impact: var(--font-impact);
-  --color-font-italic: var(--font-italic);
-
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
