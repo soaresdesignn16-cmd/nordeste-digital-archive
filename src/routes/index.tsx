@@ -799,6 +799,10 @@ function FinalCTA() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(224,140,50,0.08),transparent_70%)]"></div>
       </div>
 
+      {/* HERO HORIZONTAL — texto gigante deslizando + collage de imagens flutuantes
+          (efeito inspirado em "Moss" — typography wall + floating cards) */}
+      <ScrollingHistoryHero />
+
       {/* LOGO ONN GIGANTE de fundo (sticky watermark — fica fixa no centro durante o scroll da seção) */}
       <div className="sticky top-0 h-0 z-0 pointer-events-none">
         <div className="h-screen flex items-center justify-center">
@@ -806,15 +810,8 @@ function FinalCTA() {
         </div>
       </div>
 
-      {/* Título FIXO no topo da seção (sticky) */}
-      <div className="sticky top-[14vh] z-20 px-6 text-center pointer-events-none -mt-[100vh]">
-        <h2 className="text-[clamp(28px,6vw,60px)] font-black leading-[1.05] tracking-tight max-w-[900px] mx-auto headline-gradient">
-          Durante anos tentaram contar a nossa história.
-        </h2>
-      </div>
-
       {/* Track de pílulas — passam por cima do título e da logo */}
-      <div className="relative z-30 max-w-3xl mx-auto px-6 pt-[40vh] pb-[10vh]">
+      <div className="relative z-30 max-w-3xl mx-auto px-6 pt-[10vh] pb-[10vh]">
         {phrases.map((phrase, i) => (
           <motion.div
             key={i}
@@ -852,6 +849,94 @@ function FinalCTA() {
         </Reveal>
       </div>
     </section>
+  );
+}
+
+/* ── ScrollingHistoryHero ──────────────────────────────────────────────────
+   Bloco de abertura da seção "Durante anos tentaram contar a nossa história."
+   Inspirado em sites como Moss / Pinterest reference: o título vira uma faixa
+   tipográfica GIGANTE que desliza horizontalmente, com cartões de imagens
+   colados por cima (collage), criando profundidade. A faixa anda devagar de
+   forma autônoma; ao rolar a página, a velocidade aumenta sutilmente.
+*/
+function ScrollingHistoryHero() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+  // Deslocamento horizontal da faixa de texto, conforme a página rola.
+  const xText = useTransform(scrollYProgress, [0, 1], ["0%", "-25%"]);
+  // Movimentos sutis dos cards
+  const yA = useTransform(scrollYProgress, [0, 1], [40, -40]);
+  const yB = useTransform(scrollYProgress, [0, 1], [-30, 50]);
+  const yC = useTransform(scrollYProgress, [0, 1], [60, -20]);
+  const yD = useTransform(scrollYProgress, [0, 1], [-50, 30]);
+  const yE = useTransform(scrollYProgress, [0, 1], [20, -60]);
+
+  return (
+    <div
+      ref={ref}
+      className="relative h-[100vh] w-full overflow-hidden flex items-center"
+    >
+      {/* Faixa de texto gigante que desliza */}
+      <motion.div
+        style={{ x: xText }}
+        className="relative z-10 whitespace-nowrap will-change-transform"
+      >
+        <div className="flex items-center gap-12 history-marquee">
+          <span className="history-headline">
+            Durante anos tentaram contar a nossa história
+          </span>
+          <span className="history-headline history-headline--ghost">
+            • Agora somos nós •
+          </span>
+          <span className="history-headline">
+            Durante anos tentaram contar a nossa história
+          </span>
+          <span className="history-headline history-headline--ghost">
+            • Agora somos nós •
+          </span>
+        </div>
+      </motion.div>
+
+      {/* Cards de imagens flutuando POR CIMA do texto (collage) */}
+      <div className="absolute inset-0 z-20 pointer-events-none">
+        <motion.div
+          style={{ y: yA, rotate: -6 }}
+          className="history-card history-card--a"
+        >
+          <img src={vslSkyline} alt="" />
+        </motion.div>
+        <motion.div
+          style={{ y: yB, rotate: 4 }}
+          className="history-card history-card--b"
+        >
+          <img src={heroFlame} alt="" />
+        </motion.div>
+        <motion.div
+          style={{ y: yC, rotate: -3 }}
+          className="history-card history-card--c"
+        >
+          <img src={vslBg} alt="" />
+        </motion.div>
+        <motion.div
+          style={{ y: yD, rotate: 7 }}
+          className="history-card history-card--d"
+        >
+          <img src={heroFlame} alt="" />
+        </motion.div>
+        <motion.div
+          style={{ y: yE, rotate: -8 }}
+          className="history-card history-card--e"
+        >
+          <img src={vslSkyline} alt="" />
+        </motion.div>
+      </div>
+
+      {/* Vinheta para integrar à seção */}
+      <div className="absolute inset-0 z-30 pointer-events-none bg-[radial-gradient(ellipse_70%_60%_at_50%_50%,transparent_30%,rgba(5,5,5,0.55)_100%)]" />
+    </div>
   );
 }
 
