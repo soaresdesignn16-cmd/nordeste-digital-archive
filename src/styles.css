@@ -321,17 +321,17 @@
     letter-spacing: 0.1em;
   }
 
-  /* Ghost number gigante — Bebas Neue, outline brasa para profundidade editorial */
+  /* Ghost number gigante — Poppins Black, outline brasa para profundidade editorial */
   .ghost-number {
     font-family: var(--font-display);
-    font-weight: 400;
+    font-weight: 900;
     font-size: clamp(120px, 18vw, 200px);
     line-height: 0.85;
     color: transparent;
     -webkit-text-stroke: 1.5px rgba(201, 115, 38, 0.18);
     user-select: none;
     pointer-events: none;
-    letter-spacing: 0.005em;
+    letter-spacing: -0.04em;
   }
 
   /* Card / bloco premium translúcido — borda verde-territorial */
