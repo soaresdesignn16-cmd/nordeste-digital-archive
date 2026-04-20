@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;600;900&family=Syne:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@1,400;1,500;1,600&family=Lora:ital,wght@1,400;1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caladea:ital,wght@1,400;1,700&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&display=swap');
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
@@ -12,20 +12,19 @@
  */
 
 @theme inline {
-  /* === Sistema tipográfico ONN ===
-   * Display (títulos hero / impacto): Bebas Neue — caixa alta, alta presença
-   * Impact (h1-h2 grandes alternativos):  Poppins Black 900
-   * Body / interface:                     Syne — botões, menus, parágrafos curtos
-   * Long-form / leitura:                  Poppins Regular
-   * Editorial italic:                     Cormorant Garamond italic
-   * Quote editorial:                      Lora italic
+  /* === Sistema tipográfico OFICIAL ONN (do PDF Sistema Visual) ===
+   * MOMENTO 01 — POPPINS BLACK 900 → títulos de impacto (ONN, manchetes, capas, h1-h3)
+   * MOMENTO 02 — POPPINS REGULAR 400/600/700 → corpo, legenda, Instagram, materiais
+   * MOMENTO 03 — POPPINS BOLD + CALADEA ITALIC → display assinatura, tagline, rodapé, slides
+   * MOMENTO 04 — LORA ITALIC 400 → citações, frases, autoridade
+   * Toda a marca usa apenas Poppins + Caladea Italic + Lora Italic. Sem Bebas, sem Syne.
    */
-  --font-sans: "Syne", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Bebas Neue", "Syne", ui-sans-serif, sans-serif;
-  --font-impact: "Poppins", "Syne", ui-sans-serif, sans-serif;
-  --font-body: "Syne", ui-sans-serif, system-ui, sans-serif;
-  --font-italic: "Cormorant Garamond", "Lora", Georgia, serif;
-  --font-quote: "Lora", "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Poppins", ui-sans-serif, system-ui, sans-serif;        /* Poppins Black 900 — impacto */
+  --font-impact: "Poppins", ui-sans-serif, system-ui, sans-serif;         /* Poppins Black 900 */
+  --font-body: "Poppins", ui-sans-serif, system-ui, sans-serif;           /* Poppins Regular 400 — corpo */
+  --font-italic: "Caladea", "Lora", Georgia, serif;                       /* Caladea Italic — assinatura */
+  --font-quote: "Lora", "Caladea", Georgia, serif;                        /* Lora Italic — citações */
   --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
   --radius-sm: calc(var(--radius) - 4px);
@@ -167,43 +166,49 @@
     text-rendering: optimizeLegibility;
   }
 
-  /* Tipografia editorial — Bebas Neue para títulos display
-   * (caixa alta, alta presença), Poppins Black como impacto alternativo,
-   * Syne para body / interface. */
+  /* === Tipografia oficial ONN ===
+   * H1-H3 → POPPINS BLACK 900, caixa alta, tracking apertado. Estilo manchete.
+   * H4-H6 → POPPINS BOLD 700, caixa alta light, para sub-headlines.
+   * Body  → POPPINS REGULAR 400. Itálicos → Caladea. Quotes → Lora Italic.
+   */
   h1, h2, h3 {
     font-family: var(--font-display);
-    font-weight: 400;
-    letter-spacing: 0.005em;
-    line-height: 1.0;
+    font-weight: 900;                 /* Poppins Black */
+    letter-spacing: -0.02em;          /* tracking apertado, manchete */
+    line-height: 0.95;
     color: #F2F0E6;
     text-transform: uppercase;
   }
 
   h4, h5, h6 {
     font-family: var(--font-impact);
-    font-weight: 900;
-    letter-spacing: -0.015em;
-    line-height: 1.15;
+    font-weight: 700;                 /* Poppins Bold */
+    letter-spacing: 0.02em;
+    line-height: 1.2;
     color: #F2F0E6;
+    text-transform: uppercase;
   }
 
   p, li, span, a, button, label, input, textarea, select {
     font-family: var(--font-body);
-    line-height: 1.55;
+    font-weight: 400;                 /* Poppins Regular */
+    line-height: 1.6;
   }
 
-  /* Itálico editorial sempre vira Cormorant — momento de elegância */
+  /* Itálico editorial → Caladea Italic (assinatura da marca) */
   em, i, .italic {
     font-family: var(--font-italic);
     font-style: italic;
-    font-weight: 500;
+    font-weight: 400;
+    letter-spacing: 0;
   }
 
-  /* Quote-block opcional — Lora italic */
+  /* Quote-block → Lora Italic (citações, autoridade) */
   blockquote {
     font-family: var(--font-quote);
     font-style: italic;
     font-weight: 400;
+    letter-spacing: 0;
   }
 
   /* Noise / grain overlay global — profundidade premium */
@@ -267,13 +272,13 @@
     text-shadow: 0 0 12px rgba(224, 140, 50, 0.5);
   }
 
-  /* CTA principal — botão brasa premium (Syne para interface) */
+  /* CTA principal — botão brasa premium (Poppins Black) */
   .btn-gold {
     position: relative;
     background: linear-gradient(135deg, #C97326, #E08C32);
     color: #0A0A0A;
     font-family: var(--font-body);
-    font-weight: 800;
+    font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     padding: 14px 28px;
@@ -316,17 +321,17 @@
     letter-spacing: 0.1em;
   }
 
-  /* Ghost number gigante — Bebas Neue, outline brasa para profundidade editorial */
+  /* Ghost number gigante — Poppins Black, outline brasa para profundidade editorial */
   .ghost-number {
     font-family: var(--font-display);
-    font-weight: 400;
+    font-weight: 900;
     font-size: clamp(120px, 18vw, 200px);
     line-height: 0.85;
     color: transparent;
     -webkit-text-stroke: 1.5px rgba(201, 115, 38, 0.18);
     user-select: none;
     pointer-events: none;
-    letter-spacing: 0.005em;
+    letter-spacing: -0.04em;
   }
 
   /* Card / bloco premium translúcido — borda verde-territorial */
