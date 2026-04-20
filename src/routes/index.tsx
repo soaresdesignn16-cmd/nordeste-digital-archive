@@ -578,7 +578,7 @@ function StepsSection() {
         <Reveal delay={0.2}>
           <div className="flex justify-center mt-12">
             <BrutalistButton href="#cta-final" size="lg">
-              Quero ser selecionado <ArrowRight size={18} />
+              Quero ser selecionado <span aria-hidden="true" className="text-[0.85em] leading-none translate-y-[1px]">▶</span>
             </BrutalistButton>
           </div>
         </Reveal>
