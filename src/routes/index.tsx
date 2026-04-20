@@ -446,18 +446,34 @@ function StepsSection() {
     {
       title: "Diagnóstico de Posicionamento",
       desc: "Vamos analisar como o mercado realmente enxerga você hoje — onde está sua autoridade, onde estão os ruídos e onde mora o dinheiro escondido na sua percepção.",
+      fragments: [
+        { icon: <Target size={14} />, label: "AUDIT", speed: -0.6, pos: "top-2 right-[28%]" },
+        { icon: <Shield size={14} />, label: "BRAND", speed: 0.4, pos: "bottom-3 right-[18%]" },
+      ],
     },
     {
       title: "Mapeamento da Audiência Premium",
       desc: "Identificamos exatamente quem é o cliente que paga mais e respeita mais — para você parar de atender qualquer um e começar a atrair os melhores.",
+      fragments: [
+        { icon: <Users size={14} />, label: "ICP", speed: -0.5, pos: "top-4 right-[32%]" },
+        { icon: <TrendingUp size={14} />, label: "TICKET", speed: 0.5, pos: "bottom-2 right-[14%]" },
+      ],
     },
     {
       title: "Arquitetura de Marca Pessoal",
       desc: "Construímos a estrutura completa da sua presença digital: comunicação, estética, narrativa e conteúdo no nível de quem você realmente é.",
+      fragments: [
+        { icon: <Sparkles size={14} />, label: "ESTÉTICA", speed: -0.7, pos: "top-3 right-[30%]" },
+        { icon: <Briefcase size={14} />, label: "NARRATIVA", speed: 0.45, pos: "bottom-4 right-[16%]" },
+      ],
     },
     {
       title: "Implementação do Clone Digital",
       desc: "Ativamos o sistema que trabalha seu posicionamento 24/7 — sem exigir seu tempo, sem você precisar gravar nada, sem aparecer se não quiser.",
+      fragments: [
+        { icon: <Cpu size={14} />, label: "24/7", speed: -0.55, pos: "top-2 right-[34%]" },
+        { icon: <Zap size={14} />, label: "AUTO", speed: 0.5, pos: "bottom-3 right-[12%]" },
+      ],
     },
   ];
 
