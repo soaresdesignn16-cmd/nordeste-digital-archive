@@ -1,40 +1,42 @@
 
 
-## Diagnóstico
+## Plano — Sticky Stack Scroll nos cards de "Esse movimento faz sentido pra você se:"
 
-O efeito está implementado mas **invisível no mobile** — os fragmentos têm `hidden md:block`, e o usuário está em viewport 474px. Por isso "não pegou".
+### O efeito (baseado no vídeo)
+Conforme o usuário rola, cada card dos 4 perfis **gruda no topo** (sticky) e o próximo card sobe por cima dele, criando uma pilha cinematográfica — a pessoa lê **um bloco por vez**, no ritmo do scroll. Quando chega no último, a pilha toda libera e a página segue.
 
-Além disso, mesmo no desktop os fragmentos atuais são apenas 2 mini-badges sutis posicionados perto do ghost number. O vídeo do Pinterest mostra uma composição **mais densa e editorial**: vários elementos pequenos espalhados criando colagem.
+Isso dá pausa editorial, força a leitura completa de cada perfil (aumenta comprehension/conversão) e comunica autoridade.
 
-## Plano: Reforçar a colagem editorial e ativar no mobile
+### Escopo preservado
+- ✅ O título **"Esse movimento faz sentido pra você se:"** + subtítulo ficam **exatamente como estão** (fora do efeito, acima da pilha).
+- ✅ Copy, ícones, ordem e estilo dos 4 cards preservados.
+- ✅ Efeitos atuais (TiltCard/spotlight) continuam funcionando em cada card.
 
-### 1. Mostrar fragmentos no mobile
-Remover `hidden md:block` e adaptar tamanho/posições para caber no card pequeno. Usar escala menor no mobile (`scale-75`) e posições ajustadas.
+### Implementação (CSS puro `position: sticky` — sem JS, performático)
 
-### 2. Aumentar densidade da colagem (3-4 fragmentos por passo)
-Adicionar 1-2 fragmentos extras em cada passo: além das mini-badges, incluir:
-- **Linha de dados** (ex: "01.04 / SISTEMA"), tipo timestamp editorial
-- **Ponto/glyph dourado** com pulse sutil (estilo "live data")
-- Manter os 2 ícone+label existentes
+No `AudienceSection` (linhas 619-636):
+- Envolver a lista `.flex.flex-col.gap-5` em uma **"stack zone"** com `position: relative` e altura suficiente para acomodar o scroll de todos os cards (`~ 4 × 90vh`).
+- Cada card vira um wrapper com `position: sticky; top: 100px` (abaixo do navbar) e `height: calc(100vh - 140px)` ou altura fixa confortável.
+- Cada card recebe `z-index` crescente (`1, 2, 3, 4`) para que o próximo sempre cubra o anterior.
+- Adicionar um leve `scale-down` + offset progressivo ao card "de baixo" via CSS var por índice, pra parecer que ele "afunda" quando o próximo chega (efeito de deck de cartas).
+- Transição sutil de `transform`/`opacity` ligada ao progresso do scroll via `animation-timeline: view()` (suportado no Chrome/Edge/Safari 26+) com fallback graceful: quem não suporta vê simples sticky sem deck-depth, e ainda funciona perfeito.
 
-Isso cria a sensação de "dashboard/colagem viva" do vídeo, sem virar bagunça (apenas elementos pequenos, transparentes, em cantos opostos).
+### Mobile (484px atual)
+- Mantém sticky stack (funciona igual), mas com `top: 72px` e altura menor (`calc(100svh - 100px)`) pra caber no viewport do celular.
+- `gap` zerado dentro da stack zone (os cards se sobrepõem, não se empilham com espaço).
 
-### 3. Reposicionar para não conflitar com texto
-Usar cantos: top-right (perto do ghost number), top-left, bottom-right. Deixar o lado esquerdo (onde fica o título) limpo. No mobile, posicionar só nos cantos superiores com escala reduzida.
-
-### 4. Refinar visual dos fragmentos
-- Adicionar leve `animate-pulse` no glyph dourado (heartbeat editorial)
-- Aumentar contraste do `backdrop-blur` para destacar sobre o card
-- Garantir `z-index` correto (atrás do título, na frente do ghost number)
+### Acessibilidade
+- `@media (prefers-reduced-motion: reduce)` → desativa sticky e cai pro layout atual (flex column normal com gap).
 
 ### Arquivos afetados
-- `src/routes/index.tsx` — atualizar array `fragments` (3-4 itens por passo) e o JSX do map (remover `hidden md:block`, adicionar variantes `meta`/`pulse`)
-- `src/styles.css` — adicionar `.editorial-glyph` (ponto dourado pulsante) e `.editorial-meta` (texto monoespaçado tipo timestamp)
+- `src/routes/index.tsx` — refatorar o `<div className="flex flex-col gap-5">` do `AudienceSection` para a "sticky stack zone" com wrappers por card.
+- `src/styles.css` — adicionar utilitários `.stack-zone`, `.stack-card`, animation-timeline com `view()` pra deck-depth, e fallback.
 
 ### Garantias
 - ✅ Copy 100% preservada
-- ✅ Estrutura/hierarquia preservada
-- ✅ Visível em mobile e desktop
-- ✅ Sem sobreposição com título/descrição (apenas cantos)
-- ✅ Composição editorial densa mas controlada — autoridade, não bagunça
+- ✅ Título e subtítulo intactos (efeito começa só nos cards)
+- ✅ 4 cards lidos um por vez conforme scroll
+- ✅ Compatível com TiltCard/spotlight existentes
+- ✅ Mobile e desktop
+- ✅ Reduced-motion desativa
 
