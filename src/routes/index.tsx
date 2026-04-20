@@ -60,6 +60,7 @@ function NovosNordestinos() {
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [loadProgress, setLoadProgress] = useState(0);
+  const [scrollPrompt, setScrollPrompt] = useState(false);
 
   // VSL Logic
   const MIN_WATCH = 30;
@@ -81,8 +82,27 @@ function NovosNordestinos() {
 
   const startVSL = () => setVslStatus("watching");
 
+  // Após a VSL, mostramos apenas o prompt "Role para baixo".
+  // O loader inline só dispara quando o lead rola a página.
   const unlockContent = () => {
-    setIsLoading(true);
+    setScrollPrompt(true);
+  };
+
+  // Quando o prompt está visível, dispara o loader inline ao primeiro scroll > 80px.
+  useEffect(() => {
+    if (!scrollPrompt || isLoading || isUnlocked) return;
+    const handleScroll = () => {
+      if (window.scrollY > 80) {
+        setIsLoading(true);
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [scrollPrompt, isLoading, isUnlocked]);
+
+  // Quando isLoading vira true, anima a barra 0→100% e desbloqueia o conteúdo.
+  useEffect(() => {
+    if (!isLoading) return;
     let progress = 0;
     const interval = setInterval(() => {
       progress += Math.random() * 5;
@@ -96,47 +116,10 @@ function NovosNordestinos() {
       }
       setLoadProgress(progress);
     }, 50);
-  };
+    return () => clearInterval(interval);
+  }, [isLoading]);
 
   if (!isUnlocked) {
-    if (isLoading) {
-      return (
-        <div
-          id="brand-loader"
-          className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center gap-6 overflow-hidden"
-        >
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary-custom/10 rounded-full blur-[200px] animate-[pulse-glow_5s_ease-in-out_infinite] pointer-events-none"></div>
-
-          <div className="relative">
-            <div className="text-[clamp(60px,12vw,130px)] font-black leading-tight tracking-tighter text-foreground/5 whitespace-nowrap select-none font-sans">
-              ONN
-            </div>
-            <div
-              className="absolute inset-0 text-[clamp(60px,12vw,130px)] font-black leading-tight tracking-tighter bg-gradient-to-br from-foreground to-primary-custom bg-clip-text text-transparent whitespace-nowrap font-sans filter drop-shadow-[0_0_30px_rgba(234,144,46,0.35)]"
-              style={{ clipPath: `inset(0 ${100 - loadProgress}% 0 0)` }}
-            >
-              ONN
-            </div>
-          </div>
-
-          <div className="w-full max-w-[420px] flex flex-col gap-2 px-6">
-            <div className="w-full h-[2px] bg-foreground/10 rounded-full overflow-hidden relative">
-              <div
-                className="absolute left-0 top-0 h-full bg-gradient-to-r from-primary-custom to-primary-light transition-[width] duration-75"
-                style={{ width: `${loadProgress}%` }}
-              />
-            </div>
-            <div className="flex justify-between w-full text-[10px] font-mono tracking-[0.25em] uppercase text-muted-custom">
-              <span>Carregando experiência</span>
-              <span className="text-primary-custom">
-                {Math.floor(loadProgress).toString().padStart(3, "0")}%
-              </span>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
     return (
       <>
         <VslNavbar />
@@ -264,20 +247,80 @@ function NovosNordestinos() {
                 <Lock size={12} /> O conteúdo será liberado em instantes…
               </motion.div>
             )}
+          </AnimatePresence>
 
-            {vslStatus === "finished" && (
+          {/* Prompt "Role para baixo" — aparece quando a VSL termina */}
+          <AnimatePresence>
+            {scrollPrompt && !isLoading && (
               <motion.div
-                key="unlock-auto"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-[11px] text-primary-custom uppercase tracking-widest"
+                key="scroll-prompt"
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                className="mt-10 flex flex-col items-center gap-3"
               >
-                Liberando acesso…
+                <motion.div
+                  animate={{ y: [0, 8, 0] }}
+                  transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+                  className="motion-reduce:animate-none"
+                >
+                  <ChevronDown
+                    size={36}
+                    className="text-primary-custom drop-shadow-[0_0_18px_rgba(234,144,46,0.55)]"
+                    strokeWidth={2.5}
+                  />
+                </motion.div>
+                <h2 className="text-[clamp(24px,4.5vw,40px)] font-black tracking-tight headline-gradient leading-none">
+                  Role para baixo
+                </h2>
+                <p className="text-[11px] text-cream-muted uppercase tracking-[0.25em]">
+                  O conteúdo foi liberado
+                </p>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
         </section>
+
+        {/* Loader inline — aparece como parte do scroll, não como overlay fullscreen */}
+        {isLoading && (
+          <section
+            id="brand-loader-inline"
+            aria-live="polite"
+            aria-busy="true"
+            className="min-h-[100svh] bg-background flex flex-col items-center justify-center gap-6 relative overflow-hidden"
+          >
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary-custom/10 rounded-full blur-[200px] animate-[pulse-glow_5s_ease-in-out_infinite] pointer-events-none"></div>
+
+            <div className="relative">
+              <div className="text-[clamp(60px,12vw,130px)] font-black leading-tight tracking-tighter text-foreground/5 whitespace-nowrap select-none font-sans">
+                ONN
+              </div>
+              <div
+                className="absolute inset-0 text-[clamp(60px,12vw,130px)] font-black leading-tight tracking-tighter bg-gradient-to-br from-foreground to-primary-custom bg-clip-text text-transparent whitespace-nowrap font-sans filter drop-shadow-[0_0_30px_rgba(234,144,46,0.35)]"
+                style={{ clipPath: `inset(0 ${100 - loadProgress}% 0 0)` }}
+              >
+                ONN
+              </div>
+            </div>
+
+            <div className="w-full max-w-[420px] flex flex-col gap-2 px-6">
+              <div className="w-full h-[2px] bg-foreground/10 rounded-full overflow-hidden relative">
+                <div
+                  className="absolute left-0 top-0 h-full bg-gradient-to-r from-primary-custom to-primary-light transition-[width] duration-75"
+                  style={{ width: `${loadProgress}%` }}
+                />
+              </div>
+              <div className="flex justify-between w-full text-[10px] font-mono tracking-[0.25em] uppercase text-muted-custom">
+                <span>Carregando experiência</span>
+                <span className="text-primary-custom">
+                  {Math.floor(loadProgress).toString().padStart(3, "0")}%
+                </span>
+              </div>
+            </div>
+          </section>
+        )}
       </>
     );
   }
