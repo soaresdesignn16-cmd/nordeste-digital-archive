@@ -372,6 +372,67 @@
     box-shadow: 0 0 8px rgba(224, 140, 50, 0.9), 0 0 16px rgba(224, 140, 50, 0.5);
     animation: pulse-glow 1.8s ease-in-out infinite;
   }
+
+  /* ── Sticky Stack Scroll — AudienceSection cards pilhados ── */
+  .stack-zone {
+    position: relative;
+    display: block;
+  }
+  .stack-card {
+    position: sticky;
+    top: 100px;
+    display: block;
+    padding-bottom: 2rem;
+    min-height: 85vh;
+  }
+  .stack-card-inner {
+    transform-origin: top center;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: 0 -1px 0 rgba(201, 123, 42, 0.15), 0 20px 60px -20px rgba(0, 0, 0, 0.8);
+  }
+
+  /* Deck-depth: cards "de baixo" afundam levemente conforme são cobertos */
+  @supports (animation-timeline: view()) {
+    .stack-card-inner {
+      animation: stack-sink linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 80%;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .stack-card {
+      top: 72px;
+      padding-bottom: 1.25rem;
+      min-height: 80svh;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stack-card {
+      position: relative;
+      top: auto;
+      padding-bottom: 1.25rem;
+      min-height: 0;
+    }
+    .stack-card-inner {
+      animation: none !important;
+      transform: none !important;
+    }
+  }
+}
+
+@keyframes stack-sink {
+  0% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    filter: brightness(1);
+  }
+  100% {
+    transform: scale(0.94) translateY(-12px);
+    opacity: 0.55;
+    filter: brightness(0.75);
+  }
 }
 
 /* ── PREMIUM BACKGROUND — radial dourado sutil no hero ── */
