@@ -227,36 +227,16 @@ function NovosNordestinos() {
 
           <div className="vsl-frame-ref mb-8">
             <div className="aspect-video relative bg-black">
-              {vslStatus === "idle" && (
-                <button
-                  onClick={startVSL}
-                  aria-label="Reproduzir vídeo"
-                  className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-6 bg-black/40 border-none cursor-pointer text-foreground group"
-                >
-                  <div className="w-20 h-20 rounded-full bg-primary-custom flex items-center justify-center transition-transform duration-200 group-hover:scale-110">
-                    <Play className="ml-1 fill-current" style={{ color: "#0A0A0A" }} size={28} />
-                  </div>
-                  <span className="text-[12px] text-white flex items-center gap-2 uppercase tracking-[0.25em] font-medium">
-                    <Volume2 size={16} className="text-primary-custom" strokeWidth={2.2} />
-                    Assista com som ativado
-                  </span>
-                </button>
-              )}
-
-              {vslStatus !== "idle" && (
-                <iframe
-                  title="vimeo-player"
-                  src="https://player.vimeo.com/video/1184950928?h=c0d54d152e&autoplay=1"
-                  className="absolute inset-0 w-full h-full"
-                  frameBorder="0"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                  allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
-                  allowFullScreen
-                />
-              )}
+              <VSLPlayer
+                videoId="1184950928"
+                hash="c0d54d152e"
+                onPlay={handleVslPlay}
+                onTimeUpdate={handleVslTime}
+                onEnded={handleVslEnded}
+              />
 
               {vslStatus === "finished" && (
-                <div className="absolute top-3 right-3 z-10 flex items-center gap-2 bg-background/80 backdrop-blur px-3 py-1.5 rounded-full">
+                <div className="absolute top-3 right-3 z-10 flex items-center gap-2 bg-background/80 backdrop-blur px-3 py-1.5 rounded-full pointer-events-none">
                   <Sparkles size={14} className="text-primary-custom" />
                   <span className="text-[10px] uppercase tracking-[0.2em] text-foreground font-semibold">
                     Liberado
@@ -275,6 +255,14 @@ function NovosNordestinos() {
               </div>
             )}
           </div>
+
+          {/* Hint sutil de áudio enquanto o vídeo está parado */}
+          {vslStatus === "idle" && (
+            <p className="-mt-4 mb-6 text-[11px] text-white/60 flex items-center justify-center gap-2 uppercase tracking-[0.25em] font-medium">
+              <Volume2 size={14} className="text-primary-custom" strokeWidth={2.2} />
+              Assista com som ativado
+            </p>
+          )}
 
           {/* Prompt "Deslize para baixo" — sempre visível como na referência */}
           <div className="mt-12 flex flex-col items-center gap-1">
