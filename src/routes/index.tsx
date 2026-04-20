@@ -515,41 +515,49 @@ function StepsSection() {
                   </span>
                 </Parallax>
 
-                {/* ── Editorial fragments — colagem viva ao redor do ghost number (estilo Pinterest/dashboard editorial) ── */}
-                {s.fragments.map((f, fi) => (
-                  <Parallax
-                    key={fi}
-                    speed={f.speed}
-                    className={`absolute ${f.pos} pointer-events-none z-[1] scale-75 md:scale-100 origin-top-right`}
-                  >
-                    <div
-                      className="fragment-stagger"
-                      style={{ animationDelay: `${fi * 120}ms` }}
+                {/* ── Editorial collage — fragmentos como cartas de moodboard vivo
+                    (inspirado no efeito Pinterest do vídeo de referência:
+                    cada fragmento entra de uma direção, respira em loop
+                    e sai cobrindo o anterior, criando dashboard editorial). ── */}
+                {s.fragments.map((f, fi) => {
+                  // direção de entrada cíclica por fragmento — TL/TR/BL/BR
+                  const dirs = ["fragment-enter-tr", "fragment-enter-br", "fragment-enter-tl", "fragment-enter-bl"] as const;
+                  const dirClass = dirs[fi % dirs.length];
+                  return (
+                    <Parallax
+                      key={fi}
+                      speed={f.speed}
+                      className={`absolute ${f.pos} pointer-events-none z-[1] scale-75 md:scale-100 origin-top-right`}
                     >
-                      {f.type === "badge" && (
-                        <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-background/80 border border-primary-custom/35 backdrop-blur-md shadow-[0_4px_20px_-6px_rgba(0,0,0,0.7)]">
-                          <span className="text-primary-light">{f.icon}</span>
-                          <span className="text-[9px] font-black tracking-[0.18em] text-cream-muted uppercase">
+                      <div
+                        className={`fragment-stagger ${dirClass}`}
+                        style={{ ["--frag-delay" as string]: `${fi * 180}ms` }}
+                      >
+                        {f.type === "badge" && (
+                          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-background/80 border border-primary-custom/35 backdrop-blur-md shadow-[0_4px_20px_-6px_rgba(0,0,0,0.7)]">
+                            <span className="text-primary-light">{f.icon}</span>
+                            <span className="text-[9px] font-black tracking-[0.18em] text-cream-muted uppercase">
+                              {f.label}
+                            </span>
+                          </div>
+                        )}
+                        {f.type === "meta" && (
+                          <div className="editorial-meta px-2 py-1 rounded-sm bg-background/70 border border-primary-custom/20 backdrop-blur-md">
                             {f.label}
-                          </span>
-                        </div>
-                      )}
-                      {f.type === "meta" && (
-                        <div className="editorial-meta px-2 py-1 rounded-sm bg-background/70 border border-primary-custom/20 backdrop-blur-md">
-                          {f.label}
-                        </div>
-                      )}
-                      {f.type === "pulse" && (
-                        <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-background/80 border border-primary-custom/40 backdrop-blur-md shadow-[0_4px_16px_-6px_rgba(224,140,50,0.5)]">
-                          <span className="editorial-glyph" />
-                          <span className="text-[8px] font-black tracking-[0.22em] text-primary-light uppercase">
-                            {f.label}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  </Parallax>
-                ))}
+                          </div>
+                        )}
+                        {f.type === "pulse" && (
+                          <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-background/80 border border-primary-custom/40 backdrop-blur-md shadow-[0_4px_16px_-6px_rgba(224,140,50,0.5)]">
+                            <span className="editorial-glyph" />
+                            <span className="text-[8px] font-black tracking-[0.22em] text-primary-light uppercase">
+                              {f.label}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </Parallax>
+                  );
+                })}
 
                 <div className="relative z-[2]">
                   <div className="inline-flex items-center justify-center px-7 py-2 rounded-full bg-gradient-to-r from-primary-custom to-primary-light text-background text-[11px] font-black tracking-[0.3em] uppercase shadow-[0_4px_20px_-4px_rgba(224,140,50,0.6)] mb-5">
