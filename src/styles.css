@@ -454,13 +454,38 @@
 @keyframes fragment-rise {
   0% {
     opacity: 0;
-    transform: translateY(6px) scale(0.96);
-    filter: blur(2px);
+    transform: translate(var(--frag-from-x, 0), var(--frag-from-y, 8px)) scale(0.82) rotate(var(--frag-rot, 0deg));
+    filter: blur(4px);
+  }
+  60% {
+    filter: blur(0);
   }
   100% {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translate(0, 0) scale(1) rotate(var(--frag-rot, 0deg));
     filter: blur(0);
+  }
+}
+
+/* Respiração cíclica — o moodboard fica vivo, como no vídeo Pinterest:
+ * fragmentos sobem/descem/pulsam levemente em loop, dando sensação
+ * de dashboard em tempo real sem distrair a leitura. */
+@keyframes fragment-breathe {
+  0%, 100% {
+    transform: translate(0, 0) scale(1) rotate(var(--frag-rot, 0deg));
+    filter: brightness(1);
+  }
+  25% {
+    transform: translate(calc(var(--frag-from-x, 0) * 0.15), -3px) scale(1.02) rotate(calc(var(--frag-rot, 0deg) + 0.5deg));
+    filter: brightness(1.08);
+  }
+  55% {
+    transform: translate(calc(var(--frag-from-x, 0) * -0.1), 2px) scale(0.99) rotate(calc(var(--frag-rot, 0deg) - 0.3deg));
+    filter: brightness(0.95);
+  }
+  80% {
+    transform: translate(0, -1px) scale(1.01) rotate(var(--frag-rot, 0deg));
+    filter: brightness(1.04);
   }
 }
 
