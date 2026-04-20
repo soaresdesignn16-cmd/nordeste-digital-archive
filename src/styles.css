@@ -272,13 +272,13 @@
     text-shadow: 0 0 12px rgba(224, 140, 50, 0.5);
   }
 
-  /* CTA principal — botão brasa premium (Syne para interface) */
+  /* CTA principal — botão brasa premium (Poppins Black) */
   .btn-gold {
     position: relative;
     background: linear-gradient(135deg, #C97326, #E08C32);
     color: #0A0A0A;
     font-family: var(--font-body);
-    font-weight: 800;
+    font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     padding: 14px 28px;
