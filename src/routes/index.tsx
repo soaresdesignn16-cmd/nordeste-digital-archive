@@ -48,6 +48,21 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:type", content: "website" },
     ],
+    links: [
+      // Preload da imagem de fundo da VSL para que apareça já com a página
+      {
+        rel: "preload",
+        as: "image",
+        href: heroBgFlame,
+        fetchpriority: "high",
+      },
+      {
+        rel: "preload",
+        as: "image",
+        href: logoOnn,
+        fetchpriority: "high",
+      },
+    ],
   }),
   component: NovosNordestinos,
 });
