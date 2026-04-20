@@ -1,76 +1,53 @@
 
 
-## Plano — Pós-VSL: "Role para baixo" → carregamento contínuo na mesma página
+## Plano — VSL como landing page (single-page contínua, sem fundo, loader 1x)
 
-### Comportamento atual (o que tira)
-Hoje, quando os 30s acabam:
-1. Aparece "Liberando acesso…"
-2. Tela inteira vira o **brand-loader fullscreen** (overlay preto com "ONN" preenchendo + barra 0-100%)
-3. Quando bate 100%, troca pra tela do conteúdo
+### O que muda
 
-Isso **parece que abriu outra página** — é o que você quer eliminar.
+**1. Remover o fundo da VSL**
+Tira completamente a `<div>` com `backgroundImage: url(${heroBgFlame})` e o overlay escuro extra na seção `#vsl-gate`. Mantém só o glow laranja central (`MouseParallax` com blur) que já existia antes — visual limpo como no início. Também remove o `preload` da imagem `heroBgFlame` no `head()` da rota (não é mais usada na primeira dobra).
 
-### Comportamento novo (o que faz)
+**2. VSL permanece no DOM como parte da landing page**
+Hoje, quando `isUnlocked === true`, o código faz `return` antecipado e desmonta a VSL inteira, renderizando só o `<main>` com `HeroIntro`, `Steps`, etc. Isso quebra a sensação de página única.
 
-**Etapa 1 — VSL acaba (≥30s):**
-- Em vez de "Liberando acesso…" + loader fullscreen automático, aparece **logo abaixo da VSL**, dentro da mesma seção:
-  - Texto chamativo de tamanho médio: **"Role para baixo"** (estilo dourado, com seta animada ↓ pulsando suavemente)
-  - Subtexto pequeno: "O conteúdo foi liberado"
-- A página **continua a mesma** — sem overlay, sem troca de tela.
-
-**Etapa 2 — Lead rola para baixo:**
-- Ao detectar o primeiro scroll significativo (ex: 80px abaixo do topo da VSL), **dispara o loader inline**:
-  - Aparece **uma seção de altura ~100vh** logo após a VSL, com o mesmo visual atual do loader (ONN gigante + barra 0→100% + "Carregando experiência")
-  - Mas agora **inline, não fullscreen** — faz parte do fluxo natural do scroll
-  - A barra anima 0→100% em ~1.5s
-
-**Etapa 3 — Loader chega a 100%:**
-- A seção do loader **dá fade-out suave** (ou colapsa altura) e o conteúdo do site (`HeroIntro`, `StepsSection`, etc.) aparece logo abaixo, **na mesma rolagem contínua**.
-- Sensação final: tudo numa página só, sem corte, sem flash de "outra página".
-
-### Mudanças técnicas
-
-**Arquivo: `src/routes/index.tsx`**
-
-1. **Novo state**: `scrollPrompt` (boolean) — vira `true` quando VSL termina
-2. **Modificar `unlockContent()`**: em vez de disparar o loader imediatamente, só seta `scrollPrompt = true` (mostra o "Role para baixo")
-3. **Adicionar `useEffect` de scroll**: quando `scrollPrompt === true` e o usuário rolar > 80px, dispara o `setIsLoading(true)` que começa a barra 0→100%
-4. **Trocar bloco de "Liberando acesso…"** por:
-   ```
-   - Ícone seta ↓ pulsante grande
-   - "Role para baixo" (clamp 28-40px, peso 900, gradient dourado)
-   - "O conteúdo foi liberado" (cream-muted pequeno)
-   ```
-5. **Mudar o loader de fullscreen → inline**:
-   - Trocar `fixed inset-0 z-[100]` por uma `<section>` normal (`min-h-[100svh] flex flex-col items-center justify-center`)
-   - Renderizar **junto** com a VSL (não substituir): VSL fica em cima, loader-section fica logo abaixo
-6. **Quando `isUnlocked === true`**: a loader-section sai com fade/collapse e o conteúdo principal fica visível na sequência
-
-**Estrutura do render quando `vslStatus === "finished"`:**
+Novo comportamento: **um único return** que renderiza sempre, na ordem:
 ```
-<VslNavbar />
-<section id="vsl-gate"> ... VSL com prompt "Role para baixo" embaixo ... </section>
-{scrollPrompt && (
-  <section id="brand-loader-inline"> ... ONN + barra 0-100% ... </section>
+<VslNavbar />  (ou Navbar dependendo do estado — ver item 4)
+<section id="vsl-gate"> ...VSL com prompt "Role para baixo"... </section>
+{isLoading && <section id="brand-loader-inline">...</section>}
+{isUnlocked && (
+  <>
+    <PremiumBackground />
+    <main>
+      <HeroIntro />
+      <StepsSection />
+      ...
+      <Footer />
+    </main>
+  </>
 )}
-{isUnlocked && <main>...HeroIntro, Steps, Audience...</main>}
 ```
+Assim, depois de carregar, o lead pode rolar pra cima e **continua vendo a VSL no topo da mesma página**, exatamente como uma landing page.
 
-### Mobile (488px atual)
-- "Role para baixo": tamanho responsivo (clamp 24-36px), seta 32px, com bom espaçamento (`mt-8 mb-6`)
-- Loader inline mantém `min-h-[100svh]` pra ocupar a tela e forçar sensação de carregamento real
+**3. Remover o auto-scroll-to-top no unlock**
+O `useEffect` que faz `window.scrollTo({ top: 0 })` quando `isUnlocked` vira `true` precisa sair. Em vez disso, quando o loader chega a 100%, rola suavemente até o início do `<main>` (`#hero-intro`), preservando a VSL acima. Ao voltar pra cima, o lead encontra a VSL intacta.
 
-### Acessibilidade
-- Seta pulsante respeita `prefers-reduced-motion`
-- Loader inline tem `aria-live="polite"` + `aria-busy`
+**4. Loader dispara só UMA vez**
+Hoje, o `useEffect` de detecção de scroll já tem guarda `if (!scrollPrompt || isLoading || isUnlocked) return` — então uma vez `isUnlocked === true`, o listener nunca mais dispara. Ótimo. Só precisa garantir que `scrollPrompt` permaneça `true` (não resetar) e que `isLoading` não volte a ser disparado. Já está coberto pelas guardas — apenas confirmar que não há regressão.
+
+**5. Navbar**
+- Antes do unlock: continua mostrando `VslNavbar` (logo grande, CTA "Solicitar Avaliação").
+- Depois do unlock: troca para `Navbar` (compacto), mas como a VSL ainda está no DOM em cima, o `Navbar` fixo no topo cobre os dois conteúdos. O CTA do `Navbar` aponta para `#cta-final` (final da página) — comportamento de landing.
+
+**6. Loader inline**
+Continua como `<section>` inline (não fullscreen), aparece entre a VSL e o conteúdo principal, e some quando `isUnlocked` vira `true` (ao desmontar, o conteúdo aparece logo abaixo, mantendo o scroll fluido).
+
+### Arquivo afetado
+- `src/routes/index.tsx` — unificar o return, remover background da VSL, remover scroll-to-top, ajustar navbar trocando após unlock.
 
 ### Garantias
-- ✅ Visual atual do loader (ONN + barra) **100% preservado** — só muda de fullscreen pra inline
-- ✅ VSL e fluxo dos 30s **intactos**
-- ✅ Sem troca de página — tudo num scroll contínuo
-- ✅ Mobile e desktop
-- ✅ Funciona mesmo se o usuário rolar antes de terminar a VSL (o prompt só aparece após `finished`)
-
-### Arquivos afetados
-- `src/routes/index.tsx` — lógica do gate, novo prompt, loader inline
+- ✅ VSL sem fundo (limpa como antes)
+- ✅ Tudo em uma página só — pode rolar pra cima depois e ver a VSL
+- ✅ Loader só roda na primeira descida; rolar pra cima depois não reinicia nada
+- ✅ Sensação de landing page contínua: VSL → Loader (1x) → Conteúdo → Footer
 
