@@ -202,11 +202,11 @@ function NovosNordestinos() {
             <LogoIcon className="w-20 h-20 drop-shadow-[0_0_30px_rgba(234,144,46,0.4)]" />
           </MouseParallax>
 
-          <h1 className="text-[clamp(28px,5vw,48px)] font-black leading-[1.1] mb-4 tracking-tight">
+          <h1 className="text-[clamp(28px,5vw,48px)] leading-[1.1] mb-4 tracking-tight text-center font-light">
             Antes de qualquer coisa,
             <br />
-            <span className="headline-gradient">
-              assista isso.
+            <span className="headline-gradient text-5xl font-bold text-white bg-white opacity-100">
+              ASSISTA ISSO
             </span>
           </h1>
           <p className="text-sm text-cream-muted max-w-[480px] mx-auto mb-8">
@@ -452,9 +452,9 @@ function VslNavbar() {
             </span>
           </div>
         </div>
-        <BrutalistButton href="#vsl-gate" className="!flex-col !px-5 !py-3 !text-[13px] !leading-tight !gap-0">
-          <span>Solicitar</span>
-          <span>Avaliação</span>
+        <BrutalistButton href="#vsl-gate" className="!flex-col !text-[13px] !leading-tight !gap-0 px-[20px] py-px">
+          <span className="text-sm font-bold">Solicitar</span>
+          <span className="font-bold">Avaliação</span>
         </BrutalistButton>
       </div>
     </nav>
