@@ -447,32 +447,40 @@ function StepsSection() {
       title: "Diagnóstico de Posicionamento",
       desc: "Vamos analisar como o mercado realmente enxerga você hoje — onde está sua autoridade, onde estão os ruídos e onde mora o dinheiro escondido na sua percepção.",
       fragments: [
-        { icon: <Target size={14} />, label: "AUDIT", speed: -0.6, pos: "top-2 right-[28%]" },
-        { icon: <Shield size={14} />, label: "BRAND", speed: 0.4, pos: "bottom-3 right-[18%]" },
+        { type: "badge" as const, icon: <Target size={14} />, label: "AUDIT", speed: -0.6, pos: "top-2 right-[26%] md:right-[28%]" },
+        { type: "badge" as const, icon: <Shield size={14} />, label: "BRAND", speed: 0.4, pos: "bottom-3 right-[12%] md:right-[18%]" },
+        { type: "meta" as const, label: "01.04 / SISTEMA", speed: -0.35, pos: "top-3 left-3 md:left-6" },
+        { type: "pulse" as const, label: "LIVE", speed: 0.55, pos: "bottom-5 right-[42%]" },
       ],
     },
     {
       title: "Mapeamento da Audiência Premium",
       desc: "Identificamos exatamente quem é o cliente que paga mais e respeita mais — para você parar de atender qualquer um e começar a atrair os melhores.",
       fragments: [
-        { icon: <Users size={14} />, label: "ICP", speed: -0.5, pos: "top-4 right-[32%]" },
-        { icon: <TrendingUp size={14} />, label: "TICKET", speed: 0.5, pos: "bottom-2 right-[14%]" },
+        { type: "badge" as const, icon: <Users size={14} />, label: "ICP", speed: -0.5, pos: "top-4 right-[30%] md:right-[32%]" },
+        { type: "badge" as const, icon: <TrendingUp size={14} />, label: "TICKET", speed: 0.5, pos: "bottom-2 right-[10%] md:right-[14%]" },
+        { type: "meta" as const, label: "02.04 / AUDIENCE", speed: -0.4, pos: "top-3 left-3 md:left-6" },
+        { type: "pulse" as const, label: "MATCH", speed: 0.6, pos: "bottom-6 right-[44%]" },
       ],
     },
     {
       title: "Arquitetura de Marca Pessoal",
       desc: "Construímos a estrutura completa da sua presença digital: comunicação, estética, narrativa e conteúdo no nível de quem você realmente é.",
       fragments: [
-        { icon: <Sparkles size={14} />, label: "ESTÉTICA", speed: -0.7, pos: "top-3 right-[30%]" },
-        { icon: <Briefcase size={14} />, label: "NARRATIVA", speed: 0.45, pos: "bottom-4 right-[16%]" },
+        { type: "badge" as const, icon: <Sparkles size={14} />, label: "ESTÉTICA", speed: -0.7, pos: "top-3 right-[28%] md:right-[30%]" },
+        { type: "badge" as const, icon: <Briefcase size={14} />, label: "NARRATIVA", speed: 0.45, pos: "bottom-4 right-[10%] md:right-[16%]" },
+        { type: "meta" as const, label: "03.04 / IDENTIDADE", speed: -0.32, pos: "top-3 left-3 md:left-6" },
+        { type: "pulse" as const, label: "BUILD", speed: 0.5, pos: "bottom-7 right-[46%]" },
       ],
     },
     {
       title: "Implementação do Clone Digital",
       desc: "Ativamos o sistema que trabalha seu posicionamento 24/7 — sem exigir seu tempo, sem você precisar gravar nada, sem aparecer se não quiser.",
       fragments: [
-        { icon: <Cpu size={14} />, label: "24/7", speed: -0.55, pos: "top-2 right-[34%]" },
-        { icon: <Zap size={14} />, label: "AUTO", speed: 0.5, pos: "bottom-3 right-[12%]" },
+        { type: "badge" as const, icon: <Cpu size={14} />, label: "24/7", speed: -0.55, pos: "top-2 right-[32%] md:right-[34%]" },
+        { type: "badge" as const, icon: <Zap size={14} />, label: "AUTO", speed: 0.5, pos: "bottom-3 right-[8%] md:right-[12%]" },
+        { type: "meta" as const, label: "04.04 / DEPLOY", speed: -0.38, pos: "top-3 left-3 md:left-6" },
+        { type: "pulse" as const, label: "ONLINE", speed: 0.58, pos: "bottom-5 right-[44%]" },
       ],
     },
   ];
@@ -507,19 +515,34 @@ function StepsSection() {
                   </span>
                 </Parallax>
 
-                {/* ── Editorial fragments — mini-cards flutuantes scattered ao redor do ghost number (estilo collage Pinterest/Moss) ── */}
+                {/* ── Editorial fragments — colagem viva ao redor do ghost number (estilo Pinterest/dashboard editorial) ── */}
                 {s.fragments.map((f, fi) => (
                   <Parallax
                     key={fi}
                     speed={f.speed}
-                    className={`absolute ${f.pos} pointer-events-none hidden md:block z-[1]`}
+                    className={`absolute ${f.pos} pointer-events-none z-[1] scale-75 md:scale-100 origin-top-right`}
                   >
-                    <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-background/70 border border-primary-custom/30 backdrop-blur-md shadow-[0_4px_20px_-6px_rgba(0,0,0,0.6)]">
-                      <span className="text-primary-light">{f.icon}</span>
-                      <span className="text-[9px] font-black tracking-[0.18em] text-cream-muted uppercase">
+                    {f.type === "badge" && (
+                      <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-background/80 border border-primary-custom/35 backdrop-blur-md shadow-[0_4px_20px_-6px_rgba(0,0,0,0.7)]">
+                        <span className="text-primary-light">{f.icon}</span>
+                        <span className="text-[9px] font-black tracking-[0.18em] text-cream-muted uppercase">
+                          {f.label}
+                        </span>
+                      </div>
+                    )}
+                    {f.type === "meta" && (
+                      <div className="editorial-meta px-2 py-1 rounded-sm bg-background/70 border border-primary-custom/20 backdrop-blur-md">
                         {f.label}
-                      </span>
-                    </div>
+                      </div>
+                    )}
+                    {f.type === "pulse" && (
+                      <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-background/80 border border-primary-custom/40 backdrop-blur-md shadow-[0_4px_16px_-6px_rgba(224,140,50,0.5)]">
+                        <span className="editorial-glyph" />
+                        <span className="text-[8px] font-black tracking-[0.22em] text-primary-light uppercase">
+                          {f.label}
+                        </span>
+                      </div>
+                    )}
                   </Parallax>
                 ))}
 
