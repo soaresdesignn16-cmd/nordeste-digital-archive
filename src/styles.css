@@ -614,6 +614,116 @@
     background: #fff;
     box-shadow: 0 0 12px rgba(255, 255, 255, 0.85);
   }
+
+  /* ── ScrollingHistoryHero — typography wall + collage de imagens ── */
+  .history-marquee {
+    animation: history-drift 28s linear infinite;
+  }
+  .history-headline {
+    font-family: inherit;
+    font-weight: 900;
+    font-size: clamp(80px, 16vw, 220px);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    background: linear-gradient(180deg, #f5e6d3 0%, #e8a559 60%, #b8762a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 60px rgba(224, 140, 50, 0.18);
+    white-space: nowrap;
+  }
+  .history-headline--ghost {
+    background: none;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 1.5px rgba(255, 220, 170, 0.35);
+    color: transparent;
+    font-style: italic;
+    font-weight: 800;
+  }
+
+  .history-card {
+    position: absolute;
+    overflow: hidden;
+    border-radius: 14px;
+    box-shadow:
+      0 30px 60px -20px rgba(0, 0, 0, 0.75),
+      0 0 0 1px rgba(255, 220, 170, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    background: #0a0a0a;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .history-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: contrast(1.05) saturate(1.05);
+  }
+  .history-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.05) 0%,
+      rgba(0, 0, 0, 0.35) 100%
+    );
+    pointer-events: none;
+  }
+
+  .history-card--a {
+    top: 8%;
+    left: 6%;
+    width: clamp(110px, 18vw, 240px);
+    height: clamp(140px, 22vw, 300px);
+  }
+  .history-card--b {
+    top: 14%;
+    right: 8%;
+    width: clamp(120px, 20vw, 260px);
+    height: clamp(80px, 13vw, 170px);
+  }
+  .history-card--c {
+    top: 56%;
+    left: 14%;
+    width: clamp(140px, 22vw, 280px);
+    height: clamp(100px, 15vw, 200px);
+  }
+  .history-card--d {
+    top: 62%;
+    right: 12%;
+    width: clamp(100px, 16vw, 220px);
+    height: clamp(130px, 20vw, 270px);
+  }
+  .history-card--e {
+    top: 38%;
+    left: 42%;
+    width: clamp(90px, 14vw, 180px);
+    height: clamp(90px, 14vw, 180px);
+    border-radius: 999px;
+  }
+
+  @media (max-width: 768px) {
+    .history-card--e {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .history-marquee {
+      animation: none;
+    }
+  }
+}
+
+@keyframes history-drift {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 @keyframes fragment-rise {
