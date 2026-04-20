@@ -367,6 +367,10 @@ function NovosNordestinos() {
               <ImpactSection />
             </ParallaxLayer>
             <SectionDivider />
+            <ParallaxLayer offset={50} scaleFrom={0.97}>
+              <DuranteAnosHeadline />
+            </ParallaxLayer>
+            <SectionDivider />
             <ParallaxLayer offset={60} scaleFrom={0.96}>
               <FinalCTA />
             </ParallaxLayer>
