@@ -1,56 +1,58 @@
 
 
-## Plano — Ajustes finos do site
+## Plano — Redesign da seção "Chegou a hora do Brasil conhecer Os Novos Nordestinos"
 
-### 1. Loader "ONN 100%" mais cinematográfico (~3.5s)
-- Em `src/routes/index.tsx`, no `useEffect` do loader, mudar o ritmo de incremento: hoje `progress += 8` a cada `40ms` (≈0.5s total). Vou para `progress += 1` a cada `35ms` (≈3.5s) com easing visual (incremento ligeiramente acelerado no fim para sensação cinematográfica).
-- Ajustar a barra para uma transição mais suave (`transition-[width] duration-200` em vez de `duration-75`).
-- Resultado: o "ONN" gigante preenche de preto para o degradê laranja em ~3.5s, criando momento dramático antes do conteúdo aparecer.
+A foto enviada (1366×768, retrato do idealizador com "OWN" já embutido como marca d'água na própria imagem) será usada como fundo principal da seção. Como o "OWN" já está na foto, **não vou adicionar texto de marca d'água via CSS** — apenas reforçar a profundidade com gradiente preto.
 
-### 2. Restaurar a manchete "DURANTE ANOS TENTARAM CONTAR A NOSSA HISTÓRIA"
-- Adicionar uma nova seção estática (sem scroll horizontal, sem colagem de fotos, sem efeitos pesados) **antes** da `FinalCTA`.
-- Tipografia: Poppins Black, caixa alta, gradiente pergaminho→brasa (`headline-gradient`), `text-[clamp(34px,7vw,68px)]`, com leve fade-in via `Reveal`.
-- Layout limpo: centralizado, fundo do `PremiumBackground` (já existente). Sem fotos de fundo.
-- Pequeno subtítulo opcional embaixo: "Agora é a nossa vez."
+### 1. Adicionar a foto como asset
+- Copiar `user-uploads://IMG-20260420-WA0105-2.jpg` para `src/assets/founder-hero.jpg`.
+- Importar no topo de `src/routes/index.tsx`: `import founderHero from "@/assets/founder-hero.jpg"`.
 
-### 3. Botões iguais à imagem de referência (laranja sólido + seta ▶)
-- Atualizar `.btn-gold` em `src/styles.css`:
-  - Trocar `background: linear-gradient(135deg, #C97326, #E08C32)` por **degradê laranja vivo mais uniforme** (`linear-gradient(180deg, #F39238, #D97324)`) que reproduz o look "laranja chapado" da foto.
-  - Aumentar `border-radius` para `12px` (cantos mais arredondados como no botão da foto).
-  - Texto preto puro, Poppins Black, caixa alta, tracking apertado.
-  - Sombra mais difusa por baixo (`box-shadow: 0 12px 30px -8px rgba(217, 115, 36, 0.55)`).
-  - Remover o efeito "shine" que cruza o botão (mantém o look chapado).
-- Trocar a seta `→` / `<ArrowRight>` por um símbolo `▶` (triangular preto) nos 3 CTAs (`Quero ser selecionado ▶`, `Quero entrar para o movimento ▶`, `Solicitar minha avaliação estratégica ▶`), igual à referência.
+### 2. Reescrever o componente `HeroIntro` (linhas 458–491 de `src/routes/index.tsx`)
 
-### 4. Reescrever o `FounderSection` (Muito prazer / Os Novos Nordestinos)
-- Inverter a ordem do título:
-  - **Linha 1 (em cima, grande):** `OS NOVOS NORDESTINOS` — Poppins Black 900, caixa alta, cor **brasa** (`#E08C32`) com leve glow dourado, tipografia oficial do site.
-  - **Linha 2 (embaixo, menor):** `Muito prazer,` — Poppins Regular itálico em Caladea, cor pergaminho off-white (`#F2F0E6`), sem caixa alta, tom de assinatura editorial.
-- Hierarquia: o nome do movimento vira a estrela visual, "Muito prazer" vira a assinatura abaixo.
+**Camadas (de trás pra frente):**
 
-### 5. Performance geral (carregamento mais leve)
-- Adicionar `loading="lazy"` e `decoding="async"` em todos `<img>` que não são críticos (logo do footer, logo do FounderSection, etc.). O logo do hero permanece com `fetchpriority="high"` (já está no `head()`).
-- Adicionar `will-change: transform` apenas onde necessário (já tem em `.tilt-card` e `.will-parallax`) — remover de elementos que não animam.
-- Em `ParallaxLayer`, reduzir `stiffness` do spring (80 → 60) e aumentar `damping` (25 → 28) para reduzir trabalho de scroll, e desativar parallax quando `prefers-reduced-motion` (verificação leve via `useEffect`).
-- Garantir que o iframe da Vimeo só carrega após clique (já está garantido pelo `VSLPlayer`, sem mudança).
-- Resultado: scroll mais suave em mobile, menos jank, render inicial mais leve.
+```text
+┌─────────────────────────────────────────────┐
+│ Foto do idealizador (já tem "OWN" embutido) │ camada 1
+│ ▓ Gradiente preto vertical top→bottom ▓▓▓▓ │ camada 2 (profundidade)
+│                                             │
+│              [ O MOVIMENTO ]                │ camada 3 (conteúdo)
+│  Chegou a hora do Brasil conhecer           │  cream
+│        Os Novos Nordestinos                 │  brasa
+│  Empresários e profissionais que…           │  cream-muted
+└─────────────────────────────────────────────┘
+```
 
-### Resumo das alterações por arquivo
-- `src/routes/index.tsx`:
-  - Loader (mudança do ritmo de progresso).
-  - Nova seção `<DuranteAnosHeadline />` antes do `FinalCTA`.
-  - Reescrita do título do `FounderSection`.
-  - Trocar `<ArrowRight>` por símbolo `▶` nos botões.
-  - Adicionar `loading="lazy"` em imagens não-críticas.
-  - Ajuste fino do `ParallaxLayer` (spring) e respeito a `prefers-reduced-motion`.
-- `src/styles.css`:
-  - Reescrever `.btn-gold` (degradê chapado, mais arredondado, sem shine, sombra difusa).
-  - Pequeno tweak de `transition` no loader.
+**Especificações:**
+- **Container**: `relative overflow-hidden rounded-[24px] max-w-[1100px] mx-auto border border-primary-custom/15 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.85)]`.
+- **Altura**: `min-h-[520px] sm:min-h-[600px] md:min-h-[680px]` — espaço suficiente pro retrato + texto sem cortar nada no mobile (515px de largura).
+- **Foto (camada 1)**: `<img src={founderHero} loading="eager" decoding="async" className="absolute inset-0 w-full h-full object-cover object-[center_30%]">`. No mobile, o `object-position: center 30%` mantém o rosto visível.
+- **Gradiente (camada 2)**: `absolute inset-0 bg-gradient-to-b from-black/15 via-black/50 to-black` — leve no topo (mostra o ambiente e o "OWN" da foto), forte embaixo (funde no fundo preto e dá legibilidade pro texto).
+- **Vinheta lateral sutil opcional**: `absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(0,0,0,0.4)_100%)]` — dá foco no rosto, profundidade extra.
+- **Conteúdo (camada 3)**: `absolute inset-x-0 bottom-0 px-6 md:px-12 pb-10 md:pb-14 text-center`.
+  - `SectionPill` "O MOVIMENTO" centralizado, `mb-5`.
+  - Headline `<h1>` Poppins Black `text-[clamp(26px,4.8vw,52px)] leading-[1.1]`:
+    - Linha 1: "Chegou a hora do Brasil conhecer" — `text-cream-base`.
+    - Linha 2: "Os Novos Nordestinos" — `text-primary-custom drop-shadow-[0_2px_20px_rgba(224,140,50,0.5)]`.
+  - Parágrafo: `text-cream-muted text-[clamp(14px,2.2vw,18px)] leading-relaxed max-w-[680px] mx-auto mt-5` mantendo `<strong>vistos, valorizados e respeitados</strong>`.
+- **Card "clientes melhores"** (`TiltCard` que hoje está dentro do `HeroIntro`): mover pra fora, abaixo do card visual com `mt-10`. Continua sendo um remate forte sem poluir a foto.
+
+### 3. Profundidade real (mobile + desktop)
+- Envolver o card com `TiltCard tilt spotlight` (já existente) — leve resposta 3D no desktop, neutro no mobile.
+- Manter o `ParallaxLayer offset={40}` no wrapper externo — sensação de "subir flutuando" ao rolar.
+- Drop shadow grande no container faz o card descolar do fundo escuro do site.
+- No mobile (515px), o gradiente vertical garante legibilidade do texto sem blur (zero custo de performance).
+
+### 4. Performance
+- Foto importada como ES module (`@/assets/...`) → Vite hash + otimização automática.
+- `loading="eager" decoding="async"` (primeira dobra após VSL).
+- Zero texto de marca d'água via CSS (já está na foto) — economia de render.
+
+### Resumo das alterações
+- **`src/assets/founder-hero.jpg`** (novo) — foto enviada (idealizador com "OWN" já embutido).
+- **`src/routes/index.tsx`** — import no topo + reescrita do componente `HeroIntro` (linhas 458–491). Card "clientes melhores" movido pra fora do card visual.
 
 ### Resultado final
-- Loader cinematográfico de ~3.5s com o "ONN" preenchendo lentamente.
-- Manchete "DURANTE ANOS TENTARAM CONTAR A NOSSA HISTÓRIA" de volta, limpa, sem efeitos pesados.
-- Botões idênticos à referência: laranja sólido, cantos arredondados, seta ▶ preta, texto Poppins Black.
-- Seção "Os Novos Nordestinos" com hierarquia invertida e cor brasa premium.
-- Site mais leve e fluido em mobile.
+Seção com retrato do idealizador como fundo cinematográfico (com o "OWN" da própria foto aparecendo atrás), gradiente preto fundindo a foto no fundo do site, pill laranja, headline bicolor (cream + brasa) e descrição clara — profundidade real e idêntica em mobile (515px) e desktop, dentro da estética premium editorial da LP.
 
