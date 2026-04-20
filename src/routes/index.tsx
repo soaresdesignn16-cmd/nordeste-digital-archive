@@ -24,6 +24,7 @@ import {
   TrendingUp,
   Scale,
   ArrowRight,
+  Volume2,
 } from "lucide-react";
 import logoOnn from "@/assets/logo-onn.png";
 import vslBg from "@/assets/vsl-bg.jpg";
@@ -201,6 +202,7 @@ function NovosNordestinos() {
           style={{ backgroundImage: `url(${vslBg})` }}
         />
         <div className="vsl-hero__vignette" aria-hidden="true" />
+        <div className="vsl-hero__watermark" aria-hidden="true">ONN</div>
 
         <div className="relative z-10 text-center max-w-[700px] mx-auto px-6 py-8 md:py-4">
           <h1 className="text-[clamp(28px,6vw,52px)] leading-[1.05] mb-5 tracking-tight text-center font-light text-white">
@@ -226,7 +228,8 @@ function NovosNordestinos() {
                     <Play className="ml-1 fill-current" style={{ color: "#0A0A0A" }} size={28} />
                   </div>
                   <span className="text-[12px] text-white flex items-center gap-2 uppercase tracking-[0.25em] font-medium">
-                    🔊 Assista com som ativado
+                    <Volume2 size={16} className="text-primary-custom" strokeWidth={2.2} />
+                    Assista com som ativado
                   </span>
                 </button>
               )}
@@ -415,23 +418,12 @@ function Navbar() {
 
 function VslNavbar() {
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-xl border-b border-primary-custom/10">
-      <div className="max-w-7xl mx-auto px-5 h-20 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3 min-w-0">
-          <LogoIcon className="w-10 h-10 shrink-0" />
-          <div className="flex flex-col leading-tight">
-            <span className="text-[13px] font-extrabold tracking-[0.18em] uppercase text-foreground">
-              Os Novos
-            </span>
-            <span className="text-[13px] font-extrabold tracking-[0.18em] uppercase text-foreground">
-              Nordestinos
-            </span>
-          </div>
-        </div>
-        <BrutalistButton href="#vsl-gate" className="!flex-col !text-[13px] !leading-tight !gap-0 py-px px-[23px]">
-          <span className="text-sm font-bold mx-0">Solicitar</span>
-          <span className="font-bold">Avaliação</span>
-        </BrutalistButton>
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-xl">
+      <div className="max-w-7xl mx-auto px-5 h-16 flex items-center justify-center gap-3">
+        <LogoIcon className="w-8 h-8 shrink-0" />
+        <span className="text-[26px] font-black tracking-tight uppercase text-white leading-none">
+          ONN
+        </span>
       </div>
     </nav>
   );
