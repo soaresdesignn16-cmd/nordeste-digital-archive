@@ -522,27 +522,32 @@ function StepsSection() {
                     speed={f.speed}
                     className={`absolute ${f.pos} pointer-events-none z-[1] scale-75 md:scale-100 origin-top-right`}
                   >
-                    {f.type === "badge" && (
-                      <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-background/80 border border-primary-custom/35 backdrop-blur-md shadow-[0_4px_20px_-6px_rgba(0,0,0,0.7)]">
-                        <span className="text-primary-light">{f.icon}</span>
-                        <span className="text-[9px] font-black tracking-[0.18em] text-cream-muted uppercase">
+                    <div
+                      className="fragment-stagger"
+                      style={{ animationDelay: `${fi * 120}ms` }}
+                    >
+                      {f.type === "badge" && (
+                        <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-background/80 border border-primary-custom/35 backdrop-blur-md shadow-[0_4px_20px_-6px_rgba(0,0,0,0.7)]">
+                          <span className="text-primary-light">{f.icon}</span>
+                          <span className="text-[9px] font-black tracking-[0.18em] text-cream-muted uppercase">
+                            {f.label}
+                          </span>
+                        </div>
+                      )}
+                      {f.type === "meta" && (
+                        <div className="editorial-meta px-2 py-1 rounded-sm bg-background/70 border border-primary-custom/20 backdrop-blur-md">
                           {f.label}
-                        </span>
-                      </div>
-                    )}
-                    {f.type === "meta" && (
-                      <div className="editorial-meta px-2 py-1 rounded-sm bg-background/70 border border-primary-custom/20 backdrop-blur-md">
-                        {f.label}
-                      </div>
-                    )}
-                    {f.type === "pulse" && (
-                      <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-background/80 border border-primary-custom/40 backdrop-blur-md shadow-[0_4px_16px_-6px_rgba(224,140,50,0.5)]">
-                        <span className="editorial-glyph" />
-                        <span className="text-[8px] font-black tracking-[0.22em] text-primary-light uppercase">
-                          {f.label}
-                        </span>
-                      </div>
-                    )}
+                        </div>
+                      )}
+                      {f.type === "pulse" && (
+                        <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-background/80 border border-primary-custom/40 backdrop-blur-md shadow-[0_4px_16px_-6px_rgba(224,140,50,0.5)]">
+                          <span className="editorial-glyph" />
+                          <span className="text-[8px] font-black tracking-[0.22em] text-primary-light uppercase">
+                            {f.label}
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </Parallax>
                 ))}
 
