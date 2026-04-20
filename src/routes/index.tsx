@@ -28,6 +28,9 @@ import {
 } from "lucide-react";
 import logoOnn from "@/assets/logo-onn.png";
 import vslBg from "@/assets/vsl-bg.png";
+import heroFlame from "@/assets/hero-bg-flame.jpg";
+import vslSkyline from "@/assets/vsl-bg-skyline.jpg";
+import { VSLPlayer } from "@/components/VSLPlayer";
 
 export const Route = createFileRoute("/")({
   head: () => ({
