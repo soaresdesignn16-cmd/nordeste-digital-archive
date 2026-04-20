@@ -216,11 +216,12 @@ function NovosNordestinos() {
           </p>
 
           <div className="vsl-frame-ref mb-8">
-            <div className="aspect-video flex items-center justify-center relative">
+            <div className="aspect-video relative bg-black">
               {vslStatus === "idle" && (
                 <button
                   onClick={startVSL}
-                  className="relative z-10 flex flex-col items-center gap-6 bg-none border-none cursor-pointer text-foreground group"
+                  aria-label="Reproduzir vídeo"
+                  className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-6 bg-black/40 border-none cursor-pointer text-foreground group"
                 >
                   <div className="w-20 h-20 rounded-full bg-primary-custom flex items-center justify-center transition-transform duration-200 group-hover:scale-110">
                     <Play className="ml-1 fill-current" style={{ color: "#0A0A0A" }} size={28} />
@@ -232,30 +233,24 @@ function NovosNordestinos() {
                 </button>
               )}
 
-              {vslStatus === "watching" && (
-                <div className="relative z-10 flex flex-col items-center gap-3">
-                  <div className="w-16 h-16 border-2 border-primary-custom/30 border-t-primary-custom rounded-full animate-spin"></div>
-                  <p className="text-[11px] text-white/70 uppercase tracking-[0.25em] font-semibold">
-                    Reproduzindo apresentação…
-                  </p>
-                  <p className="text-xs font-mono text-primary-custom">
-                    {Math.floor(vslElapsed / 60)
-                      .toString()
-                      .padStart(2, "0")}
-                    :{(vslElapsed % 60).toString().padStart(2, "0")}
-                  </p>
-                </div>
+              {vslStatus !== "idle" && (
+                <iframe
+                  title="vimeo-player"
+                  src="https://player.vimeo.com/video/1184950928?h=c0d54d152e&autoplay=1"
+                  className="absolute inset-0 w-full h-full"
+                  frameBorder="0"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+                  allowFullScreen
+                />
               )}
 
               {vslStatus === "finished" && (
-                <div className="relative z-10 text-foreground">
-                  <Sparkles
-                    size={48}
-                    className="text-primary-custom mx-auto mb-4 icon-gold-glow"
-                  />
-                  <p className="text-sm font-semibold mb-2">
-                    Apresentação concluída!
-                  </p>
+                <div className="absolute top-3 right-3 z-10 flex items-center gap-2 bg-background/80 backdrop-blur px-3 py-1.5 rounded-full">
+                  <Sparkles size={14} className="text-primary-custom" />
+                  <span className="text-[10px] uppercase tracking-[0.2em] text-foreground font-semibold">
+                    Liberado
+                  </span>
                 </div>
               )}
             </div>
