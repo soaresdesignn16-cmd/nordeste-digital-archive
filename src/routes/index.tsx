@@ -23,6 +23,8 @@ import {
   TrendingUp,
   Scale,
   Volume2,
+  DollarSign,
+  Clock,
 } from "lucide-react";
 import logoOnn from "@/assets/logo-onn.png";
 import vslBg from "@/assets/vsl-bg.png";
@@ -763,32 +765,57 @@ function SectionDivider() {
 }
 
 function ImpactSection() {
+  const cards = [
+    {
+      icon: <TrendingUp size={22} strokeWidth={2.4} />,
+      lead: "Sua autoridade cresce sozinha",
+      desc: "porque o seu nome passa a circular nos lugares certos, com o peso certo, sem você precisar correr atrás.",
+    },
+    {
+      icon: <Sparkles size={22} strokeWidth={2.4} />,
+      lead: "Seu valor percebido explode",
+      desc: "e o mercado começa a te enxergar como referência, não como mais uma opção entre tantas.",
+    },
+    {
+      icon: <DollarSign size={22} strokeWidth={2.4} />,
+      lead: "Seu ticket médio sobe exponencialmente",
+      desc: "com clientes que pagam pelo posicionamento, pela entrega e pela autoridade — não pelo menor preço.",
+    },
+    {
+      icon: <Clock size={22} strokeWidth={2.4} />,
+      lead: "Sua agenda finalmente desafoga",
+      desc: "você atende menos, com mais qualidade, e recupera tempo pra viver, pensar e crescer de verdade.",
+    },
+  ];
+
   return (
     <section className="py-24 relative bg-background">
-      <div className="max-w-7xl mx-auto px-6 text-center">
+      <div className="max-w-6xl mx-auto px-6">
         <Reveal>
-          <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-primary-custom mb-12 block text-gold-glow">
+          <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-primary-custom mb-6 block text-gold-glow text-left">
             ⚙️ Como isso muda sua vida
           </span>
-          <div className="grid md:grid-cols-2 gap-4 max-w-[800px] mx-auto mb-16">
-            {[
-              "Sua autoridade cresce sozinha",
-              "Seu valor percebido explode",
-              "Seu ticket médio sobe exponencialmente",
-              "Sua agenda finalmente desafoga",
-            ].map((text, i) => (
+          <h2 className="font-display font-black text-[clamp(28px,5vw,44px)] leading-[1.05] text-foreground mb-10 text-left max-w-[680px]">
+            Essa foi feita pra você que:
+          </h2>
+
+          <div className="grid md:grid-cols-2 gap-5">
+            {cards.map((c, i) => (
               <Reveal key={i} delay={i * 0.08}>
-                <TiltCard tilt={false} spotlight className="card-premium flex items-center gap-4 px-6 py-5 text-left transition-shadow duration-300 hover:border-primary-custom/45 hover:shadow-[0_0_35px_-10px_rgba(224,140,50,0.5)]">
-                  <div className="flex-shrink-0 w-7 h-7 rounded-full bg-primary-custom/15 border border-primary-custom/40 flex items-center justify-center text-primary-custom icon-gold-glow">
-                    <Check size={14} strokeWidth={3} />
+                <div className="card-premium relative px-6 py-6 text-left h-full rounded-xl border border-primary-custom/25 transition-shadow duration-300 hover:border-primary-custom/50 hover:shadow-[0_0_40px_-12px_rgba(224,140,50,0.55)]">
+                  <div className="w-11 h-11 rounded-lg bg-primary-custom/12 border border-primary-custom/35 flex items-center justify-center text-primary-custom icon-gold-glow mb-4">
+                    {c.icon}
                   </div>
-                  <span className="text-sm font-semibold">{text}</span>
-                </TiltCard>
+                  <p className="text-[15px] leading-relaxed text-muted-foreground">
+                    <span className="font-bold text-foreground">{c.lead}</span>{" "}
+                    <span className="text-muted-foreground">{c.desc}</span>
+                  </p>
+                </div>
               </Reveal>
             ))}
           </div>
 
-          <blockquote className="blockquote-gold max-w-[440px] mx-auto text-left">
+          <blockquote className="blockquote-gold max-w-[520px] mt-12 text-left">
             <p className="text-sm font-medium mb-1 not-italic">
               Você deixa de viver no{" "}
               <strong className="text-foreground">volume exaustivo</strong>…
