@@ -172,17 +172,20 @@ function NovosNordestinos() {
 
     let progress = 0;
     const interval = setInterval(() => {
-      progress += 8;
+      // Easing: começa devagar, acelera no final → ~3.5s total (cinematográfico)
+      const remaining = 100 - progress;
+      const step = Math.max(0.6, remaining * 0.025);
+      progress = Math.min(100, progress + step);
       if (progress >= 100) {
         progress = 100;
         clearInterval(interval);
         setTimeout(() => {
           setIsLoading(false);
           setIsUnlocked(true);
-        }, 200);
+        }, 400);
       }
       setLoadProgress(progress);
-    }, 40);
+    }, 35);
     return () => clearInterval(interval);
   }, [isLoading]);
 
