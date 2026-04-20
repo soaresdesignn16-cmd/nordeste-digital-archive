@@ -706,21 +706,21 @@ function AudienceSection() {
                 zIndex: i + 1,
               }}
             >
-              <TiltCard tilt spotlight intensity={3} className="card-premium stack-card-inner p-7 transition-shadow duration-300 hover:border-primary-custom/40 hover:shadow-[0_0_40px_-12px_rgba(224,140,50,0.4)]">
-                <div className="w-11 h-11 rounded-xl bg-primary-custom/15 border border-primary-custom/30 flex items-center justify-center text-primary-custom mb-4 shadow-[0_0_20px_-6px_rgba(224,140,50,0.5)]">
+              <div className="stack-card-inner p-8 md:p-10">
+                <div className="w-11 h-11 rounded-xl bg-primary-custom/15 border border-primary-custom/30 flex items-center justify-center text-primary-custom mb-5 shadow-[0_0_20px_-6px_rgba(224,140,50,0.5)]">
                   {p.icon}
                 </div>
                 <div className="editorial-meta mb-3 opacity-70">
                   0{i + 1} / 0{profiles.length}
                 </div>
-                <h3 className="text-lg md:text-xl font-black mb-2 leading-tight tracking-tight">
+                <h3 className="text-xl md:text-2xl font-black mb-3 leading-tight tracking-tight">
                   {p.title}
                 </h3>
-                <div className="w-10 h-px bg-primary-custom/40 mb-3" />
-                <p className="text-sm text-cream-muted leading-relaxed">
+                <div className="w-10 h-px bg-primary-custom/40 mb-4" />
+                <p className="text-sm md:text-base text-cream-muted leading-relaxed">
                   {p.desc}
                 </p>
-              </TiltCard>
+              </div>
             </div>
           ))}
         </div>
