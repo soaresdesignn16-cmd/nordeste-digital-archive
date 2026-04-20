@@ -26,6 +26,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import logoOnn from "@/assets/logo-onn.png";
+import vslBg from "@/assets/vsl-bg.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -194,7 +195,11 @@ function NovosNordestinos() {
         id="vsl-gate"
         className="min-h-[100svh] flex items-center justify-center pt-36 md:pt-32 pb-24 md:pb-20 relative overflow-hidden bg-background vsl-hero"
       >
-        <div className="vsl-hero__bg" aria-hidden="true" />
+        <div
+          className="vsl-hero__bg"
+          aria-hidden="true"
+          style={{ backgroundImage: `url(${vslBg})` }}
+        />
         <div className="vsl-hero__vignette" aria-hidden="true" />
 
         <div className="relative z-10 text-center max-w-[700px] mx-auto px-6 py-8 md:py-4">

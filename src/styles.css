@@ -359,7 +359,6 @@
   .vsl-hero__bg {
     position: absolute;
     inset: 0;
-    background-image: url('/src/assets/vsl-bg.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
