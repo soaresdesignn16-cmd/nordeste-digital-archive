@@ -699,7 +699,7 @@ function FounderSection() {
           </blockquote>
           <div className="mb-10">
             <BrutalistButton href="#cta-final" size="lg">
-              Quero entrar para o movimento <ArrowRight size={18} />
+              Quero entrar para o movimento <span aria-hidden="true" className="text-[0.85em] leading-none translate-y-[1px]">▶</span>
             </BrutalistButton>
           </div>
 
