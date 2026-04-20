@@ -22,7 +22,6 @@ import {
   Briefcase,
   TrendingUp,
   Scale,
-  ArrowRight,
   Volume2,
 } from "lucide-react";
 import logoOnn from "@/assets/logo-onn.png";
