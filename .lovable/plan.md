@@ -1,53 +1,80 @@
 
 
-## Plano — VSL como landing page (single-page contínua, sem fundo, loader 1x)
+## Plano — Stack 100% opaco + Final CTA com logo de fundo e frases-pílula
 
-### O que muda
+### 1. Corrigir empilhamento na seção "Esse movimento faz sentido pra você se"
 
-**1. Remover o fundo da VSL**
-Tira completamente a `<div>` com `backgroundImage: url(${heroBgFlame})` e o overlay escuro extra na seção `#vsl-gate`. Mantém só o glow laranja central (`MouseParallax` com blur) que já existia antes — visual limpo como no início. Também remove o `preload` da imagem `heroBgFlame` no `head()` da rota (não é mais usada na primeira dobra).
+**Problema atual:** Os cards são `position: sticky` mas o `card-premium` tem fundo translúcido — por isso as letras aparecem sobrepostas e o visual fica "bugado". No vídeo de referência, cada card cobre 100% o anterior.
 
-**2. VSL permanece no DOM como parte da landing page**
-Hoje, quando `isUnlocked === true`, o código faz `return` antecipado e desmonta a VSL inteira, renderizando só o `<main>` com `HeroIntro`, `Steps`, etc. Isso quebra a sensação de página única.
+**Mudanças em `src/styles.css` (`.stack-card-inner`):**
+- Forçar fundo **100% opaco** usando `--color-card` sólido (`hsl(24, 18%, 8%)`) com `background-color` direto, sem transparência.
+- Adicionar `border: 1px solid` na cor brasa suave para criar uma "lâmina" definida entre os cards.
+- Adicionar shadow forte por cima (`box-shadow: 0 -20px 40px -10px rgba(0,0,0,0.9)`) para criar a sensação de profundidade quando um card sobe sobre o outro.
+- Remover o `min-height: 85vh` excessivo do `.stack-card` e padronizar para que cada card preencha exatamente uma "tela" (`min-height: 100svh` no desktop, `90svh` mobile) e o sticky `top` seja calculado para centralizar verticalmente (`top: 50%; transform: translateY(-50%)` via wrapper, mantendo o sticky funcional).
+- Garantir `border-radius` consistente para que ao subir um card sobre o outro a borda superior fique arredondada e visível.
 
-Novo comportamento: **um único return** que renderiza sempre, na ordem:
+**Mudanças em `src/routes/index.tsx` (AudienceSection):**
+- No mapping dos cards, remover o `TiltCard` (o tilt + spotlight quebra a sensação de "cards rígidos empilhados") e usar uma `<div className="stack-card-inner card-solid p-7">` simples.
+- Centralizar verticalmente o card dentro do viewport durante a fixação.
+- Aumentar levemente o spacing interno (mais ar nas tipografias) para evitar leitura sobreposta enquanto a transição acontece.
+
+Resultado: cada card desce no centro, fica fixo, e o próximo entra por baixo cobrindo 100% — sem ver letra do anterior atrás.
+
+---
+
+### 2. Reescrever FinalCTA — logo ONN como fundo + frases-pílula passando por cima
+
+**Inspirado no segundo vídeo** (a parte em que o nome "Work" fica como background gigante e cards passam por cima dele).
+
+**Estrutura em `src/routes/index.tsx` (substituindo a função `FinalCTA`):**
+
+```text
+┌──────────────────────────────────────────────┐
+│  [LOGO ONN GIGANTE de fundo, opacidade ~12%] │
+│                                              │
+│   "Durante anos tentaram contar               │  ← título FIXO (sticky)
+│    a nossa história"                          │     no topo da seção
+│                                              │
+│   ┌──────────────────────────┐                │
+│   │  ⬤ Cobrar mais            │  ← pílula 1   │  scroll-stack
+│   └──────────────────────────┘                │     pílulas sobem
+│   ┌──────────────────────────┐                │     uma por uma
+│   │  ⬤ Atender menos          │  ← pílula 2   │     por cima do
+│   └──────────────────────────┘                │     título/logo
+│   ┌──────────────────────────┐                │
+│   │  ⬤ Ter mais tempo         │  ← pílula 3   │
+│   └──────────────────────────┘                │
+│   ┌──────────────────────────┐                │
+│   │  ⬤ Ser reconhecido        │  ← pílula 4   │
+│   └──────────────────────────┘                │
+│                                              │
+│   ┌──────────────────────────────┐            │
+│   │  Solicitar minha avaliação → │  ← CTA      │
+│   └──────────────────────────────┘            │
+└──────────────────────────────────────────────┘
 ```
-<VslNavbar />  (ou Navbar dependendo do estado — ver item 4)
-<section id="vsl-gate"> ...VSL com prompt "Role para baixo"... </section>
-{isLoading && <section id="brand-loader-inline">...</section>}
-{isUnlocked && (
-  <>
-    <PremiumBackground />
-    <main>
-      <HeroIntro />
-      <StepsSection />
-      ...
-      <Footer />
-    </main>
-  </>
-)}
-```
-Assim, depois de carregar, o lead pode rolar pra cima e **continua vendo a VSL no topo da mesma página**, exatamente como uma landing page.
 
-**3. Remover o auto-scroll-to-top no unlock**
-O `useEffect` que faz `window.scrollTo({ top: 0 })` quando `isUnlocked` vira `true` precisa sair. Em vez disso, quando o loader chega a 100%, rola suavemente até o início do `<main>` (`#hero-intro`), preservando a VSL acima. Ao voltar pra cima, o lead encontra a VSL intacta.
+**Implementação:**
+- Container da seção com `min-height: ~250vh` para dar comprimento de scroll suficiente.
+- Camada **fundo absoluto fixed dentro da seção**: `<LogoIcon>` em escala gigante (`width: 90vw; max-width: 900px`), centralizado, opacidade 0.10–0.15, com `position: sticky; top: 50%; transform: translateY(-50%)` — fica fixo enquanto a seção é rolada.
+- Sobre o fundo da logo, **título sticky** "Durante anos tentaram contar a nossa história" centralizado, em Poppins Black, fixado no topo (~`top: 20%`) durante toda a seção.
+- **Track de pílulas**: cada frase ("Cobrar mais", "Atender menos", "Ter mais tempo", "Ser reconhecido", "Posicionamento real", "Autoridade construída") em uma `<div>` pílula compacta (rounded-full, fundo brasa, borda brasa, padding `px-6 py-3`, font-bold) — separadas por `min-height: 60vh` para que cada uma entre em cena via scroll, atravessando o título e a logo de fundo.
+- Animação de entrada de cada pílula via `framer-motion` `whileInView` com `y: 80 → 0` e `opacity: 0 → 1`, easing suave.
+- **CTA final** centralizado depois das pílulas, na parte estática inferior da seção: botão `BrutalistButton` size xl + parágrafo de apoio.
 
-**4. Loader dispara só UMA vez**
-Hoje, o `useEffect` de detecção de scroll já tem guarda `if (!scrollPrompt || isLoading || isUnlocked) return` — então uma vez `isUnlocked === true`, o listener nunca mais dispara. Ótimo. Só precisa garantir que `scrollPrompt` permaneça `true` (não resetar) e que `isLoading` não volte a ser disparado. Já está coberto pelas guardas — apenas confirmar que não há regressão.
+**Adições em `src/styles.css`:**
+- `.logo-watermark` — classe utilitária para a logo de fundo (fixa via sticky + opacidade baixa + filtro drop-shadow brasa).
+- `.cta-pill` — pílula brasa com shadow + tracking, pronta para receber motion.
+- `.cta-stack` — wrapper com `min-height` controlado para o efeito de scroll-through.
 
-**5. Navbar**
-- Antes do unlock: continua mostrando `VslNavbar` (logo grande, CTA "Solicitar Avaliação").
-- Depois do unlock: troca para `Navbar` (compacto), mas como a VSL ainda está no DOM em cima, o `Navbar` fixo no topo cobre os dois conteúdos. O CTA do `Navbar` aponta para `#cta-final` (final da página) — comportamento de landing.
+---
 
-**6. Loader inline**
-Continua como `<section>` inline (não fullscreen), aparece entre a VSL e o conteúdo principal, e some quando `isUnlocked` vira `true` (ao desmontar, o conteúdo aparece logo abaixo, mantendo o scroll fluido).
-
-### Arquivo afetado
-- `src/routes/index.tsx` — unificar o return, remover background da VSL, remover scroll-to-top, ajustar navbar trocando após unlock.
+### Arquivos afetados
+- `src/styles.css` — atualizar `.stack-card-inner` (fundo opaco), adicionar `.logo-watermark`, `.cta-pill`, `.cta-stack`.
+- `src/routes/index.tsx` — limpar `AudienceSection` (remover TiltCard interno, ajustar wrapper sticky) e reescrever `FinalCTA` com logo de fundo + pílulas em scroll + CTA centralizado.
 
 ### Garantias
-- ✅ VSL sem fundo (limpa como antes)
-- ✅ Tudo em uma página só — pode rolar pra cima depois e ver a VSL
-- ✅ Loader só roda na primeira descida; rolar pra cima depois não reinicia nada
-- ✅ Sensação de landing page contínua: VSL → Loader (1x) → Conteúdo → Footer
+- ✅ Cards da seção "Esse movimento faz sentido…" cobrem 100% o anterior, sem texto fantasma sobreposto.
+- ✅ Última seção: logo ONN como marca d'água gigante de fundo, título fixo "Durante anos tentaram contar a nossa história", pílulas passando por cima uma a uma no scroll, e CTA final centralizado embaixo.
+- ✅ Mobile-first: tudo funciona com `svh` e `prefers-reduced-motion`.
 
