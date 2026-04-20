@@ -8,7 +8,6 @@ import {
   AnimatePresence,
 } from "motion/react";
 import {
-  Play,
   Check,
   ChevronRight,
   ChevronDown,
