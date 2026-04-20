@@ -8,7 +8,7 @@
 /*
  * Design system — Os Novos Nordestinos
  * Dark luxury, dourado editorial, premium do Nordeste.
- * Paleta: preto profundo + dourado (#C97B2A / #E08C32) + cream off-white (#F2F0EB).
+ * Paleta: preto profundo + dourado (#C97326 / #E08C32) + cream off-white (#F2F0E6).
  */
 
 @theme inline {
@@ -340,8 +340,8 @@
 
   /* VSL / vídeo placeholder — moldura dourada */
   .vsl-frame {
-    border: 2px solid rgba(201, 123, 42, 0.5);
-    box-shadow: 0 0 40px rgba(201, 123, 42, 0.15);
+    border: 2px solid rgba(201, 115, 38, 0.5);
+    box-shadow: 0 0 40px rgba(201, 115, 38, 0.15);
     border-radius: 8px;
     overflow: hidden;
   }
@@ -467,7 +467,7 @@
   .stack-card-inner {
     transform-origin: top center;
     transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-    box-shadow: 0 -1px 0 rgba(201, 123, 42, 0.15), 0 20px 60px -20px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 -1px 0 rgba(201, 115, 38, 0.15), 0 20px 60px -20px rgba(0, 0, 0, 0.8);
   }
 
   /* Deck-depth: cards "de baixo" afundam levemente conforme são cobertos */
@@ -567,17 +567,17 @@
   inset: 0;
   background:
     radial-gradient(ellipse 80% 60% at 50% 0%, #1a1000 0%, transparent 70%),
-    radial-gradient(ellipse 60% 40% at 15% 30%, rgba(201, 123, 42, 0.08), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 15% 30%, rgba(201, 115, 38, 0.08), transparent 60%),
     radial-gradient(ellipse 60% 40% at 85% 70%, rgba(224, 140, 50, 0.06), transparent 60%),
-    linear-gradient(180deg, #0A0A0A 0%, #0f0d0a 50%, #0A0A0A 100%);
+    linear-gradient(180deg, #0A0A0A 0%, #1a2218 50%, #0A0A0A 100%);
 }
 
 .bg-grid {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(201, 123, 42, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(201, 123, 42, 0.08) 1px, transparent 1px);
+    linear-gradient(rgba(201, 115, 38, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201, 115, 38, 0.08) 1px, transparent 1px);
   background-size: 40px 40px;
   opacity: 0.3;
 }
@@ -589,8 +589,8 @@
     0deg,
     transparent,
     transparent 3px,
-    rgba(201, 123, 42, 0.015) 3px,
-    rgba(201, 123, 42, 0.015) 4px
+    rgba(201, 115, 38, 0.015) 3px,
+    rgba(201, 115, 38, 0.015) 4px
   );
   opacity: 0.5;
 }
