@@ -539,10 +539,38 @@ function Nav() {
 function HeroIntro() {
   return (
     <section className="hero">
+      {/* Mobile-only: imagem fullscreen como fundo */}
+      <div className="md:hidden absolute inset-0 z-0">
+        <img
+          src={founderHeroGlow}
+          alt="Idealizador d'Os Novos Nordestinos"
+          loading="eager"
+          decoding="async"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        {/* Overlay gradiente para legibilidade */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.75) 35%, rgba(0,0,0,0.25) 65%, rgba(0,0,0,0.4) 100%)",
+          }}
+        />
+        {/* Badge ONN — 2K26 (mobile) */}
+        <div className="absolute top-6 right-6 z-10 flex items-center gap-3">
+          <span style={{ fontFamily: "var(--font)", fontWeight: 700, fontSize: 10, letterSpacing: "0.22em", color: "rgba(242,240,235,0.6)" }}>ONN</span>
+          <span className="block w-12 h-px" style={{ background: "rgba(242,240,235,0.25)" }} />
+          <span style={{ fontFamily: "var(--font)", fontWeight: 700, fontSize: 10, letterSpacing: "0.22em", color: "var(--accent)" }}>2K26</span>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-[55%_45%] min-h-[100vh] relative z-10">
-        {/* Esquerda */}
-        <div className="relative flex flex-col justify-center order-2 md:order-1" style={{ padding: "120px 24px 72px" }}>
-          <div className="max-w-[560px]">
+        {/* Esquerda — texto */}
+        <div
+          className="relative flex flex-col order-2 md:order-1 justify-end md:justify-center px-6 pb-10 pt-[60vh] md:pt-0 md:px-6"
+          style={{ paddingTop: undefined }}
+        >
+          <div className="max-w-[560px] md:pt-[120px] md:pb-[72px]">
             <div className="hero-anim hero-d-1">
               <span className="eyebrow">O Movimento</span>
             </div>
@@ -582,13 +610,10 @@ function HeroIntro() {
           </div>
         </div>
 
-        {/* Direita */}
-        <div className="hero-photo-wrap order-1 md:order-2"
+        {/* Direita — imagem (apenas desktop) */}
+        <div className="hero-photo-wrap order-1 md:order-2 hidden md:block"
           style={{ minHeight: "55vw", maxHeight: "100vh" }}>
-          <div className="hero-photo-glow" />
-          <img src={founderHeroGlow} alt="Idealizador d'Os Novos Nordestinos" loading="eager" decoding="async" className="pt-0 pb-0 my-0 mx-0 mb-0 mr-0" />
-          <div className="hero-photo-mask-left" />
-          <div className="hero-photo-mask-bottom" />
+          <img src={founderHeroGlow} alt="Idealizador d'Os Novos Nordestinos" loading="eager" decoding="async" />
 
           {/* Badge ONN — 2K26 */}
           <div className="absolute top-6 right-6 z-10 flex items-center gap-3">
