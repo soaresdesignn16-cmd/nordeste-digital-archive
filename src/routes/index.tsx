@@ -458,48 +458,42 @@ function HeroIntro() {
       <ArrowDivider />
       <div className="max-w-[1280px] mx-auto relative">
         <Reveal>
-          <div className="relative overflow-hidden min-h-[560px] md:min-h-[640px] bg-[#0a0606]">
+          <div className="relative overflow-hidden min-h-[420px] md:min-h-[640px] bg-[#0a0606]">
             {/* Foto do idealizador (glow embutido na própria imagem) */}
             <img
               src={founderHeroGlow}
               alt="Idealizador d'Os Novos Nordestinos"
               loading="eager"
               decoding="async"
-              className="pointer-events-none absolute right-[-8%] top-[42%] w-[108%] h-[60%] object-cover object-right-top opacity-95 md:right-0 md:top-0 md:h-full md:w-[60%] md:object-right md:opacity-100"
+              className="pointer-events-none absolute right-0 top-0 h-full w-[48%] object-cover object-left opacity-100 md:w-[60%] md:object-right"
             />
 
-            {/* Vinheta de fusão — desktop: gradiente horizontal à esquerda */}
+            {/* Vinheta de fusão horizontal — preto à esquerda funde no glow */}
             <div
               aria-hidden
-              className="pointer-events-none absolute inset-y-0 left-0 hidden md:block w-[55%] bg-gradient-to-r from-[#0a0606] via-[#0a0606]/85 to-transparent"
-            />
-
-            {/* Vinheta de fusão — mobile: gradiente vertical de baixo */}
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-x-0 top-[42%] h-[58%] md:hidden bg-gradient-to-t from-[#0a0606] via-[#0a0606]/70 to-transparent"
+              className="pointer-events-none absolute inset-y-0 left-0 w-[58%] md:w-[55%] bg-gradient-to-r from-[#0a0606] via-[#0a0606]/85 to-transparent"
             />
 
             {/* Texto à esquerda + CTA */}
-            <div className="relative grid grid-cols-1 md:grid-cols-2 gap-6 items-center min-h-[560px] md:min-h-[640px] p-6 md:p-12">
+            <div className="relative grid grid-cols-[1.05fr_0.95fr] md:grid-cols-2 gap-3 md:gap-6 items-center min-h-[420px] md:min-h-[640px] p-4 md:p-12">
               <div className="relative z-10 text-left max-w-[560px]">
                 {/* Pill "O MOVIMENTO" com linha decorativa */}
-                <div className="mb-5 flex items-center gap-3">
-                  <span className="h-px w-10 bg-primary-custom" />
-                  <span className="text-primary-custom uppercase tracking-[0.32em] text-xs font-semibold">
+                <div className="mb-3 md:mb-5 flex items-center gap-2 md:gap-3">
+                  <span className="h-px w-6 md:w-10 bg-primary-custom" />
+                  <span className="text-primary-custom uppercase tracking-[0.28em] md:tracking-[0.32em] text-[10px] md:text-xs font-semibold">
                     O Movimento
                   </span>
                 </div>
 
-                <p className="font-semibold text-cream-muted text-[clamp(15px,2.2vw,20px)] mb-3">
+                <p className="font-semibold text-cream-muted text-[clamp(12px,3vw,20px)] mb-2 md:mb-3">
                   Chegou a hora do Brasil conhecer
                 </p>
 
-                <h1 className="font-black leading-[0.95] tracking-[-0.01em] text-[clamp(28px,5.2vw,52px)] text-primary-custom drop-shadow-[0_2px_24px_rgba(224,140,50,0.45)]">
+                <h1 className="font-black leading-[0.95] tracking-[-0.01em] text-[clamp(20px,5.5vw,52px)] text-primary-custom drop-shadow-[0_2px_24px_rgba(224,140,50,0.45)] break-words">
                   OS NOVOS NORDESTINOS
                 </h1>
 
-                <p className="text-cream-muted text-[clamp(13px,2vw,17px)] leading-relaxed mt-6">
+                <p className="text-cream-muted text-[clamp(11px,2.6vw,17px)] leading-relaxed mt-3 md:mt-6">
                   <strong className="text-cream-base font-bold italic">
                     Empresário e profissionais nordestinos
                   </strong>{" "}
@@ -510,7 +504,7 @@ function HeroIntro() {
                   no nível que realmente são.
                 </p>
 
-                <div className="mt-8">
+                <div className="mt-5 md:mt-8">
                   <BrutalistButton href="#cta-final" size="lg">
                     Iniciar avaliação{" "}
                     <span
@@ -522,9 +516,6 @@ function HeroIntro() {
                   </BrutalistButton>
                 </div>
               </div>
-
-              {/* Coluna direita reservada visualmente para a foto */}
-              <div className="hidden md:block" />
             </div>
           </div>
         </Reveal>
