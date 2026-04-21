@@ -539,55 +539,51 @@ function Nav() {
 function HeroIntro() {
   return (
     <section className="hero">
-      {/* Mobile-only: imagem fullscreen como fundo */}
-      <div className="md:hidden absolute inset-0 z-0">
-        <img
-          src={founderHeroGlow}
-          alt="Idealizador d'Os Novos Nordestinos"
-          loading="eager"
-          decoding="async"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        {/* Overlay gradiente para legibilidade */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.75) 35%, rgba(0,0,0,0.25) 65%, rgba(0,0,0,0.4) 100%)",
-          }}
-        />
-        {/* Badge ONN — 2K26 (mobile) */}
-        <div className="absolute top-6 right-6 z-10 flex items-center gap-3">
-          <span style={{ fontFamily: "var(--font)", fontWeight: 700, fontSize: 10, letterSpacing: "0.22em", color: "rgba(242,240,235,0.6)" }}>ONN</span>
-          <span className="block w-12 h-px" style={{ background: "rgba(242,240,235,0.25)" }} />
-          <span style={{ fontFamily: "var(--font)", fontWeight: 700, fontSize: 10, letterSpacing: "0.22em", color: "var(--accent)" }}>2K26</span>
+      {/* Mobile: imagem no topo (70vh) com fade pro preto, texto abaixo no preto sólido */}
+      <div className="md:hidden relative z-10">
+        <div className="relative w-full" style={{ height: "70vh" }}>
+          <img
+            src={founderHeroGlow}
+            alt="Idealizador d'Os Novos Nordestinos"
+            loading="eager"
+            decoding="async"
+            className="absolute inset-0 w-full h-full"
+            style={{ objectFit: "cover", objectPosition: "top center" }}
+          />
+          {/* Fade natural pro preto na parte de baixo */}
+          <div
+            className="absolute inset-x-0 bottom-0 pointer-events-none"
+            style={{
+              height: "45%",
+              background:
+                "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 55%, #000 100%)",
+            }}
+          />
+          {/* Badge ONN — 2K26 */}
+          <div className="absolute top-6 right-6 z-10 flex items-center gap-3">
+            <span style={{ fontFamily: "var(--font)", fontWeight: 700, fontSize: 10, letterSpacing: "0.22em", color: "rgba(242,240,235,0.6)" }}>ONN</span>
+            <span className="block w-12 h-px" style={{ background: "rgba(242,240,235,0.25)" }} />
+            <span style={{ fontFamily: "var(--font)", fontWeight: 700, fontSize: 10, letterSpacing: "0.22em", color: "var(--accent)" }}>2K26</span>
+          </div>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-[55%_45%] min-h-[100vh] relative z-10">
-        {/* Esquerda — texto */}
-        <div
-          className="relative flex flex-col order-2 md:order-1 justify-end md:justify-center px-6 pb-10 pt-[60vh] md:pt-0 md:px-6"
-          style={{ paddingTop: undefined }}
-        >
-          <div className="max-w-[560px] md:pt-[120px] md:pb-[72px]">
+        {/* Bloco de texto no preto sólido, abaixo da imagem */}
+        <div className="bg-black px-6 pt-6 pb-16 -mt-px">
+          <div className="max-w-[560px] mx-auto">
             <div className="hero-anim hero-d-1">
               <span className="eyebrow">O Movimento</span>
             </div>
-
             <p className="pre-display hero-anim hero-d-2" style={{ marginTop: 10 }}>
               Chegou a hora do Brasil conhecer
             </p>
             <h1 className="typo-display accent-text hero-anim hero-d-3 text-5xl" style={{ marginTop: 2 }}>
               Os Novos<br />Nordestinos
             </h1>
-
             <p className="typo-body hero-anim hero-d-4" style={{ marginTop: 24 }}>
               <strong>Empresário e profissionais nordestinos</strong> que já constroem resultado, mas agora decidiram ser{" "}
               <span className="accent-text" style={{ fontWeight: 400 }}>vistos, valorizados e respeitados</span>{" "}
               no nível que realmente são.
             </p>
-
             <div className="flex flex-wrap items-center gap-6 hero-anim hero-d-5" style={{ marginTop: 36 }}>
               <a href="#cta-final" className="btn-primary">
                 Iniciar Avaliação
@@ -598,7 +594,46 @@ function HeroIntro() {
                 <ArrowRight size={14} />
               </a>
             </div>
+            <div className="hero-anim hero-d-6" style={{ marginTop: 56 }}>
+              <div style={{ borderTop: "1px solid var(--border-subtle)" }} />
+              <div className="grid grid-cols-3 gap-8" style={{ marginTop: 28 }}>
+                <Stat value={9} label="Estados Nordestinos" />
+                <Stat value={500} label="Empresários no Movimento" suffix="+" />
+                <Stat value={24} label="Posicionamento Ativo" suffix="/7" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
+      {/* Desktop: layout em duas colunas (inalterado) */}
+      <div className="hidden md:grid grid-cols-[55%_45%] min-h-[100vh] relative z-10">
+        <div className="relative flex flex-col justify-center" style={{ padding: "120px 24px 72px" }}>
+          <div className="max-w-[560px]">
+            <div className="hero-anim hero-d-1">
+              <span className="eyebrow">O Movimento</span>
+            </div>
+            <p className="pre-display hero-anim hero-d-2" style={{ marginTop: 10 }}>
+              Chegou a hora do Brasil conhecer
+            </p>
+            <h1 className="typo-display accent-text hero-anim hero-d-3 text-5xl" style={{ marginTop: 2 }}>
+              Os Novos<br />Nordestinos
+            </h1>
+            <p className="typo-body hero-anim hero-d-4" style={{ marginTop: 24 }}>
+              <strong>Empresário e profissionais nordestinos</strong> que já constroem resultado, mas agora decidiram ser{" "}
+              <span className="accent-text" style={{ fontWeight: 400 }}>vistos, valorizados e respeitados</span>{" "}
+              no nível que realmente são.
+            </p>
+            <div className="flex flex-wrap items-center gap-6 hero-anim hero-d-5" style={{ marginTop: 36 }}>
+              <a href="#cta-final" className="btn-primary">
+                Iniciar Avaliação
+                <Play size={13} fill="currentColor" />
+              </a>
+              <a href="#manifesto" className="btn-ghost">
+                Ver o manifesto
+                <ArrowRight size={14} />
+              </a>
+            </div>
             <div className="hero-anim hero-d-6" style={{ marginTop: 56 }}>
               <div style={{ borderTop: "1px solid var(--border-subtle)" }} />
               <div className="grid grid-cols-3 gap-8" style={{ marginTop: 28 }}>
@@ -610,12 +645,8 @@ function HeroIntro() {
           </div>
         </div>
 
-        {/* Direita — imagem (apenas desktop) */}
-        <div className="hero-photo-wrap order-1 md:order-2 hidden md:block"
-          style={{ minHeight: "55vw", maxHeight: "100vh" }}>
+        <div className="hero-photo-wrap" style={{ minHeight: "55vw", maxHeight: "100vh" }}>
           <img src={founderHeroGlow} alt="Idealizador d'Os Novos Nordestinos" loading="eager" decoding="async" />
-
-          {/* Badge ONN — 2K26 */}
           <div className="absolute top-6 right-6 z-10 flex items-center gap-3">
             <span style={{ fontFamily: "var(--font)", fontWeight: 700, fontSize: 10, letterSpacing: "0.22em", color: "rgba(242,240,235,0.6)" }}>ONN</span>
             <span className="block w-12 h-px" style={{ background: "rgba(242,240,235,0.25)" }} />
