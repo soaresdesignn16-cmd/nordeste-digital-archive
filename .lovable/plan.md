@@ -1,68 +1,31 @@
 
 
-## Plano — Substituir foto do idealizador e refazer a seção "Chegou a hora" do zero
+## Plano — Subir a foto do idealizador no mobile
 
-As 3 novas referências mostram que **o glow laranja agora vem embutido na própria foto do idealizador** (IMG-0047-2). A IMG-0043-2 é o resultado final desejado: fundo preto + foto com glow integrado à direita + texto à esquerda + CTA "INICIAR AVALIAÇÃO ▶". Muito mais simples e cinematográfico do que a versão atual (que empilha sol CSS + foto separada + máscaras).
+No mobile (viewport ~518px) a foto hoje fica colada no `bottom-0` da seção, ocupando só a metade inferior. Isso deixa um buraco visual entre o texto e a foto, e a foto parece "deslocada pra baixo", fora do enquadramento.
 
-### Composição final (igual à IMG-0043-2)
+### O que ajustar
 
-```text
-┌──────────────────────────────────────────────────┐
-│                                                  │
-│   ─── O MOVIMENTO                                │
-│                                    ░░▒▒▓▓██▓▓░░  │
-│   Chegou a hora do Brasil       ░░▒▓▓██🟠██▓▓░░  │
-│   conhecer                     ░▒▓██🟠👤🟠██▓░  │
-│   OS NOVOS                     ░▒▓██🟠👤🟠██▓░  │
-│   NORDESTINOS  (laranja)       ░▒▓██🟠👤🟠██▓░  │
-│                                 ░▒▓██🟠🟠██▓▒░   │
-│   Empresários e profissionais... │ ░▒▓████▓▒░│   │
-│                                                  │
-│   [ INICIAR AVALIAÇÃO ▶ ]                       │
-│                                                  │
-└──────────────────────────────────────────────────┘
-   fundo preto profundo (#0a0606)
-```
+**Arquivo:** `src/routes/index.tsx` — `HeroIntro` (linha 468)
 
-### Passo 1 — Trocar o asset da foto
+**Ajustes só na variante mobile do `<img>` (classes sem prefixo `md:`):**
 
-- Copiar `user-uploads://IMG-20260421-WA0047-2.jpg` → `src/assets/founder-hero-glow.jpg` (a foto nova já vem com o glow laranja embutido, fundo preto à esquerda).
-- Manter `founder-hero.jpg` antigo no repo (não remover) — apenas deixar de importar. O novo import será `founderHeroGlow`.
+1. **Subir a foto**: trocar `bottom-0` por `top-[42%]` (a foto passa a começar na metade da seção, ficando mais alta e encaixando logo abaixo do bloco de texto/CTA).
+2. **Aumentar a área visível**: trocar `h-[55%]` por `h-[60%]` pra foto não ficar cortada depois de subir.
+3. **Recentralizar horizontalmente**: trocar `right-[-15%] w-[110%]` por `right-[-8%] w-[108%]` — fica menos sangrada pro lado direito, mais centralizada no enquadramento.
+4. **Ajustar âncora de recorte**: trocar `object-right-bottom` por `object-right-top` — assim, ao subir a foto, a parte de cima do rosto/glow fica em destaque em vez do tronco.
 
-### Passo 2 — Remover o sol CSS (não é mais necessário)
+**Ajuste correspondente na vinheta mobile (linha 480):**
 
-Em `src/styles.css` (linhas 940–956), **deletar** o bloco `.hero-sun` + keyframe `pulse-sun` + classe `.animate-pulse-sun`. O glow agora vive dentro da imagem, então essas regras viram código morto.
+- Trocar `bottom-0 h-[55%]` por `top-[42%] h-[58%]` — a vinheta acompanha a nova posição da foto, garantindo que a transição suave fique alinhada com onde a foto começa, não no fim da seção.
 
-### Passo 3 — Reescrever `HeroIntro` do zero (`src/routes/index.tsx`, linhas 454–535)
-
-Estrutura nova, bem mais limpa, sem máscaras nem camadas empilhadas:
-
-- **Container externo**: `<section>` com `bg-[#0a0606]` (preto profundo idêntico à referência), padding vertical generoso, sem `rounded-[28px]` no card interno (a foto sangra até a borda igual à referência).
-- **Container interno**: `max-w-[1280px] mx-auto`, `relative overflow-hidden`, `min-h-[560px] md:min-h-[640px]`.
-- **Foto nova com glow embutido**: 
-  - Desktop: `absolute right-0 top-0 h-full w-[60%] object-cover object-right` — sangra na borda direita, alinhada ao topo/base.
-  - Mobile: `absolute right-[-15%] bottom-0 w-[110%] h-[55%] object-cover object-right-bottom opacity-90` — fica como "fundo" da metade inferior, texto sobrepondo no topo.
-  - **Sem máscara CSS** — a própria foto já tem fade preto à esquerda embutido.
-- **Vinheta de fusão à esquerda** (só desktop, garante leitura do texto): `absolute inset-y-0 left-0 w-[55%] bg-gradient-to-r from-[#0a0606] via-[#0a0606]/85 to-transparent`. No mobile, gradiente vertical de baixo: `bg-gradient-to-t from-[#0a0606] via-[#0a0606]/70 to-transparent` cobrindo a metade inferior.
-- **Bloco de texto** (z-10, à esquerda no desktop, em cima no mobile):
-  - Pill com linha decorativa: `─── O MOVIMENTO` em laranja `#E07A28`, uppercase, `tracking-[0.32em]`, `text-xs font-semibold`.
-  - Subtítulo branco: "Chegou a hora do Brasil conhecer" — Poppins 600, `text-[clamp(15px,2.2vw,20px)]`.
-  - Manchete: "OS NOVOS NORDESTINOS" em **uma linha só** no desktop (igual à IMG-0050-2/0043-2), Poppins Black 900, laranja `#E08C32`, `text-[clamp(28px,5.2vw,52px)]`, `tracking-[-0.01em]`. Quebra natural só em mobile estreito.
-  - Parágrafo: "**Empresário e profissionais nordestinos** que já constroem resultado, mas agora decidiram ser **vistos, valorizados e respeitados** no nível que realmente são." — palavras em destaque com `font-bold italic` (cream) e laranja respectivamente, exatamente como na referência.
-  - CTA `<BrutalistButton>` com classe `.btn-gold` (já padronizado): "INICIAR AVALIAÇÃO ▶".
-
-### Passo 4 — Limpeza dos imports
-
-- Remover `import founderHero from "@/assets/founder-hero.jpg"` (linha 28).
-- Adicionar `import founderHeroGlow from "@/assets/founder-hero-glow.jpg"`.
+**Desktop (classes `md:`)** — não muda nada, continua igual.
 
 ### Resultado
 
-Seção fica **idêntica à IMG-0043-2**: fundo preto, foto do idealizador com glow laranja natural à direita, texto cream/laranja à esquerda, CTA destacado abaixo. Mobile fica igual à IMG-0050-2 (texto + CTA na metade superior, foto sangrando no fundo da metade inferior). Código muito mais simples — 1 imagem, 1 vinheta, 1 bloco de texto. Sem sol CSS, sem máscaras, sem camadas duplicadas.
+No mobile a foto sobe ~40% e fica encaixada logo abaixo do CTA "Iniciar avaliação", sem aquele espaço vazio entre texto e foto. O glow laranja da foto aparece mais alto, integrando melhor com o título "OS NOVOS NORDESTINOS" laranja em cima — fica uma seção 1 coesa, exatamente como nas referências.
 
-### Arquivos alterados
+### Arquivo alterado
 
-- `src/assets/founder-hero-glow.jpg` — nova imagem (copiada do upload).
-- `src/routes/index.tsx` — reescrita de `HeroIntro` (linhas 454–535) + troca de import.
-- `src/styles.css` — remover bloco `.hero-sun` e `pulse-sun` (linhas 940–956).
+- `src/routes/index.tsx` — duas classes ajustadas (linhas 468 e 480), só variantes mobile.
 
