@@ -938,22 +938,7 @@
   backface-visibility: hidden;
 }
 
-/* === HERO INTRO — sol/brasa CSS puro === */
-.hero-sun {
-  background-image:
-    radial-gradient(circle at 70% 55%, #FFD24A 0%, #FFA528 8%, transparent 18%),
-    radial-gradient(circle at 70% 55%, #E07A28 0%, #A04510 25%, transparent 45%),
-    radial-gradient(circle at 70% 55%, #5a2410 0%, transparent 70%);
-  filter: blur(8px);
-}
-@keyframes pulse-sun {
-  0%, 100% { transform: scale(1); opacity: 0.95; }
-  50%      { transform: scale(1.04); opacity: 1; }
-}
-.animate-pulse-sun {
-  animation: pulse-sun 6s ease-in-out infinite;
-  transform-origin: 70% 55%;
-}
+
 
 /* Acessibilidade: respeitar quem prefere menos movimento */
 @media (prefers-reduced-motion: reduce) {
