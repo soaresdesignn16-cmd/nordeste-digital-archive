@@ -514,7 +514,7 @@ function HeroIntro() {
             <p className="text-sm text-foreground/90 mb-1">
               Você não precisa de mais clientes.
             </p>
-            <p className="text-sm font-black text-primary-custom uppercase tracking-wider text-gold-glow">
+            <p className="text-sm font-black text-primary-custom uppercase tracking-wider">
               Você precisa de clientes melhores.
             </p>
           </TiltCard>
