@@ -248,19 +248,23 @@
   .eyebrow {
     font-family: var(--font);
     font-weight: 700;
-    font-size: 11px;
-    letter-spacing: 0.22em;
+    font-size: 14px;
+    letter-spacing: 0.24em;
     text-transform: uppercase;
     color: var(--accent);
     display: inline-flex;
     align-items: center;
     gap: 14px;
     line-height: 1;
+    margin-bottom: 22px;
+  }
+  @media (min-width: 768px) {
+    .eyebrow { font-size: 15px; margin-bottom: 26px; }
   }
   .eyebrow::before {
     content: '';
     display: inline-block;
-    width: 28px;
+    width: 32px;
     height: 1px;
     background: var(--accent);
   }
@@ -268,7 +272,7 @@
   .eyebrow--center::after {
     content: '';
     display: inline-block;
-    width: 28px;
+    width: 32px;
     height: 1px;
     background: var(--accent);
   }

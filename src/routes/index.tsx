@@ -41,6 +41,7 @@ export const Route = createFileRoute("/")({
     ],
     links: [
       { rel: "preload", as: "image", href: logoOnn, fetchpriority: "high" },
+      { rel: "preload", as: "image", href: founderHeroGlow, fetchpriority: "high" },
     ],
   }),
   component: NovosNordestinos,
