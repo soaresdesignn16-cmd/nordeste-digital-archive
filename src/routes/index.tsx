@@ -464,8 +464,7 @@ function HeroIntro() {
               alt="Idealizador d'Os Novos Nordestinos"
               loading="eager"
               decoding="async"
-              className="pointer-events-none absolute right-0 top-0 h-full w-[55%] object-cover opacity-100 md:w-[60%] md:object-right"
-              style={{ objectPosition: "center 30%" }}
+              className="pointer-events-none absolute right-[-2%] top-[3%] h-[94%] w-[58%] object-contain object-[center_top] opacity-100 md:right-0 md:top-0 md:h-full md:w-[60%] md:object-cover md:object-[center_30%]"
             />
 
             {/* Vinheta de fusão horizontal — preto à esquerda funde no glow */}
