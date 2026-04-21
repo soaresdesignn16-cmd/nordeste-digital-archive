@@ -1,68 +1,98 @@
 
 
-## Plano — Efeito 3D nos cilindros (pílulas) antes do CTA final
+## Plano — Reconstruir a seção "Chegou a hora" do zero (efeito sol/brasa em CSS puro)
 
-A seção `FinalCTA` tem 6 pílulas ("Cobrar mais", "Atender menos", "Ter mais tempo", "Ser reconhecido", "Posicionamento real", "Autoridade construída") que aparecem logo depois da manchete *"Durante anos tentaram contar a nossa história"*. Hoje elas só fazem fade-in e ficam estáticas — vou transformá-las em **cilindros vivos com profundidade** pra dar respiração visual antes da CTA final.
+Analisando as 5 imagens de referência, fica claro o que o usuário quer:
 
-### O efeito (referência do vídeo Pinterest)
+1. **IMG-0048** = só o fundo: preto à esquerda → grande sol laranja/amarelo brilhante à direita (puro glow radial)
+2. **IMG-0049** = só a foto do idealizador, recortada limpa em fundo preto
+3. **IMG-0047** = foto do idealizador sobreposta ao fundo da imagem 0048
+4. **IMG-0043 / 0050** = composição final desktop: texto à esquerda + sol no centro-direita + foto sobreposta
+5. **IMG-0046** = versão mobile (mesma ideia, foto à direita-baixo)
 
-Cada pílula vai parecer um **cilindro metálico flutuando**, com 3 camadas de movimento:
+Vou **reconstruir tudo em CSS puro** — sem usar nenhuma das imagens de referência como fundo. O "sol" laranja vai ser feito com **gradientes radiais empilhados**, e a foto atual (`founder-hero.jpg`) entra por cima.
 
-1. **Levitação contínua** — sobe e desce 6px num ciclo de 3.5s, cada pílula com delay diferente (0.2s entre elas) → cria onda orgânica.
-2. **Brilho especular viajando** — uma faixa de luz branca translúcida atravessa a superfície da esquerda pra direita a cada 4s, simulando reflexo metálico de cilindro polido.
-3. **Inclinação 3D no hover/scroll** — leve `rotateX(8deg)` permanente + `rotateY` reagindo ao mouse (desktop). Sombra projetada embaixo pulsa junto com a levitação, dando ilusão de "objeto solto no espaço".
+### Composição visual (camada por camada)
 
 ```text
-ANTES (pílula chapada):              DEPOIS (cilindro 3D flutuante):
-                                      ╱─────────────╲   ← brilho viajando
-  [• COBRAR MAIS]                    │ ●  COBRAR MAIS │  ← inclinada, com volume
-                                      ╲─────────────╱
-   sombra simples                       ▒▒▒▒▒▒▒▒▒▒▒    ← sombra que pulsa
-                                       (sobe/desce 6px)
+Camada 4 (frente):  [ Foto do idealizador, recortada, à direita ]
+Camada 3:           [ Sol/brasa CSS — núcleo amarelo intenso ]
+Camada 2:           [ Halo laranja médio + halo externo escuro ]
+Camada 1 (fundo):   [ Preto sólido com leve textura escura ]
+
+         ┌──────────────────────────────────────────────────┐
+         │  ─── O MOVIMENTO                                 │
+         │                                  ☀ ← sol CSS    │
+         │  Chegou a hora do Brasil       ░░░▒▒▓▓██▓▓▒▒░░  │
+         │  conhecer                     ░░▒▓██🟡██▓▒░░    │
+         │  OS NOVOS                     ░▒▓██🟡🟡██▓▒░    │
+         │  NORDESTINOS  (laranja)       ░▒▓██🟠🟠██▓▒░ ← foto
+         │                                ░▒▓██🟠██▓▒░     │ aqui
+         │  texto descritivo...            ░░▒▓██▓▒░░       │
+         │                                                  │
+         │  [ INICIAR AVALIAÇÃO ▶ ]                        │
+         └──────────────────────────────────────────────────┘
 ```
 
-### Mudanças técnicas
+### Mudanças em `src/routes/index.tsx` — função `HeroIntro` (linhas 454–525)
 
-**1. `src/styles.css` — classe `.cta-pill` (linhas 599–624)**
+**1. Reescrever todo o bloco do `<Reveal>` com nova estrutura de camadas:**
 
-- Adicionar `transform-style: preserve-3d` + `perspective: 600px` no container pai.
-- Aplicar `rotateX(6deg)` permanente pra dar inclinação de cilindro visto de cima.
-- Gradiente reforçado com 3 stops pra sugerir curvatura cilíndrica:
-  `linear-gradient(180deg, #F5A24A 0%, #E07A28 50%, #A04D12 100%)`.
-- Sombra dupla: sombra projetada abaixo (`0 24px 40px -12px`) + glow ambiente.
-- Pseudo-elemento `::before` com faixa branca translúcida em `skewX(-20deg)` + animação `pill-shimmer 4s infinite` (delay escalonado por pílula via `--shimmer-delay`).
-- Pseudo-elemento `::after` com gradiente top→bottom pra simular highlight de cilindro polido (linha de luz no topo).
-- `overflow: hidden` no pill pra clipar o shimmer.
+- **Container externo**: `relative overflow-hidden bg-[#0a0606]` com `min-h-[640px] md:min-h-[680px]`.
+- **Camada do "sol" (puro CSS)** — div absoluta posicionada à direita, criada com 3 gradientes radiais empilhados via `background-image`:
+  ```
+  radial-gradient(circle at 70% 55%, #FFD24A 0%, #FFA528 8%, transparent 18%),  /* núcleo amarelo intenso */
+  radial-gradient(circle at 70% 55%, #E07A28 0%, #A04510 25%, transparent 45%), /* halo laranja médio */
+  radial-gradient(circle at 70% 55%, #5a2410 0%, transparent 70%)               /* halo externo marrom-escuro */
+  ```
+  - `filter: blur(8px)` pra suavizar as bordas dos círculos.
+  - Mobile: sol mais centralizado e menor (`w-[80%] right-[-10%]`); desktop: sol maior à direita (`w-[60%] right-[-5%]`).
+  - Animação sutil `pulse-sun 6s ease-in-out infinite` (escala de 1.0→1.04 e opacidade 0.95→1.0) → dá vida sem distrair.
 
-**2. Novas keyframes em `src/styles.css`**
+- **Camada de vinheta escura** — gradiente preto radial nas bordas pra fundir o sol no fundo:
+  `bg-[radial-gradient(ellipse_at_70%_55%,transparent_30%,#0a0606_85%)]`.
 
+- **Foto do idealizador** — sobreposta ao sol, à direita:
+  - Desktop: `absolute right-0 bottom-0 w-[55%] h-[105%] object-contain object-bottom-right`.
+  - Mobile: `absolute right-[-10%] bottom-0 w-[85%] h-[60%] object-contain object-bottom-right`.
+  - Máscara mais sutil que a atual (só nas bordas externas, pra não apagar o rosto): `[mask-image:linear-gradient(to_left,black_60%,transparent_100%)]` no desktop, mantendo o rosto totalmente visível e fundindo apenas a lateral esquerda da foto no fundo.
+
+- **Texto à esquerda** — bloco posicionado em coluna 1 do grid, alinhado à esquerda:
+  - Pill "O MOVIMENTO" laranja com linha decorativa à esquerda (igual à referência: `─── O MOVIMENTO`).
+  - "Chegou a hora do Brasil conhecer" em branco, peso médio.
+  - "OS NOVOS / NORDESTINOS" em laranja `#E07A28` Poppins Black.
+  - Parágrafo descritivo com palavras-chave em itálico negrito.
+  - **CTA "INICIAR AVALIAÇÃO ▶"** abaixo do texto (usando o `BrutalistButton` existente com `.btn-gold` que já foi padronizado) — isso é novo, antes não tinha CTA aqui.
+
+**2. Pill "O MOVIMENTO" estilizado** — substituir o `<SectionPill>` por uma versão com linha decorativa:
+```jsx
+<div className="flex items-center gap-3">
+  <span className="h-px w-10 bg-primary-custom" />
+  <span className="text-primary-custom uppercase tracking-[0.3em] text-xs font-semibold">O Movimento</span>
+</div>
+```
+
+**3. Remover** o card `TiltCard` "Você não precisa de mais clientes / Você precisa de clientes melhores" (linhas 509–520) — não aparece nas referências dessa seção. Pode ser movido pra outra seção depois se o usuário quiser, mas pra ficar igual às fotos sai daqui.
+
+**4. Remover** o glow externo antigo (`absolute right-[-10%] ... blur-[120px]` linha 462–465) — substituído pelo sol CSS novo.
+
+### Mudanças em `src/styles.css`
+
+Adicionar a keyframe da pulsação do sol:
 ```css
-@keyframes pill-float {
-  0%, 100% { transform: perspective(600px) rotateX(6deg) translateY(0); }
-  50%      { transform: perspective(600px) rotateX(6deg) translateY(-6px); }
+@keyframes pulse-sun {
+  0%, 100% { transform: scale(1); opacity: 0.95; }
+  50%      { transform: scale(1.04); opacity: 1; }
 }
-@keyframes pill-shimmer {
-  0%, 60%  { transform: translateX(-120%) skewX(-20deg); }
-  100%     { transform: translateX(220%) skewX(-20deg); }
-}
-@keyframes pill-shadow-pulse {
-  0%, 100% { opacity: 0.55; transform: translateX(-50%) scale(1); }
-  50%      { opacity: 0.8;  transform: translateX(-50%) scale(1.08); }
-}
+.animate-pulse-sun { animation: pulse-sun 6s ease-in-out infinite; }
 ```
-
-**3. `src/routes/index.tsx` — `FinalCTA` (linhas 849–865)**
-
-- Adicionar wrapper `<div className="pill-3d-stage">` em volta da pílula pra aplicar `perspective` e a sombra projetada (div absoluta separada animada com `pill-shadow-pulse`).
-- Passar `style={{ "--shimmer-delay": ${i * 0.6}s, "--float-delay": ${i * 0.2}s }}` em cada pílula → cada cilindro brilha e flutua em momentos levemente diferentes (efeito onda).
-- Manter o `motion.div` de entrada (fade-in inicial), animação contínua via CSS depois.
 
 ### Resultado
 
-As 6 pílulas deixam de ser tags chapadas e viram **cilindros vivos** que respiram, refletem luz e flutuam — exatamente o efeito de profundidade que o vídeo de referência mostra. Cria tensão visual e movimento crescente que conduz naturalmente o olho até a CTA final ("Solicitar minha avaliação estratégica"), aumentando o impacto do fechamento.
+A seção fica **idêntica às referências**: fundo preto profundo com um sol laranja-amarelo brilhante atrás do idealizador, texto à esquerda alinhado, CTA logo abaixo. Tudo reconstruído em CSS — nenhuma das imagens enviadas é usada como asset, só servem como referência visual. A foto atual do idealizador (`founder-hero.jpg`) permanece, agora posicionada com máscara lateral suave pra fundir naturalmente no glow.
 
 ### Arquivos alterados
 
-- `src/styles.css` — atualizar `.cta-pill`, adicionar keyframes e `.pill-3d-stage`.
-- `src/routes/index.tsx` — wrapper das pílulas no `FinalCTA` com delays escalonados.
+- `src/routes/index.tsx` — reescrita da função `HeroIntro` (linhas 454–525), removendo o TiltCard final.
+- `src/styles.css` — adicionar keyframe `pulse-sun` e classe utilitária.
 
