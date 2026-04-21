@@ -454,56 +454,47 @@ function ArrowDivider() {
 /* ── HERO INTRO — bloco de abertura após o VSL ── */
 function HeroIntro() {
   return (
-    <section className="relative pt-16 pb-12 px-4 md:px-6">
-      <div className="max-w-[1100px] mx-auto">
+    <section className="relative pt-16 pb-12 px-4 md:px-6 overflow-hidden">
+      <ArrowDivider />
+      <div className="max-w-[1200px] mx-auto px-1 md:px-8 py-10 md:py-20 relative">
         <Reveal>
-          <ArrowDivider />
-          <TiltCard
-            tilt
-            spotlight
-            className="relative overflow-hidden rounded-[24px] border border-primary-custom/15 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.85)] min-h-[520px] sm:min-h-[600px] md:min-h-[680px]"
-          >
-            {/* Camada 1 — foto do idealizador (com "OWN" embutido) */}
-            <img
-              src={founderHero}
-              alt="Idealizador d'Os Novos Nordestinos"
-              loading="eager"
-              decoding="async"
-              className="absolute inset-0 w-full h-full object-cover object-[center_30%]"
-            />
+          {/* Glow laranja cinematográfico atrás da foto */}
+          <div
+            aria-hidden
+            className="absolute right-[-10%] top-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-custom/10 blur-[120px] rounded-full pointer-events-none"
+          />
 
-            {/* Camada 2 — gradiente vertical (profundidade + legibilidade) */}
-            <div
-              aria-hidden
-              className="absolute inset-0 bg-gradient-to-b from-black/15 via-black/50 to-black"
-            />
+          {/* Grid 2 colunas no desktop, stack vertical no mobile */}
+          <div className="relative grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-center">
+            {/* Mobile: foto no topo / Desktop: foto à direita (col 2) */}
+            <div className="relative order-1 md:order-2 w-full h-[55vh] min-h-[360px] md:h-[640px] md:min-h-[640px]">
+              <img
+                src={founderHero}
+                alt="Idealizador d'Os Novos Nordestinos"
+                loading="eager"
+                decoding="async"
+                className="absolute inset-0 w-full h-full object-contain object-center md:object-right [mask-image:radial-gradient(ellipse_at_center,black_50%,transparent_82%)] [-webkit-mask-image:radial-gradient(ellipse_at_center,black_50%,transparent_82%)]"
+              />
+            </div>
 
-            {/* Camada 2b — vinheta radial sutil (foco no rosto) */}
-            <div
-              aria-hidden
-              className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(0,0,0,0.45)_100%)]"
-            />
-
-            {/* Camada 3 — conteúdo */}
-            <div className="absolute inset-x-0 bottom-0 px-5 md:px-12 pb-9 md:pb-14 text-center">
-              <div className="mb-4 flex justify-center">
+            {/* Texto — col 1 no desktop, abaixo no mobile */}
+            <div className="relative order-2 md:order-1 text-center md:text-left">
+              <div className="mb-4 flex justify-center md:justify-start">
                 <SectionPill>O Movimento</SectionPill>
               </div>
 
-              {/* Linha de introdução — pequena, espaçada, em caps */}
               <p className="font-semibold uppercase tracking-[0.18em] text-cream-muted text-[clamp(11px,1.6vw,14px)] mb-3">
                 Chegou a hora do Brasil conhecer
               </p>
 
-              {/* Manchete principal — Poppins Black, encorpada, duas linhas */}
-              <h1 className="font-black leading-[0.92] tracking-[-0.02em] text-[clamp(40px,10vw,96px)]">
+              <h1 className="font-black leading-[0.92] tracking-[-0.02em] text-[clamp(40px,9vw,84px)]">
                 <span className="block text-cream-base">OS NOVOS</span>
                 <span className="block text-primary-custom drop-shadow-[0_2px_24px_rgba(224,140,50,0.55)]">
                   NORDESTINOS
                 </span>
               </h1>
 
-              <p className="text-cream-muted text-[clamp(13px,2vw,17px)] leading-relaxed max-w-[620px] mx-auto mt-6">
+              <p className="text-cream-muted text-[clamp(13px,2vw,17px)] leading-relaxed max-w-[560px] mx-auto md:mx-0 mt-6">
                 Empresários e profissionais que já constroem resultado, mas
                 agora decidiram ser{" "}
                 <strong className="text-foreground">
@@ -512,13 +503,13 @@ function HeroIntro() {
                 no nível que realmente são.
               </p>
             </div>
-          </TiltCard>
+          </div>
 
-          {/* Card "clientes melhores" — fora do visual, abaixo */}
+          {/* Card "clientes melhores" — abaixo do bloco */}
           <TiltCard
             tilt={false}
             spotlight
-            className="card-premium max-w-[420px] mx-auto p-6 mt-10 text-center"
+            className="card-premium max-w-[420px] mx-auto p-6 mt-12 text-center"
           >
             <p className="text-sm text-foreground/90 mb-1">
               Você não precisa de mais clientes.
