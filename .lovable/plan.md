@@ -1,98 +1,68 @@
 
 
-## Plano — Reconstruir a seção "Chegou a hora" do zero (efeito sol/brasa em CSS puro)
+## Plano — Substituir foto do idealizador e refazer a seção "Chegou a hora" do zero
 
-Analisando as 5 imagens de referência, fica claro o que o usuário quer:
+As 3 novas referências mostram que **o glow laranja agora vem embutido na própria foto do idealizador** (IMG-0047-2). A IMG-0043-2 é o resultado final desejado: fundo preto + foto com glow integrado à direita + texto à esquerda + CTA "INICIAR AVALIAÇÃO ▶". Muito mais simples e cinematográfico do que a versão atual (que empilha sol CSS + foto separada + máscaras).
 
-1. **IMG-0048** = só o fundo: preto à esquerda → grande sol laranja/amarelo brilhante à direita (puro glow radial)
-2. **IMG-0049** = só a foto do idealizador, recortada limpa em fundo preto
-3. **IMG-0047** = foto do idealizador sobreposta ao fundo da imagem 0048
-4. **IMG-0043 / 0050** = composição final desktop: texto à esquerda + sol no centro-direita + foto sobreposta
-5. **IMG-0046** = versão mobile (mesma ideia, foto à direita-baixo)
-
-Vou **reconstruir tudo em CSS puro** — sem usar nenhuma das imagens de referência como fundo. O "sol" laranja vai ser feito com **gradientes radiais empilhados**, e a foto atual (`founder-hero.jpg`) entra por cima.
-
-### Composição visual (camada por camada)
+### Composição final (igual à IMG-0043-2)
 
 ```text
-Camada 4 (frente):  [ Foto do idealizador, recortada, à direita ]
-Camada 3:           [ Sol/brasa CSS — núcleo amarelo intenso ]
-Camada 2:           [ Halo laranja médio + halo externo escuro ]
-Camada 1 (fundo):   [ Preto sólido com leve textura escura ]
-
-         ┌──────────────────────────────────────────────────┐
-         │  ─── O MOVIMENTO                                 │
-         │                                  ☀ ← sol CSS    │
-         │  Chegou a hora do Brasil       ░░░▒▒▓▓██▓▓▒▒░░  │
-         │  conhecer                     ░░▒▓██🟡██▓▒░░    │
-         │  OS NOVOS                     ░▒▓██🟡🟡██▓▒░    │
-         │  NORDESTINOS  (laranja)       ░▒▓██🟠🟠██▓▒░ ← foto
-         │                                ░▒▓██🟠██▓▒░     │ aqui
-         │  texto descritivo...            ░░▒▓██▓▒░░       │
-         │                                                  │
-         │  [ INICIAR AVALIAÇÃO ▶ ]                        │
-         └──────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────┐
+│                                                  │
+│   ─── O MOVIMENTO                                │
+│                                    ░░▒▒▓▓██▓▓░░  │
+│   Chegou a hora do Brasil       ░░▒▓▓██🟠██▓▓░░  │
+│   conhecer                     ░▒▓██🟠👤🟠██▓░  │
+│   OS NOVOS                     ░▒▓██🟠👤🟠██▓░  │
+│   NORDESTINOS  (laranja)       ░▒▓██🟠👤🟠██▓░  │
+│                                 ░▒▓██🟠🟠██▓▒░   │
+│   Empresários e profissionais... │ ░▒▓████▓▒░│   │
+│                                                  │
+│   [ INICIAR AVALIAÇÃO ▶ ]                       │
+│                                                  │
+└──────────────────────────────────────────────────┘
+   fundo preto profundo (#0a0606)
 ```
 
-### Mudanças em `src/routes/index.tsx` — função `HeroIntro` (linhas 454–525)
+### Passo 1 — Trocar o asset da foto
 
-**1. Reescrever todo o bloco do `<Reveal>` com nova estrutura de camadas:**
+- Copiar `user-uploads://IMG-20260421-WA0047-2.jpg` → `src/assets/founder-hero-glow.jpg` (a foto nova já vem com o glow laranja embutido, fundo preto à esquerda).
+- Manter `founder-hero.jpg` antigo no repo (não remover) — apenas deixar de importar. O novo import será `founderHeroGlow`.
 
-- **Container externo**: `relative overflow-hidden bg-[#0a0606]` com `min-h-[640px] md:min-h-[680px]`.
-- **Camada do "sol" (puro CSS)** — div absoluta posicionada à direita, criada com 3 gradientes radiais empilhados via `background-image`:
-  ```
-  radial-gradient(circle at 70% 55%, #FFD24A 0%, #FFA528 8%, transparent 18%),  /* núcleo amarelo intenso */
-  radial-gradient(circle at 70% 55%, #E07A28 0%, #A04510 25%, transparent 45%), /* halo laranja médio */
-  radial-gradient(circle at 70% 55%, #5a2410 0%, transparent 70%)               /* halo externo marrom-escuro */
-  ```
-  - `filter: blur(8px)` pra suavizar as bordas dos círculos.
-  - Mobile: sol mais centralizado e menor (`w-[80%] right-[-10%]`); desktop: sol maior à direita (`w-[60%] right-[-5%]`).
-  - Animação sutil `pulse-sun 6s ease-in-out infinite` (escala de 1.0→1.04 e opacidade 0.95→1.0) → dá vida sem distrair.
+### Passo 2 — Remover o sol CSS (não é mais necessário)
 
-- **Camada de vinheta escura** — gradiente preto radial nas bordas pra fundir o sol no fundo:
-  `bg-[radial-gradient(ellipse_at_70%_55%,transparent_30%,#0a0606_85%)]`.
+Em `src/styles.css` (linhas 940–956), **deletar** o bloco `.hero-sun` + keyframe `pulse-sun` + classe `.animate-pulse-sun`. O glow agora vive dentro da imagem, então essas regras viram código morto.
 
-- **Foto do idealizador** — sobreposta ao sol, à direita:
-  - Desktop: `absolute right-0 bottom-0 w-[55%] h-[105%] object-contain object-bottom-right`.
-  - Mobile: `absolute right-[-10%] bottom-0 w-[85%] h-[60%] object-contain object-bottom-right`.
-  - Máscara mais sutil que a atual (só nas bordas externas, pra não apagar o rosto): `[mask-image:linear-gradient(to_left,black_60%,transparent_100%)]` no desktop, mantendo o rosto totalmente visível e fundindo apenas a lateral esquerda da foto no fundo.
+### Passo 3 — Reescrever `HeroIntro` do zero (`src/routes/index.tsx`, linhas 454–535)
 
-- **Texto à esquerda** — bloco posicionado em coluna 1 do grid, alinhado à esquerda:
-  - Pill "O MOVIMENTO" laranja com linha decorativa à esquerda (igual à referência: `─── O MOVIMENTO`).
-  - "Chegou a hora do Brasil conhecer" em branco, peso médio.
-  - "OS NOVOS / NORDESTINOS" em laranja `#E07A28` Poppins Black.
-  - Parágrafo descritivo com palavras-chave em itálico negrito.
-  - **CTA "INICIAR AVALIAÇÃO ▶"** abaixo do texto (usando o `BrutalistButton` existente com `.btn-gold` que já foi padronizado) — isso é novo, antes não tinha CTA aqui.
+Estrutura nova, bem mais limpa, sem máscaras nem camadas empilhadas:
 
-**2. Pill "O MOVIMENTO" estilizado** — substituir o `<SectionPill>` por uma versão com linha decorativa:
-```jsx
-<div className="flex items-center gap-3">
-  <span className="h-px w-10 bg-primary-custom" />
-  <span className="text-primary-custom uppercase tracking-[0.3em] text-xs font-semibold">O Movimento</span>
-</div>
-```
+- **Container externo**: `<section>` com `bg-[#0a0606]` (preto profundo idêntico à referência), padding vertical generoso, sem `rounded-[28px]` no card interno (a foto sangra até a borda igual à referência).
+- **Container interno**: `max-w-[1280px] mx-auto`, `relative overflow-hidden`, `min-h-[560px] md:min-h-[640px]`.
+- **Foto nova com glow embutido**: 
+  - Desktop: `absolute right-0 top-0 h-full w-[60%] object-cover object-right` — sangra na borda direita, alinhada ao topo/base.
+  - Mobile: `absolute right-[-15%] bottom-0 w-[110%] h-[55%] object-cover object-right-bottom opacity-90` — fica como "fundo" da metade inferior, texto sobrepondo no topo.
+  - **Sem máscara CSS** — a própria foto já tem fade preto à esquerda embutido.
+- **Vinheta de fusão à esquerda** (só desktop, garante leitura do texto): `absolute inset-y-0 left-0 w-[55%] bg-gradient-to-r from-[#0a0606] via-[#0a0606]/85 to-transparent`. No mobile, gradiente vertical de baixo: `bg-gradient-to-t from-[#0a0606] via-[#0a0606]/70 to-transparent` cobrindo a metade inferior.
+- **Bloco de texto** (z-10, à esquerda no desktop, em cima no mobile):
+  - Pill com linha decorativa: `─── O MOVIMENTO` em laranja `#E07A28`, uppercase, `tracking-[0.32em]`, `text-xs font-semibold`.
+  - Subtítulo branco: "Chegou a hora do Brasil conhecer" — Poppins 600, `text-[clamp(15px,2.2vw,20px)]`.
+  - Manchete: "OS NOVOS NORDESTINOS" em **uma linha só** no desktop (igual à IMG-0050-2/0043-2), Poppins Black 900, laranja `#E08C32`, `text-[clamp(28px,5.2vw,52px)]`, `tracking-[-0.01em]`. Quebra natural só em mobile estreito.
+  - Parágrafo: "**Empresário e profissionais nordestinos** que já constroem resultado, mas agora decidiram ser **vistos, valorizados e respeitados** no nível que realmente são." — palavras em destaque com `font-bold italic` (cream) e laranja respectivamente, exatamente como na referência.
+  - CTA `<BrutalistButton>` com classe `.btn-gold` (já padronizado): "INICIAR AVALIAÇÃO ▶".
 
-**3. Remover** o card `TiltCard` "Você não precisa de mais clientes / Você precisa de clientes melhores" (linhas 509–520) — não aparece nas referências dessa seção. Pode ser movido pra outra seção depois se o usuário quiser, mas pra ficar igual às fotos sai daqui.
+### Passo 4 — Limpeza dos imports
 
-**4. Remover** o glow externo antigo (`absolute right-[-10%] ... blur-[120px]` linha 462–465) — substituído pelo sol CSS novo.
-
-### Mudanças em `src/styles.css`
-
-Adicionar a keyframe da pulsação do sol:
-```css
-@keyframes pulse-sun {
-  0%, 100% { transform: scale(1); opacity: 0.95; }
-  50%      { transform: scale(1.04); opacity: 1; }
-}
-.animate-pulse-sun { animation: pulse-sun 6s ease-in-out infinite; }
-```
+- Remover `import founderHero from "@/assets/founder-hero.jpg"` (linha 28).
+- Adicionar `import founderHeroGlow from "@/assets/founder-hero-glow.jpg"`.
 
 ### Resultado
 
-A seção fica **idêntica às referências**: fundo preto profundo com um sol laranja-amarelo brilhante atrás do idealizador, texto à esquerda alinhado, CTA logo abaixo. Tudo reconstruído em CSS — nenhuma das imagens enviadas é usada como asset, só servem como referência visual. A foto atual do idealizador (`founder-hero.jpg`) permanece, agora posicionada com máscara lateral suave pra fundir naturalmente no glow.
+Seção fica **idêntica à IMG-0043-2**: fundo preto, foto do idealizador com glow laranja natural à direita, texto cream/laranja à esquerda, CTA destacado abaixo. Mobile fica igual à IMG-0050-2 (texto + CTA na metade superior, foto sangrando no fundo da metade inferior). Código muito mais simples — 1 imagem, 1 vinheta, 1 bloco de texto. Sem sol CSS, sem máscaras, sem camadas duplicadas.
 
 ### Arquivos alterados
 
-- `src/routes/index.tsx` — reescrita da função `HeroIntro` (linhas 454–525), removendo o TiltCard final.
-- `src/styles.css` — adicionar keyframe `pulse-sun` e classe utilitária.
+- `src/assets/founder-hero-glow.jpg` — nova imagem (copiada do upload).
+- `src/routes/index.tsx` — reescrita de `HeroIntro` (linhas 454–535) + troca de import.
+- `src/styles.css` — remover bloco `.hero-sun` e `pulse-sun` (linhas 940–956).
 
