@@ -1,58 +1,73 @@
 
 
-## Plano — Redesign da seção "Chegou a hora do Brasil conhecer Os Novos Nordestinos"
+## Plano — Foto do idealizador "saindo de dentro da página" (sem card flutuante)
 
-A foto enviada (1366×768, retrato do idealizador com "OWN" já embutido como marca d'água na própria imagem) será usada como fundo principal da seção. Como o "OWN" já está na foto, **não vou adicionar texto de marca d'água via CSS** — apenas reforçar a profundidade com gradiente preto.
+Remover totalmente o aspecto de "card" da seção e integrar a foto ao fundo da página, com o texto convivendo no mesmo plano — exatamente como nas duas referências (O Grande Salto / Posturologia).
 
-### 1. Adicionar a foto como asset
-- Copiar `user-uploads://IMG-20260420-WA0105-2.jpg` para `src/assets/founder-hero.jpg`.
-- Importar no topo de `src/routes/index.tsx`: `import founderHero from "@/assets/founder-hero.jpg"`.
-
-### 2. Reescrever o componente `HeroIntro` (linhas 458–491 de `src/routes/index.tsx`)
-
-**Camadas (de trás pra frente):**
+### O que muda visualmente
 
 ```text
-┌─────────────────────────────────────────────┐
-│ Foto do idealizador (já tem "OWN" embutido) │ camada 1
-│ ▓ Gradiente preto vertical top→bottom ▓▓▓▓ │ camada 2 (profundidade)
-│                                             │
-│              [ O MOVIMENTO ]                │ camada 3 (conteúdo)
-│  Chegou a hora do Brasil conhecer           │  cream
-│        Os Novos Nordestinos                 │  brasa
-│  Empresários e profissionais que…           │  cream-muted
-└─────────────────────────────────────────────┘
+ANTES (card flutuante):                  DEPOIS (integrado ao fundo):
+┌─────────────────────────┐
+│▓ foto + gradiente ▓▓▓▓▓│              [ O MOVIMENTO ]
+│▓                       ▓│              Chegou a hora do Brasil conhecer
+│▓     [pill]            ▓│                                    ╱▔▔▔▔▔╲
+│▓     OS NOVOS          ▓│              OS NOVOS             │ rosto │
+│▓     NORDESTINOS       ▓│              NORDESTINOS          │idealiz│
+│▓     descrição         ▓│              descrição…             ╲___╱  (sem borda,
+└─────────────────────────┘              (texto à esquerda)            funde no preto)
+   ↑ borda + shadow + bg                 ↑ sem card, sem borda, sem shadow
 ```
 
-**Especificações:**
-- **Container**: `relative overflow-hidden rounded-[24px] max-w-[1100px] mx-auto border border-primary-custom/15 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.85)]`.
-- **Altura**: `min-h-[520px] sm:min-h-[600px] md:min-h-[680px]` — espaço suficiente pro retrato + texto sem cortar nada no mobile (515px de largura).
-- **Foto (camada 1)**: `<img src={founderHero} loading="eager" decoding="async" className="absolute inset-0 w-full h-full object-cover object-[center_30%]">`. No mobile, o `object-position: center 30%` mantém o rosto visível.
-- **Gradiente (camada 2)**: `absolute inset-0 bg-gradient-to-b from-black/15 via-black/50 to-black` — leve no topo (mostra o ambiente e o "OWN" da foto), forte embaixo (funde no fundo preto e dá legibilidade pro texto).
-- **Vinheta lateral sutil opcional**: `absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(0,0,0,0.4)_100%)]` — dá foco no rosto, profundidade extra.
-- **Conteúdo (camada 3)**: `absolute inset-x-0 bottom-0 px-6 md:px-12 pb-10 md:pb-14 text-center`.
-  - `SectionPill` "O MOVIMENTO" centralizado, `mb-5`.
-  - Headline `<h1>` Poppins Black `text-[clamp(26px,4.8vw,52px)] leading-[1.1]`:
-    - Linha 1: "Chegou a hora do Brasil conhecer" — `text-cream-base`.
-    - Linha 2: "Os Novos Nordestinos" — `text-primary-custom drop-shadow-[0_2px_20px_rgba(224,140,50,0.5)]`.
-  - Parágrafo: `text-cream-muted text-[clamp(14px,2.2vw,18px)] leading-relaxed max-w-[680px] mx-auto mt-5` mantendo `<strong>vistos, valorizados e respeitados</strong>`.
-- **Card "clientes melhores"** (`TiltCard` que hoje está dentro do `HeroIntro`): mover pra fora, abaixo do card visual com `mt-10`. Continua sendo um remate forte sem poluir a foto.
+### 1. Remover o "card" em volta da foto (`src/routes/index.tsx`, linhas 459–515)
 
-### 3. Profundidade real (mobile + desktop)
-- Envolver o card com `TiltCard tilt spotlight` (já existente) — leve resposta 3D no desktop, neutro no mobile.
-- Manter o `ParallaxLayer offset={40}` no wrapper externo — sensação de "subir flutuando" ao rolar.
-- Drop shadow grande no container faz o card descolar do fundo escuro do site.
-- No mobile (515px), o gradiente vertical garante legibilidade do texto sem blur (zero custo de performance).
+- Remover o `<TiltCard tilt spotlight>` que envolve a foto.
+- Remover `border`, `rounded-[24px]`, `shadow-[…]`, `min-h-[…]` do container.
+- Substituir por um `<div className="relative">` simples (sem moldura).
 
-### 4. Performance
-- Foto importada como ES module (`@/assets/...`) → Vite hash + otimização automática.
-- `loading="eager" decoding="async"` (primeira dobra após VSL).
-- Zero texto de marca d'água via CSS (já está na foto) — economia de render.
+### 2. Foto fundida ao fundo
 
-### Resumo das alterações
-- **`src/assets/founder-hero.jpg`** (novo) — foto enviada (idealizador com "OWN" já embutido).
-- **`src/routes/index.tsx`** — import no topo + reescrita do componente `HeroIntro` (linhas 458–491). Card "clientes melhores" movido pra fora do card visual.
+- A imagem deixa de ser `object-cover` esticada num retângulo.
+- Vira uma figura recortada à direita (desktop) / topo (mobile), com `object-contain` e máscara CSS pra fundir as bordas no preto:
+  ```tsx
+  <img
+    src={founderHero}
+    className="
+      absolute pointer-events-none select-none
+      /* desktop: à direita, ocupa 55% da largura */
+      md:right-0 md:top-1/2 md:-translate-y-1/2 md:w-[55%] md:h-[120%] md:object-contain md:object-right
+      /* mobile: topo, centralizada */
+      right-1/2 translate-x-1/2 top-0 w-[110%] h-[60%] object-contain object-top
+      [mask-image:radial-gradient(ellipse_at_center,black_55%,transparent_85%)]
+      [-webkit-mask-image:radial-gradient(ellipse_at_center,black_55%,transparent_85%)]
+    "
+  />
+  ```
+- Máscara radial faz o cabelo/ombros desaparecerem suavemente no fundo preto da página — efeito "saindo de dentro da página".
+- Sem `object-cover` e sem container fechado, a foto não parece mais "recortada num card".
 
-### Resultado final
-Seção com retrato do idealizador como fundo cinematográfico (com o "OWN" da própria foto aparecendo atrás), gradiente preto fundindo a foto no fundo do site, pill laranja, headline bicolor (cream + brasa) e descrição clara — profundidade real e idêntica em mobile (515px) e desktop, dentro da estética premium editorial da LP.
+### 3. Layout do texto ao lado da foto (igual às referências)
+
+- **Desktop (≥768px)**: grid 2 colunas — texto à esquerda (col 1, `text-left`), foto à direita (col 2). Texto alinhado à esquerda, manchete `OS NOVOS / NORDESTINOS` continua bicolor (cream + brasa) em Poppins Black.
+- **Mobile**: stack vertical — foto no topo (50–60vh, fundindo no preto embaixo via máscara), texto centralizado abaixo.
+- Container externo: `max-w-[1200px] mx-auto px-5 md:px-8 py-20 md:py-28 relative` — sem borda, sem fundo, sem shadow.
+
+### 4. Profundidade real (sem virar card de novo)
+
+- Glow laranja sutil atrás da foto: `<div className="absolute right-0 top-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-custom/10 blur-[120px] rounded-full" />` — dá luz cinematográfica vinda de trás do retrato, igual ao verde da ref 1.
+- Manter `ParallaxLayer` no wrapper externo (já existente em `index.tsx` linha 345).
+- Drop shadow no texto da manchete continua, mas o container não tem shadow — só a foto "respira" no fundo.
+- "OWN" já embutido na foto continua aparecendo naturalmente atrás do rosto (sem CSS extra).
+
+### 5. Card "clientes melhores"
+
+- Permanece como está (já está fora do bloco visual desde o último ajuste), apenas mantido com `mt-12`.
+
+### Resultado
+
+A foto do idealizador deixa de parecer um "banner retangular dentro da página" e passa a parecer parte da página — como se ele estivesse saindo do fundo preto. O texto convive ao lado (desktop) ou abaixo (mobile), no mesmo plano, sem moldura. Estética idêntica às referências enviadas, mantendo a identidade premium da LP (cream + brasa + Poppins Black).
+
+### Arquivo alterado
+
+- `src/routes/index.tsx` — reescrita do componente `HeroIntro` (linhas 455–534).
 
