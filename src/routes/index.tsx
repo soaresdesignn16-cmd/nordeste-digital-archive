@@ -856,9 +856,18 @@ function FinalCTA() {
             transition={{ duration: 0.5, delay: i * 0.05, ease: [0.22, 1, 0.36, 1] }}
             className="flex justify-center"
           >
-            <div className="cta-pill">
-              <span className="pill-dot" />
-              {phrase}
+            <div
+              className="pill-3d-stage"
+              style={{
+                ["--shimmer-delay" as string]: `${i * 0.6}s`,
+                ["--float-delay" as string]: `${i * 0.2}s`,
+              } as React.CSSProperties}
+            >
+              <div className="cta-pill">
+                <span className="pill-dot" />
+                {phrase}
+              </div>
+              <span className="pill-shadow" aria-hidden="true" />
             </div>
           </motion.div>
         ))}
