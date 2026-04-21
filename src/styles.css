@@ -310,9 +310,9 @@
     color: #0A0A0A;
   }
   .btn-gold-lg {
-    padding: 22px 44px;
-    font-size: 17px;
-    border-radius: 16px;
+    padding: 18px 36px;
+    font-size: 16px;
+    border-radius: 12px;
   }
   .btn-gold-xl {
     padding: 26px 56px;
@@ -334,13 +334,13 @@
     letter-spacing: -0.04em;
   }
 
-  /* Card / bloco premium — degradê preto → cinza com borda laranja */
+  /* Card / bloco premium — degradê preto-quente, mais claro com borda laranja */
   .card-premium {
     background: linear-gradient(
       135deg,
-      hsl(0, 0%, 6%) 0%,
-      hsl(0, 0%, 10%) 50%,
-      hsl(0, 0%, 18%) 100%
+      hsl(24, 12%, 10%) 0%,
+      hsl(24, 10%, 14%) 50%,
+      hsl(24, 8%, 22%) 100%
     );
     border: 1px solid hsla(30, 80%, 55%, 0.55);
     border-radius: 8px;
@@ -532,7 +532,7 @@
   .stack-card-inner {
     width: 100%;
     /* 100% opaco — cobre completamente o card anterior */
-    background-color: hsl(24 18% 8%);
+    background: linear-gradient(140deg, hsl(24, 12%, 11%) 0%, hsl(24, 10%, 16%) 60%, hsl(24, 9%, 22%) 100%);
     border: 1px solid rgba(201, 115, 38, 0.28);
     border-radius: 1.25rem;
     transform-origin: top center;
