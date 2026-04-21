@@ -358,10 +358,6 @@ function VSLGate({
       </div>
 
       <div className="relative z-10 text-center max-w-[760px] mx-auto">
-        <div className="hero-anim hero-d-1 flex justify-center">
-          <span className="eyebrow eyebrow--center">&#8203;</span>
-        </div>
-
         <h1 className="typo-headline hero-anim hero-d-2" style={{ marginTop: 14 }}>
           Antes de qualquer coisa,
           <br />
