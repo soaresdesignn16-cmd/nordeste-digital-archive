@@ -596,24 +596,80 @@
       opacity: 0.12;
     }
   }
+  .pill-3d-stage {
+    position: relative;
+    perspective: 600px;
+    transform-style: preserve-3d;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .pill-3d-stage .pill-shadow {
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    width: 78%;
+    height: 14px;
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 70%);
+    filter: blur(6px);
+    transform: translateX(-50%);
+    animation: pill-shadow-pulse 3.5s ease-in-out infinite;
+    animation-delay: var(--float-delay, 0s);
+    pointer-events: none;
+    z-index: 0;
+  }
   .cta-pill {
+    position: relative;
     display: inline-flex;
     align-items: center;
     gap: 0.6rem;
     padding: 0.85rem 1.6rem;
     border-radius: 9999px;
-    background: linear-gradient(135deg, rgba(224, 140, 50, 0.95), rgba(201, 115, 38, 0.95));
-    border: 1px solid rgba(255, 220, 170, 0.35);
+    background: linear-gradient(180deg, #F5A24A 0%, #E07A28 50%, #A04D12 100%);
+    border: 1px solid rgba(255, 220, 170, 0.4);
     color: #fff;
     font-weight: 800;
     font-size: 0.95rem;
     letter-spacing: 0.04em;
     text-transform: uppercase;
     box-shadow:
-      0 20px 50px -15px rgba(224, 140, 50, 0.55),
-      0 0 0 1px rgba(0, 0, 0, 0.25),
-      inset 0 1px 0 rgba(255, 255, 255, 0.25);
-    backdrop-filter: blur(6px);
+      0 24px 40px -12px rgba(224, 122, 40, 0.55),
+      0 0 0 1px rgba(0, 0, 0, 0.3),
+      inset 0 1.5px 0 rgba(255, 230, 190, 0.55),
+      inset 0 -2px 0 rgba(120, 50, 8, 0.35);
+    overflow: hidden;
+    transform-style: preserve-3d;
+    animation: pill-float 3.5s ease-in-out infinite;
+    animation-delay: var(--float-delay, 0s);
+    z-index: 1;
+    will-change: transform;
+  }
+  .cta-pill::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.45) 50%, transparent 100%);
+    transform: translateX(-120%) skewX(-20deg);
+    animation: pill-shimmer 4s ease-in-out infinite;
+    animation-delay: var(--shimmer-delay, 0s);
+    pointer-events: none;
+    z-index: 2;
+  }
+  .cta-pill::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    background: linear-gradient(180deg, rgba(255, 230, 190, 0.25) 0%, transparent 35%, transparent 65%, rgba(0, 0, 0, 0.18) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+  .cta-pill > * {
+    position: relative;
+    z-index: 3;
   }
   .cta-pill .pill-dot {
     width: 0.5rem;
@@ -621,6 +677,18 @@
     border-radius: 9999px;
     background: #fff;
     box-shadow: 0 0 12px rgba(255, 255, 255, 0.85);
+  }
+  @keyframes pill-float {
+    0%, 100% { transform: perspective(600px) rotateX(6deg) translateY(0); }
+    50%      { transform: perspective(600px) rotateX(6deg) translateY(-6px); }
+  }
+  @keyframes pill-shimmer {
+    0%, 55%  { transform: translateX(-120%) skewX(-20deg); }
+    100%     { transform: translateX(320%) skewX(-20deg); }
+  }
+  @keyframes pill-shadow-pulse {
+    0%, 100% { opacity: 0.55; transform: translateX(-50%) scale(1); }
+    50%      { opacity: 0.8;  transform: translateX(-50%) scale(1.08); }
   }
 
   /* ── ScrollingHistoryHero — typography wall + collage de imagens ── */
