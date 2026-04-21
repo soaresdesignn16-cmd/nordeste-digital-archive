@@ -1,61 +1,91 @@
 
 
-## Plano — Foto lado a lado com texto no mobile (igual à referência desktop)
+## Plano — Ajustes finais: foto do idealizador, blocos, scroll-reveal, tipografia e CTAs
 
-A referência (IMG-0043-3) mostra **texto à esquerda + foto à direita lado a lado**, ambos visíveis na mesma altura. Hoje no mobile (518px) a foto fica empilhada embaixo do texto, criando aquele desencaixe. Vou trazer o layout side-by-side da referência também pro mobile, ajustando só as proporções.
+São 6 ajustes objetivos, todos focados em encaixe visual e hierarquia.
 
-### O que muda em `src/routes/index.tsx` — `HeroIntro` (linhas 454-534)
+### 1. Foto do idealizador (mobile + desktop) — IMG-0043-4 e IMG-0046-2
 
-**1. Layout — virar 2 colunas desde mobile (em vez de 1 coluna empilhada):**
+**Problema atual:** a foto está cortando só o ombro porque `objectPosition: "30% center"` puxa pra esquerda da imagem e não centraliza o homem. Coluna de 48% no mobile também tá estreita demais.
 
-- Linha 484: trocar `grid-cols-1 md:grid-cols-2` por `grid-cols-[1.05fr_0.95fr] md:grid-cols-2` — duas colunas já no mobile, texto ocupando ~52% e foto ~48%.
-- Reduzir padding mobile: `p-4 md:p-12` (era `p-6`) pra dar mais respiro pro texto na coluna estreita.
-- Reduzir `min-h` mobile: `min-h-[420px] md:min-h-[640px]` (era 560px) — proporção mais próxima da referência (16:9).
+**Ajustes em `src/routes/index.tsx` — `HeroIntro` (linhas 457-525):**
+- **Subir a seção pra colar na VSL:** trocar `pt-16 pb-12` por `pt-4 pb-8` e remover o `<ArrowDivider />` interno (linha 458) — a foto fica logo abaixo do "DESLIZE PARA BAIXO" da VSL, igual à IMG-0046-2.
+- **Foto no enquadramento certo:** trocar `objectPosition: "30% center"` por `objectPosition: "center 30%"` (mostra o rosto + corpo + mãos cruzadas, não corta no ombro).
+- **Largura da coluna da foto:** mobile vai de `w-[48%]` → `w-[55%]`, desktop mantém `md:w-[60%]`. Texto vira `grid-cols-[0.95fr_1.05fr] md:grid-cols-2`.
+- **Vinheta:** acompanha — `w-[50%] md:w-[55%]` (deixa mais foto visível à direita).
+- **Botão "Iniciar avaliação" menor:** trocar `size="lg"` → `size="md"` (botão padrão, não esticado, libera espaço pra foto).
 
-**2. Foto — passa a ocupar a coluna direita inteira, não mais sangrar como fundo:**
+### 2. Reveal lateral alternado em `ImpactSection` ("Essa foi feita pra você que…")
 
-- Linha 463-469: reescrever as classes do `<img>`:
-  - Mobile: `absolute right-0 top-0 h-full w-[48%] object-cover object-left-center opacity-100`  
-    (foto cobre a metade direita inteira, do topo ao fundo, com âncora no rosto à esquerda da imagem pra garantir que o rosto fique visível em pouca largura)
-  - Desktop: mantém `md:right-0 md:top-0 md:h-full md:w-[60%] md:object-right`
-- Resultado: a foto fica do mesmo tamanho que o bloco de texto à esquerda, alinhada no topo — exatamente como na referência.
+**Comportamento:** ao rolar pra baixo, cada card entra de um lado alternado (1º esquerda, 2º direita, 3º esquerda, 4º direita); ao rolar pra cima e sair da viewport, somem (efeito reverso).
 
-**3. Vinheta — simplificar pra só fusão horizontal (igual desktop e mobile):**
+**Ajustes em `src/routes/index.tsx` — `ImpactSection` (linhas 794-808):**
+- Substituir `<Reveal key={i} delay={i * 0.08}>` por um `<motion.div>` direto com:
+  - `initial={{ opacity: 0, x: i % 2 === 0 ? -80 : 80 }}`
+  - `whileInView={{ opacity: 1, x: 0 }}`
+  - `exit={{ opacity: 0, x: i % 2 === 0 ? -80 : 80 }}` 
+  - `viewport={{ amount: 0.3 }}` (sem `once: true`, pra reaparecer/sumir nos dois sentidos)
+  - `transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: i * 0.05 }}`
 
-- Remover a vinheta vertical mobile (linhas 477-481) — não é mais necessária porque a foto não está mais embaixo.
-- Manter só a horizontal (linhas 471-475), mas ativar em mobile também: trocar `hidden md:block` por bloco visível sempre, com largura adaptativa: `w-[58%] md:w-[55%]`. Garante a fusão preto→glow logo onde o texto encosta na foto.
+### 3. Reduzir espaço vazio entre seções
 
-**4. Texto — reduzir tamanhos no mobile pra caber na coluna mais estreita:**
+**Ajustes em `src/routes/index.tsx`:**
+- `StepsSection` (linha 550): `py-20` → `py-12`.
+- `AudienceSection` (linha 635): `py-20` → `py-12`.
+- `FounderSection` (linha 687): `py-20` → `py-12`.
+- `ImpactSection` (linha 784): `py-24` → `py-14`.
+- `DuranteAnosHeadline` (linha 415): `py-24 md:py-32` → `py-14 md:py-20`.
+- `FinalCTA` (linha 838): `py-24` → `py-16`.
+- `ArrowDivider` (linha 444): `py-10` → `py-4`.
+- `SectionDivider` (linha 753): `py-2` → mantém.
 
-- Linha 494 (subtítulo): trocar `text-[clamp(15px,2.2vw,20px)]` por `text-[clamp(12px,3vw,20px)]`.
-- Linha 498 (manchete "OS NOVOS NORDESTINOS"): trocar `text-[clamp(28px,5.2vw,52px)]` por `text-[clamp(20px,5.5vw,52px)]` e adicionar `break-words` — quebra natural em 2 linhas no mobile estreito (igual à referência desktop que mostra em 1 linha, mas o mobile precisa quebrar).
-- Linha 502 (parágrafo): trocar `text-[clamp(13px,2vw,17px)]` por `text-[clamp(11px,2.6vw,17px)]`.
-- Linha 487 (pill "O Movimento"): adicionar `text-[10px] md:text-xs` pra reduzir no mobile.
-- Linha 514 (BrutalistButton): manter `size="lg"` mas reduzir gap `mt-6 md:mt-8`.
+### 4. Cor dos blocos — gradiente preto um pouco mais claro
 
-**5. Remover** a coluna direita vazia (linha 527 `<div className="hidden md:block" />`) — não precisa mais já que o grid já reserva o espaço por proporção.
+**Ajuste em `src/styles.css`:**
+- `.card-premium` (linhas 337-352): clarear o gradiente, indo de `hsl(0, 0%, 6%) → hsl(0, 0%, 10%) → hsl(0, 0%, 18%)` para `hsl(24, 12%, 10%) → hsl(24, 10%, 14%) → hsl(24, 8%, 22%)` (preto morno, mais claro, com leve tom quente que combina com o laranja).
+- `.stack-card-inner` (linha 535): trocar `background-color: hsl(24 18% 8%)` por `background: linear-gradient(140deg, hsl(24, 12%, 11%) 0%, hsl(24, 10%, 16%) 60%, hsl(24, 9%, 22%) 100%)`.
 
-### Resultado visual no mobile (518px)
+Isso afeta todos os blocos das seções (Steps, Audience, Impact) de uma vez.
 
-```text
-┌─────────────────────────────────┐
-│ ─── O MOVIMENTO       ░▒▓██▓░  │
-│                      ░▒▓████▓░ │
-│ Chegou a hora       ░▒▓██👤█▓░ │
-│ do Brasil conhecer  ░▒▓██👤█▓░ │
-│ OS NOVOS            ░▒▓██👤█▓░ │
-│ NORDESTINOS         ░▒▓████▓░  │
-│                      ░▒▓███▓░  │
-│ Empresário e prof... ░▒▓██▓░   │
-│                                 │
-│ [INICIAR AVALIAÇÃO ▶]           │
-└─────────────────────────────────┘
-   52% texto         48% foto
-```
+### 5. Tipografia/hierarquia em `FounderSection` ("Quem está por trás" + "Muito prazer")
 
-Idêntico à hierarquia da referência: pill → subtítulo branco → manchete laranja → parágrafo → CTA, tudo à esquerda; foto à direita ocupando a coluna inteira com o glow integrando naturalmente.
+**Ajustes em `src/routes/index.tsx` — `FounderSection` (linhas 694-704):**
+- **"Muito prazer," vira destaque (Poppins, não itálico):** trocar a span por:
+  ```text
+  text-cream-base font-extrabold uppercase tracking-[0.4em] text-xs
+  ```
+  e mover pra ANTES da manchete (sobe na hierarquia), com uma linha decorativa à esquerda (igual ao "O MOVIMENTO" do hero). Remove `italic` e `font-normal`.
+- **Manchete "Os Novos Nordestinos":** mantém o `headline-gradient`, mas reduz pra `text-[clamp(32px,6vw,60px)]` (tava grande demais).
+- **Subtítulo (linha 702-704):** trocar `text-sm font-semibold tracking-[0.15em]` por `text-[11px] font-bold tracking-[0.3em]` — vira micro-legenda elegante, não compete com a manchete.
+- Toda a seção já usa `font-sans` que é Poppins (default do projeto), só garantindo a remoção do `italic` em "Muito prazer,".
 
-### Arquivo alterado
+### 6. CTA final em `FinalCTA` — botão menor + redesign igual à IMG-0114
 
-- `src/routes/index.tsx` — ajustes nas linhas 461, 463-469, 471-481, 484, 487, 494, 498, 502, 514, 527 (todas dentro da função `HeroIntro`).
+**Imagem de referência:** botão laranja sólido, retangular largo, texto preto bold, seta preta cheia (▶) à direita.
+
+**Ajustes:**
+
+**6a. `src/routes/index.tsx` — `FinalCTA` (linhas 879-891):**
+- Trocar `size="xl"` → `size="lg"` no botão "Solicitar minha avaliação estratégica".
+- Reduzir o texto: "Solicitar avaliação estratégica" (sem "minha" — fica mais curto e cabe melhor).
+- Aumentar gap entre blockquote/botão/parágrafo: `gap-6` → `gap-5` (compacta).
+- Centralizar e limitar largura do botão pra não esticar: adicionar `className="max-w-[420px] w-full justify-center"` no `BrutalistButton`.
+
+**6b. `src/styles.css` — `.btn-gold-lg` e `.btn-gold` (linhas ~280-322):**
+- Garantir que o botão tenha o look da referência (laranja sólido vibrante, texto preto, seta preta sólida, cantos suavemente arredondados ~12px). Conferir e ajustar `.btn-gold-lg` pra `padding: 18px 36px; font-size: 16px; border-radius: 12px;` se estiver maior.
+- O `<span aria-hidden>▶</span>` já vira preto via `.btn-gold > span[aria-hidden] { color: #0A0A0A }` — manter.
+
+### Resultado visual
+
+- **HeroIntro mobile:** texto à esquerda + foto do idealizador à direita com rosto + mãos visíveis, encostada na VSL acima sem espaço vazio. Botão "Iniciar avaliação" compacto, não compete com a foto.
+- **Cards das seções:** preto-quente um tom mais claro, mantendo a borda laranja — mais legível e premium.
+- **ImpactSection:** cards entram alternados esquerda/direita ao rolar pra baixo e somem ao rolar pra cima.
+- **FounderSection:** "MUITO PRAZER," vira pill superior em Poppins extrabold; manchete reduzida; subtítulo virou micro-legenda. Hierarquia clara: kicker → manchete → micro-legenda → corpo.
+- **FinalCTA:** botão menor centralizado, hierarquia respira, igual à referência IMG-0114.
+- **Espaços entre seções:** ~40% menores, página fica mais densa e ritmada.
+
+### Arquivos alterados
+
+- `src/routes/index.tsx` — `HeroIntro`, `ImpactSection`, `FounderSection`, `FinalCTA`, `DuranteAnosHeadline`, `StepsSection`, `AudienceSection`, `ArrowDivider`.
+- `src/styles.css` — `.card-premium`, `.stack-card-inner`, `.btn-gold-lg`.
 
