@@ -25,7 +25,7 @@ import logoOnn from "@/assets/logo-onn.png";
 import vslBg from "@/assets/vsl-bg.png";
 import heroFlame from "@/assets/hero-bg-flame.jpg";
 import vslSkyline from "@/assets/vsl-bg-skyline.jpg";
-import founderHero from "@/assets/founder-hero.jpg";
+import founderHeroGlow from "@/assets/founder-hero-glow.jpg";
 import { VSLPlayer } from "@/components/VSLPlayer";
 
 export const Route = createFileRoute("/")({
@@ -456,56 +456,55 @@ function HeroIntro() {
   return (
     <section className="relative pt-16 pb-12 px-4 md:px-6 overflow-hidden bg-[#0a0606]">
       <ArrowDivider />
-      <div className="max-w-[1200px] mx-auto px-1 md:px-8 py-10 md:py-16 relative">
+      <div className="max-w-[1280px] mx-auto relative">
         <Reveal>
-          <div className="relative overflow-hidden rounded-[28px] min-h-[640px] md:min-h-[680px] bg-[#0a0606]">
-            {/* Camada 1 — sol/brasa em CSS puro (gradientes radiais empilhados) */}
-            <div
-              aria-hidden
-              className="hero-sun animate-pulse-sun pointer-events-none absolute inset-0"
-            />
-
-            {/* Camada 2 — vinheta escura para fundir o sol no fundo */}
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_70%_55%,transparent_30%,#0a0606_88%)]"
-            />
-
-            {/* Camada 3 — Foto do idealizador, sobreposta à direita */}
+          <div className="relative overflow-hidden min-h-[560px] md:min-h-[640px] bg-[#0a0606]">
+            {/* Foto do idealizador (glow embutido na própria imagem) */}
             <img
-              src={founderHero}
+              src={founderHeroGlow}
               alt="Idealizador d'Os Novos Nordestinos"
               loading="eager"
               decoding="async"
-              className="pointer-events-none absolute right-[-10%] bottom-0 w-[88%] h-[60%] object-contain object-right-bottom md:right-0 md:w-[55%] md:h-[105%] [mask-image:linear-gradient(to_left,black_55%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_left,black_55%,transparent_100%)] md:[mask-image:linear-gradient(to_left,black_60%,transparent_100%)] md:[-webkit-mask-image:linear-gradient(to_left,black_60%,transparent_100%)]"
+              className="pointer-events-none absolute right-[-15%] bottom-0 w-[110%] h-[55%] object-cover object-right-bottom opacity-95 md:right-0 md:top-0 md:bottom-auto md:h-full md:w-[60%] md:object-right md:opacity-100"
             />
 
-            {/* Camada 4 — Texto à esquerda + CTA */}
-            <div className="relative grid grid-cols-1 md:grid-cols-2 gap-6 items-center h-full p-6 md:p-12 min-h-[640px] md:min-h-[680px]">
+            {/* Vinheta de fusão — desktop: gradiente horizontal à esquerda */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-y-0 left-0 hidden md:block w-[55%] bg-gradient-to-r from-[#0a0606] via-[#0a0606]/85 to-transparent"
+            />
+
+            {/* Vinheta de fusão — mobile: gradiente vertical de baixo */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-x-0 bottom-0 h-[55%] md:hidden bg-gradient-to-t from-[#0a0606] via-[#0a0606]/70 to-transparent"
+            />
+
+            {/* Texto à esquerda + CTA */}
+            <div className="relative grid grid-cols-1 md:grid-cols-2 gap-6 items-center min-h-[560px] md:min-h-[640px] p-6 md:p-12">
               <div className="relative z-10 text-left max-w-[560px]">
                 {/* Pill "O MOVIMENTO" com linha decorativa */}
                 <div className="mb-5 flex items-center gap-3">
                   <span className="h-px w-10 bg-primary-custom" />
-                  <span className="text-primary-custom uppercase tracking-[0.3em] text-xs font-semibold">
+                  <span className="text-primary-custom uppercase tracking-[0.32em] text-xs font-semibold">
                     O Movimento
                   </span>
                 </div>
 
-                <p className="font-semibold uppercase tracking-[0.18em] text-cream-muted text-[clamp(11px,1.6vw,14px)] mb-3">
+                <p className="font-semibold text-cream-muted text-[clamp(15px,2.2vw,20px)] mb-3">
                   Chegou a hora do Brasil conhecer
                 </p>
 
-                <h1 className="font-black leading-[0.92] tracking-[-0.02em] text-[clamp(40px,9vw,84px)]">
-                  <span className="block text-cream-base">OS NOVOS</span>
-                  <span className="block text-primary-custom drop-shadow-[0_2px_24px_rgba(224,140,50,0.55)]">
-                    NORDESTINOS
-                  </span>
+                <h1 className="font-black leading-[0.95] tracking-[-0.01em] text-[clamp(28px,5.2vw,52px)] text-primary-custom drop-shadow-[0_2px_24px_rgba(224,140,50,0.45)]">
+                  OS NOVOS NORDESTINOS
                 </h1>
 
                 <p className="text-cream-muted text-[clamp(13px,2vw,17px)] leading-relaxed mt-6">
-                  Empresários e profissionais que já constroem resultado, mas
-                  agora decidiram ser{" "}
-                  <strong className="text-foreground italic">
+                  <strong className="text-cream-base font-bold italic">
+                    Empresário e profissionais nordestinos
+                  </strong>{" "}
+                  que já constroem resultado, mas agora decidiram ser{" "}
+                  <strong className="text-primary-custom font-bold italic">
                     vistos, valorizados e respeitados
                   </strong>{" "}
                   no nível que realmente são.
@@ -524,7 +523,7 @@ function HeroIntro() {
                 </div>
               </div>
 
-              {/* Coluna direita reservada visualmente para a foto/sol */}
+              {/* Coluna direita reservada visualmente para a foto */}
               <div className="hidden md:block" />
             </div>
           </div>
