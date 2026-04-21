@@ -550,7 +550,7 @@ function HeroIntro() {
             <p className="pre-display hero-anim hero-d-2" style={{ marginTop: 10 }}>
               Chegou a hora do Brasil conhecer
             </p>
-            <h1 className="typo-display accent-text hero-anim hero-d-3" style={{ marginTop: 2 }}>
+            <h1 className="typo-display accent-text hero-anim hero-d-3 text-5xl" style={{ marginTop: 2 }}>
               Os Novos<br />Nordestinos
             </h1>
 
