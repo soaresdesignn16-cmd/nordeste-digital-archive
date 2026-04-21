@@ -504,7 +504,7 @@ function HeroIntro() {
                 </p>
 
                 <div className="mt-5 md:mt-8">
-                  <BrutalistButton href="#cta-final" size="md">
+                  <BrutalistButton href="#cta-final" size="md" className="text-[11px] px-4 py-2.5">
                     Iniciar avaliação{" "}
                     <span
                       aria-hidden="true"
