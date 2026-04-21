@@ -799,18 +799,18 @@ function FounderSection() {
           <span className="eyebrow">Quem Está Por Trás</span>
         </Reveal>
         <Reveal delay={80}>
-          <h2 className="typo-headline" style={{ marginTop: 10 }}>
+          <h2 className="typo-headline" style={{ marginTop: 10, lineHeight: 1.15 }}>
             Muito Prazer,<br />
             <span className="accent-text">Os Novos Nordestinos</span>
           </h2>
         </Reveal>
         <Reveal delay={160}>
-          <p className="typo-label typo-label--accent" style={{ marginTop: 18 }}>
+          <p className="typo-label typo-label--accent" style={{ marginTop: 28, lineHeight: 1.6 }}>
             Movimento de Posicionamento Digital · Especialistas em Autoridade de Marca
           </p>
         </Reveal>
         <Reveal delay={220}>
-          <p className="typo-body" style={{ marginTop: 18, maxWidth: 720 }}>
+          <p className="typo-body" style={{ marginTop: 28, maxWidth: 720, lineHeight: 1.8 }}>
             Nascemos com um propósito: mostrar pro Brasil que o Nordeste produz
             empresários sofisticados, negócios milionários e marcas no nível
             das maiores do país. Hoje, à frente do movimento, ajudamos
@@ -820,8 +820,29 @@ function FounderSection() {
             tempo livre e respeito de mercado.
           </p>
         </Reveal>
-        <Reveal delay={300}>
-          <div style={{ marginTop: 36 }}>
+        <Reveal delay={280}>
+          <div
+            className="founder-photo-placeholder"
+            style={{
+              marginTop: 56,
+              width: "100%",
+              maxWidth: 720,
+              aspectRatio: "16 / 10",
+              borderRadius: 12,
+              border: "1px dashed var(--border-subtle)",
+              background: "var(--bg-surface)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <span className="typo-label" style={{ color: "var(--text-ghost)" }}>
+              Espaço reservado para foto
+            </span>
+          </div>
+        </Reveal>
+        <Reveal delay={340}>
+          <div style={{ marginTop: 48 }}>
             <a href="#cta-final" className="btn-primary">
               Quero entrar para o movimento
               <ArrowRight size={14} />
