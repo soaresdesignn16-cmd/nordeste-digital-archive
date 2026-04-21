@@ -465,7 +465,7 @@ function HeroIntro() {
               alt="Idealizador d'Os Novos Nordestinos"
               loading="eager"
               decoding="async"
-              className="pointer-events-none absolute right-[-15%] bottom-0 w-[110%] h-[55%] object-cover object-right-bottom opacity-95 md:right-0 md:top-0 md:bottom-auto md:h-full md:w-[60%] md:object-right md:opacity-100"
+              className="pointer-events-none absolute right-[-8%] top-[42%] w-[108%] h-[60%] object-cover object-right-top opacity-95 md:right-0 md:top-0 md:h-full md:w-[60%] md:object-right md:opacity-100"
             />
 
             {/* Vinheta de fusão — desktop: gradiente horizontal à esquerda */}
@@ -477,7 +477,7 @@ function HeroIntro() {
             {/* Vinheta de fusão — mobile: gradiente vertical de baixo */}
             <div
               aria-hidden
-              className="pointer-events-none absolute inset-x-0 bottom-0 h-[55%] md:hidden bg-gradient-to-t from-[#0a0606] via-[#0a0606]/70 to-transparent"
+              className="pointer-events-none absolute inset-x-0 top-[42%] h-[58%] md:hidden bg-gradient-to-t from-[#0a0606] via-[#0a0606]/70 to-transparent"
             />
 
             {/* Texto à esquerda + CTA */}
