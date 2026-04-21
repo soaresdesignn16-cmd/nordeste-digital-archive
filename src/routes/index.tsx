@@ -9,10 +9,10 @@ import {
   TrendingUp,
   Scale,
   Volume2,
-  DollarSign,
-  Clock,
   Play,
   ArrowRight,
+  Menu,
+  X,
 } from "lucide-react";
 import logoOnn from "@/assets/logo-onn.png";
 import vslBg from "@/assets/vsl-bg.png";
@@ -46,20 +46,21 @@ export const Route = createFileRoute("/")({
   component: NovosNordestinos,
 });
 
-/* ─────────── REVEAL HOOK (IntersectionObserver) ─────────── */
-function useReveal() {
+/* ─────────── REVEAL HOOK ─────────── */
+function useRevealObserver(deps: unknown[] = []) {
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const els = document.querySelectorAll<HTMLElement>(".reveal");
+    const els = document.querySelectorAll<HTMLElement>(".reveal:not(.visible)");
+    if (!els.length) return;
     if (!("IntersectionObserver" in window)) {
-      els.forEach((el) => el.classList.add("is-visible"));
+      els.forEach((el) => el.classList.add("visible"));
       return;
     }
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
+            entry.target.classList.add("visible");
             io.unobserve(entry.target);
           }
         });
@@ -68,26 +69,136 @@ function useReveal() {
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, deps);
 }
 
 function Reveal({
   children,
   delay = 0,
   className = "",
+  as: Tag = "div",
 }: {
   children: ReactNode;
   delay?: number;
   className?: string;
+  as?: keyof React.JSX.IntrinsicElements;
 }) {
+  const Component = Tag as React.ElementType;
   return (
-    <div
+    <Component
       className={`reveal ${className}`}
       style={delay ? { transitionDelay: `${delay}ms` } : undefined}
     >
       {children}
-    </div>
+    </Component>
   );
+}
+
+/* ─────────── CURSOR CUSTOMIZADO ─────────── */
+function CustomCursor() {
+  const outerRef = useRef<HTMLDivElement>(null);
+  const dotRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+
+    const outer = outerRef.current;
+    const dot = dotRef.current;
+    if (!outer || !dot) return;
+
+    const onMove = (e: MouseEvent) => {
+      dot.style.left = e.clientX + "px";
+      dot.style.top = e.clientY + "px";
+      window.setTimeout(() => {
+        outer.style.left = e.clientX + "px";
+        outer.style.top = e.clientY + "px";
+      }, 80);
+    };
+
+    const onEnter = () => outer.classList.add("hovered");
+    const onLeave = () => outer.classList.remove("hovered");
+
+    document.addEventListener("mousemove", onMove);
+
+    const interactive = document.querySelectorAll<HTMLElement>(
+      "a, button, [role='button']",
+    );
+    interactive.forEach((el) => {
+      el.addEventListener("mouseenter", onEnter);
+      el.addEventListener("mouseleave", onLeave);
+    });
+
+    // Re-bind quando novos elementos forem renderizados
+    const mo = new MutationObserver(() => {
+      const all = document.querySelectorAll<HTMLElement>(
+        "a, button, [role='button']",
+      );
+      all.forEach((el) => {
+        el.removeEventListener("mouseenter", onEnter);
+        el.removeEventListener("mouseleave", onLeave);
+        el.addEventListener("mouseenter", onEnter);
+        el.addEventListener("mouseleave", onLeave);
+      });
+    });
+    mo.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      document.removeEventListener("mousemove", onMove);
+      mo.disconnect();
+      interactive.forEach((el) => {
+        el.removeEventListener("mouseenter", onEnter);
+        el.removeEventListener("mouseleave", onLeave);
+      });
+    };
+  }, []);
+
+  return (
+    <>
+      <div ref={outerRef} className="cursor-outer" aria-hidden />
+      <div ref={dotRef} className="cursor-dot" aria-hidden />
+    </>
+  );
+}
+
+/* ─────────── COUNTER NUMÉRICO ─────────── */
+function Counter({ end, duration = 1800 }: { end: number; duration?: number }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const started = useRef(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const el = ref.current;
+    if (!el) return;
+
+    const start = () => {
+      if (started.current) return;
+      started.current = true;
+      let startTs = 0;
+      const step = (ts: number) => {
+        if (!startTs) startTs = ts;
+        const progress = Math.min((ts - startTs) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = String(Math.floor(eased * end));
+        if (progress < 1) requestAnimationFrame(step);
+        else el.textContent = String(end);
+      };
+      requestAnimationFrame(step);
+    };
+
+    if (!("IntersectionObserver" in window)) { start(); return; }
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => { if (e.isIntersecting) { start(); io.disconnect(); } });
+      },
+      { threshold: 0.5 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [end, duration]);
+
+  return <span ref={ref}>0</span>;
 }
 
 function NovosNordestinos() {
@@ -106,32 +217,26 @@ function NovosNordestinos() {
   const handleVslPlay = () => {
     setVslStatus((prev) => (prev === "idle" ? "watching" : prev));
   };
-
   const handleVslTime = (seconds: number) => {
     setVslElapsed((prev) => (seconds > prev ? seconds : prev));
     if (!hasUnlockedRef.current && seconds >= MIN_WATCH) {
       hasUnlockedRef.current = true;
       setVslStatus("finished");
-      unlockContent();
+      setScrollPrompt(true);
     }
   };
-
   const handleVslEnded = () => {
     if (!hasUnlockedRef.current) {
       hasUnlockedRef.current = true;
       setVslStatus("finished");
-      unlockContent();
+      setScrollPrompt(true);
     }
   };
 
-  const unlockContent = () => setScrollPrompt(true);
-
   useEffect(() => {
     if (!scrollPrompt || isLoading || isUnlocked) return;
-
     let touchStartY: number | null = null;
     const trigger = () => setIsLoading(true);
-
     const onScroll = () => { if (window.scrollY > 40) trigger(); };
     const onWheel = (e: WheelEvent) => { if (e.deltaY > 4) trigger(); };
     const onTouchStart = (e: TouchEvent) => { touchStartY = e.touches[0]?.clientY ?? null; };
@@ -143,13 +248,11 @@ function NovosNordestinos() {
     const onKey = (e: KeyboardEvent) => {
       if (["ArrowDown", "PageDown", " ", "End"].includes(e.key)) trigger();
     };
-
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("wheel", onWheel, { passive: true });
     window.addEventListener("touchstart", onTouchStart, { passive: true });
     window.addEventListener("touchmove", onTouchMove, { passive: true });
     window.addEventListener("keydown", onKey);
-
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("wheel", onWheel);
@@ -162,11 +265,10 @@ function NovosNordestinos() {
   useEffect(() => {
     if (!isLoading) return;
     requestAnimationFrame(() => {
-      const target = document.getElementById("brand-loader-inline");
-      if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+      const t = document.getElementById("brand-loader-inline");
+      if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });
       else window.scrollTo({ top: window.innerHeight, behavior: "smooth" });
     });
-
     let progress = 0;
     const interval = setInterval(() => {
       const remaining = 100 - progress;
@@ -175,10 +277,7 @@ function NovosNordestinos() {
       if (progress >= 100) {
         progress = 100;
         clearInterval(interval);
-        setTimeout(() => {
-          setIsLoading(false);
-          setIsUnlocked(true);
-        }, 400);
+        setTimeout(() => { setIsLoading(false); setIsUnlocked(true); }, 400);
       }
       setLoadProgress(progress);
     }, 35);
@@ -188,35 +287,17 @@ function NovosNordestinos() {
   useEffect(() => {
     if (!isUnlocked) return;
     requestAnimationFrame(() => {
-      const target = document.getElementById("hero-intro");
-      if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+      const t = document.getElementById("hero-intro");
+      if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   }, [isUnlocked]);
 
-  // Reveal observer (re-bind quando o conteúdo é desbloqueado)
-  useReveal();
-  useEffect(() => {
-    if (!isUnlocked) return;
-    const t = setTimeout(() => {
-      const els = document.querySelectorAll<HTMLElement>(".reveal:not(.is-visible)");
-      const io = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add("is-visible");
-              io.unobserve(entry.target);
-            }
-          });
-        },
-        { threshold: 0.12, rootMargin: "0px 0px -60px 0px" },
-      );
-      els.forEach((el) => io.observe(el));
-    }, 50);
-    return () => clearTimeout(t);
-  }, [isUnlocked]);
+  useRevealObserver([isUnlocked]);
 
   return (
     <>
+      <CustomCursor />
+
       <VSLGate
         vslStatus={vslStatus}
         vslElapsed={vslElapsed}
@@ -248,15 +329,10 @@ function NovosNordestinos() {
   );
 }
 
-/* ─────────── VSL GATE — seção inicial ─────────── */
+/* ─────────── VSL GATE ─────────── */
 function VSLGate({
-  vslStatus,
-  vslElapsed,
-  scrollPrompt,
-  isLoading,
-  onPlay,
-  onTime,
-  onEnded,
+  vslStatus, vslElapsed, scrollPrompt, isLoading,
+  onPlay, onTime, onEnded,
 }: {
   vslStatus: "idle" | "watching" | "finished";
   vslElapsed: number;
@@ -272,49 +348,32 @@ function VSLGate({
     <section
       id="vsl-gate"
       className="relative min-h-[100svh] flex items-center justify-center px-6 py-20 overflow-hidden"
-      style={{ background: "var(--bg-surface)" }}
+      style={{ background: "var(--bg-surface)", borderTop: "1px solid var(--border-subtle)", borderBottom: "1px solid var(--border-subtle)" }}
     >
-      {/* Fundo sutil */}
-      <div
-        aria-hidden
-        className="absolute inset-0 opacity-[0.18] bg-cover bg-center"
-        style={{ backgroundImage: `url(${vslBg})` }}
-      />
-      <div
-        aria-hidden
-        className="absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse 60% 50% at 50% 50%, transparent 0%, var(--bg-surface) 80%)",
-        }}
-      />
+      <div aria-hidden className="absolute inset-0 opacity-[0.18] bg-cover bg-center" style={{ backgroundImage: `url(${vslBg})` }} />
+      <div aria-hidden className="absolute inset-0" style={{ background: "radial-gradient(ellipse 60% 50% at 50% 50%, transparent 0%, var(--bg-surface) 80%)" }} />
 
-      {/* Watermark ONN */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <span className="watermark-onn">ONN</span>
       </div>
 
       <div className="relative z-10 text-center max-w-[760px] mx-auto">
-        {/* Eyebrow centralizado */}
-        <div className="hero-anim hero-anim-1 flex justify-center">
+        <div className="hero-anim hero-d-1 flex justify-center">
           <span className="eyebrow eyebrow--center">Antes de Qualquer Coisa</span>
         </div>
 
-        {/* Headline 2 linhas */}
-        <h1 className="headline mt-4 hero-anim hero-anim-2">
+        <h1 className="typo-headline hero-anim hero-d-2" style={{ marginTop: 14 }}>
           Antes de qualquer coisa,
           <br />
           <span className="accent-text">Assista isso</span>
         </h1>
 
-        {/* Body centralizado */}
-        <p className="body-text mx-auto text-center mt-5 hero-anim hero-anim-3" style={{ maxWidth: 420 }}>
+        <p className="typo-body mx-auto text-center hero-anim hero-d-3" style={{ maxWidth: 420, marginTop: 14 }}>
           O que você vai ver nos próximos minutos pode mudar a forma como você
           se posiciona no digital.
         </p>
 
-        {/* Player */}
-        <div className="mt-11 hero-anim hero-anim-4">
+        <div className="hero-anim hero-d-4" style={{ marginTop: 48 }}>
           <div className="video-frame">
             <VSLPlayer
               videoId="1184950928"
@@ -323,43 +382,32 @@ function VSLGate({
               onTimeUpdate={onTime}
               onEnded={onEnded}
             />
-
             {vslStatus === "finished" && (
-              <div
-                className="absolute top-3 right-3 z-10 flex items-center gap-2 px-3 py-1.5 rounded-full pointer-events-none"
-                style={{ background: "rgba(10,10,10,0.8)", backdropFilter: "blur(8px)" }}
-              >
+              <div className="absolute top-3 right-3 z-10 flex items-center gap-2 px-3 py-1.5 rounded-full pointer-events-none"
+                style={{ background: "rgba(10,10,10,0.8)", backdropFilter: "blur(8px)" }}>
                 <Sparkles size={14} style={{ color: "var(--accent)" }} />
-                <span className="label-meta label-meta--accent">Liberado</span>
+                <span className="typo-label typo-label--accent">Liberado</span>
               </div>
             )}
           </div>
 
           {vslStatus === "watching" && (
             <div className="h-[2px] w-full max-w-[720px] mx-auto mt-2 relative overflow-hidden" style={{ background: "var(--border-subtle)" }}>
-              <div
-                className="h-full transition-all duration-1000"
-                style={{
-                  background: "var(--accent)",
-                  width: `${Math.min((vslElapsed / MIN_WATCH) * 100, 100)}%`,
-                }}
-              />
+              <div className="h-full transition-all duration-1000"
+                style={{ background: "var(--accent)", width: `${Math.min((vslElapsed / MIN_WATCH) * 100, 100)}%` }} />
             </div>
           )}
 
           {vslStatus === "idle" && (
-            <p className="mt-4 flex items-center justify-center gap-2 label-meta label-meta--accent">
+            <p className="mt-4 flex items-center justify-center gap-2 typo-label typo-label--accent">
               <Volume2 size={13} strokeWidth={2.2} />
               Assista com som ativado
             </p>
           )}
         </div>
 
-        {/* Deslize para baixo */}
-        <div className="mt-12 flex flex-col items-center gap-2 hero-anim hero-anim-5">
-          <span className="label-meta label-meta--accent" style={{ letterSpacing: "0.40em" }}>
-            Deslize para baixo
-          </span>
+        <div className="hero-anim hero-d-5 flex flex-col items-center gap-2" style={{ marginTop: 52 }}>
+          <span className="typo-label typo-label--accent">Deslize para baixo</span>
           <ChevronDown size={20} strokeWidth={2} className="bounce-soft" style={{ color: "var(--accent)" }} />
         </div>
 
@@ -371,7 +419,7 @@ function VSLGate({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.6, ease: "easeOut" }}
-              className="mt-6 label-meta"
+              className="mt-6 typo-label"
             >
               O conteúdo foi liberado
             </motion.div>
@@ -382,48 +430,28 @@ function VSLGate({
   );
 }
 
-/* ─────────── BRAND LOADER inline ─────────── */
+/* ─────────── BRAND LOADER ─────────── */
 function BrandLoader({ loadProgress }: { loadProgress: number }) {
   return (
-    <section
-      id="brand-loader-inline"
-      aria-live="polite"
-      aria-busy="true"
-      className="loader-stage"
-    >
+    <section id="brand-loader-inline" aria-live="polite" aria-busy="true" className="loader-stage">
       <div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full pointer-events-none"
-        style={{
-          background: "var(--accent-glow)",
-          filter: "blur(180px)",
-          animation: "pulse-glow 5s ease-in-out infinite",
-        }}
+        style={{ background: "var(--accent-glow)", filter: "blur(180px)", animation: "pulse-glow 5s ease-in-out infinite" }}
       />
       <div className="relative">
         <div className="loader-onn-base">ONN</div>
-        <div
-          className="loader-onn-fill"
-          style={{ clipPath: `inset(0 ${100 - loadProgress}% 0 0)` }}
-        >
+        <div className="loader-onn-fill" style={{ clipPath: `inset(0 ${100 - loadProgress}% 0 0)` }}>
           ONN
         </div>
       </div>
-
       <div className="w-full max-w-[420px] flex flex-col gap-2 px-6">
-        <div
-          className="w-full h-[2px] rounded-full overflow-hidden relative"
-          style={{ background: "var(--border-subtle)" }}
-        >
-          <div
-            className="absolute left-0 top-0 h-full transition-[width] duration-200 ease-out"
-            style={{ width: `${loadProgress}%`, background: "var(--accent)" }}
-          />
+        <div className="w-full h-[2px] rounded-full overflow-hidden relative" style={{ background: "var(--border-subtle)" }}>
+          <div className="absolute left-0 top-0 h-full transition-[width] duration-200 ease-out"
+            style={{ width: `${loadProgress}%`, background: "var(--accent)" }} />
         </div>
-        <div className="flex justify-between w-full label-meta">
+        <div className="flex justify-between w-full typo-label">
           <span>Carregando experiência</span>
-          <span className="label-meta--accent">
-            {Math.floor(loadProgress).toString().padStart(3, "0")}%
-          </span>
+          <span className="typo-label--accent">{Math.floor(loadProgress).toString().padStart(3, "0")}%</span>
         </div>
       </div>
     </section>
@@ -433,6 +461,7 @@ function BrandLoader({ loadProgress }: { loadProgress: number }) {
 /* ─────────── NAV ─────────── */
 function Nav() {
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -445,131 +474,131 @@ function Nav() {
     <nav
       className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
       style={{
-        background: scrolled
-          ? "rgba(10,10,10,0.95)"
-          : "linear-gradient(to bottom, rgba(10,10,10,0.88), transparent)",
+        background: scrolled ? "rgba(10,10,10,0.96)" : "linear-gradient(to bottom, rgba(10,10,10,0.85), transparent)",
         backdropFilter: scrolled ? "blur(20px)" : "none",
         borderBottom: scrolled ? "1px solid var(--border-subtle)" : "1px solid transparent",
       }}
     >
-      <div className="max-w-[1280px] mx-auto px-6 py-4 flex items-center justify-between">
-        <a href="#hero-intro" className="flex items-center gap-2">
+      <div className="max-w-[1400px] mx-auto flex items-center justify-between"
+        style={{ padding: scrolled ? "14px 24px" : "22px 24px", transition: "padding 0.3s ease" }}>
+        <a href="#hero-intro" className="flex items-center gap-2.5">
           <img src={logoOnn} alt="Os Novos Nordestinos" className="w-7 h-7 object-contain" />
-          <span className="label-meta" style={{ color: "var(--text-primary)", letterSpacing: "0.22em" }}>
+          <span style={{ fontFamily: "var(--font)", fontWeight: 800, fontSize: 14, letterSpacing: "0.18em", color: "var(--text-primary)" }}>
             ONN
           </span>
         </a>
 
         <div className="hidden md:flex items-center gap-8">
-          <a href="#manifesto" className="label-meta hover:text-accent-token transition-colors" style={{ color: "var(--text-secondary)" }}>
-            Manifesto
-          </a>
-          <a href="#para-quem" className="label-meta hover:text-accent-token transition-colors" style={{ color: "var(--text-secondary)" }}>
-            Para Quem
-          </a>
-          <a href="#ganhos" className="label-meta hover:text-accent-token transition-colors" style={{ color: "var(--text-secondary)" }}>
-            Ganhos
-          </a>
-          <a href="#cta-final" className="btn-primary btn-primary--sm">
-            Solicitar avaliação
-          </a>
+          <a href="#manifesto" className="typo-label" style={{ color: "var(--text-secondary)", letterSpacing: "0.1em" }}>Manifesto</a>
+          <a href="#para-quem" className="typo-label" style={{ color: "var(--text-secondary)", letterSpacing: "0.1em" }}>Para Quem</a>
+          <a href="#ganhos" className="typo-label" style={{ color: "var(--text-secondary)", letterSpacing: "0.1em" }}>Ganhos</a>
+          <a href="#cta-final" className="btn-primary btn-primary--sm">Solicitar Avaliação</a>
         </div>
 
-        <a href="#cta-final" className="md:hidden btn-pill" style={{ padding: "8px 16px", fontSize: 11 }}>
-          Avaliação
-        </a>
+        <button onClick={() => setMenuOpen(true)} className="md:hidden p-2" aria-label="Abrir menu" style={{ color: "var(--text-primary)", background: "transparent", border: "none" }}>
+          <Menu size={22} />
+        </button>
       </div>
+
+      {/* Mobile menu */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-50 md:hidden flex flex-col p-8"
+            style={{ background: "var(--bg)" }}
+          >
+            <div className="flex justify-end mb-12">
+              <button onClick={() => setMenuOpen(false)} aria-label="Fechar menu"
+                style={{ color: "var(--text-primary)", background: "transparent", border: "none", padding: 8 }}>
+                <X size={24} />
+              </button>
+            </div>
+            <div className="flex flex-col gap-8">
+              {[
+                { href: "#manifesto", label: "Manifesto" },
+                { href: "#para-quem", label: "Para Quem" },
+                { href: "#ganhos", label: "Ganhos" },
+              ].map((l) => (
+                <a key={l.href} href={l.href} onClick={() => setMenuOpen(false)}
+                  className="typo-headline" style={{ fontSize: 36 }}>
+                  {l.label}
+                </a>
+              ))}
+              <a href="#cta-final" onClick={() => setMenuOpen(false)} className="btn-primary mt-6 self-start">
+                Solicitar Avaliação
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 }
 
-/* ─────────── HERO INTRO — 55/45 grid ─────────── */
+/* ─────────── HERO INTRO ─────────── */
 function HeroIntro() {
   return (
-    <section
-      className="relative min-h-[100vh] overflow-hidden"
-      style={{ background: "var(--bg)" }}
-    >
-      <div className="grid grid-cols-1 md:grid-cols-[55%_45%] min-h-[100vh]">
-        {/* COLUNA ESQUERDA — conteúdo */}
-        <div
-          className="relative flex flex-col justify-center order-2 md:order-1"
-          style={{ padding: "120px 24px 72px" }}
-        >
+    <section className="hero">
+      <div className="grid grid-cols-1 md:grid-cols-[55%_45%] min-h-[100vh] relative z-10">
+        {/* Esquerda */}
+        <div className="relative flex flex-col justify-center order-2 md:order-1" style={{ padding: "120px 24px 72px" }}>
           <div className="max-w-[560px]">
-            {/* Eyebrow */}
-            <div className="hero-anim hero-anim-1">
+            <div className="hero-anim hero-d-1">
               <span className="eyebrow">O Movimento</span>
             </div>
 
-            {/* Linha fina + Display COLADOS (gap 4px) */}
-            <div className="mt-3 hero-anim hero-anim-2">
-              <p className="pre-display">Chegou a hora do Brasil conhecer</p>
-              <h1 className="display display--hero accent-text" style={{ marginTop: 4 }}>
-                Os Novos
-                <br />
-                Nordestinos
-              </h1>
-            </div>
+            <p className="pre-display hero-anim hero-d-2" style={{ marginTop: 10 }}>
+              Chegou a hora do Brasil conhecer
+            </p>
+            <h1 className="typo-display accent-text hero-anim hero-d-3" style={{ marginTop: 2 }}>
+              Os Novos<br />Nordestinos
+            </h1>
 
-            {/* Body */}
-            <p className="body-text hero-anim hero-anim-3" style={{ marginTop: 24 }}>
+            <p className="typo-body hero-anim hero-d-4" style={{ marginTop: 24 }}>
               <strong>Empresário e profissionais nordestinos</strong> que já constroem resultado, mas agora decidiram ser{" "}
-              <span className="accent-text" style={{ fontWeight: 700 }}>vistos, valorizados e respeitados</span>{" "}
+              <span className="accent-text" style={{ fontWeight: 400 }}>vistos, valorizados e respeitados</span>{" "}
               no nível que realmente são.
             </p>
 
-            {/* CTAs */}
-            <div className="flex flex-wrap items-center gap-6 hero-anim hero-anim-4" style={{ marginTop: 36 }}>
+            <div className="flex flex-wrap items-center gap-6 hero-anim hero-d-5" style={{ marginTop: 36 }}>
               <a href="#cta-final" className="btn-primary">
-                Iniciar avaliação
-                <Play size={14} fill="currentColor" />
+                Iniciar Avaliação
+                <Play size={13} fill="currentColor" />
               </a>
               <a href="#manifesto" className="btn-ghost">
-                Conhecer o movimento
+                Ver o manifesto
                 <ArrowRight size={14} />
               </a>
             </div>
 
-            {/* Divider + Stats */}
-            <div className="hero-anim hero-anim-5" style={{ marginTop: 52 }}>
+            <div className="hero-anim hero-d-6" style={{ marginTop: 56 }}>
               <div style={{ borderTop: "1px solid var(--border-subtle)" }} />
-              <div className="grid grid-cols-3 gap-6" style={{ marginTop: 28 }}>
-                <Stat num="2K26" label="Ano do Movimento" />
-                <Stat num="9" label="Estados do Nordeste" />
-                <Stat num="1" label="Posicionamento Real" />
+              <div className="grid grid-cols-3 gap-8" style={{ marginTop: 28 }}>
+                <Stat value={9} label="Estados Nordestinos" />
+                <Stat value={500} label="Empresários no Movimento" suffix="+" />
+                <Stat value={24} label="Posicionamento Ativo" suffix="/7" />
               </div>
             </div>
           </div>
         </div>
 
-        {/* COLUNA DIREITA — foto idealizador */}
-        <div
-          className="relative order-1 md:order-2"
-          style={{
-            minHeight: "55vw",
-            maxHeight: "100vh",
-            background: "var(--bg)",
-          }}
-        >
-          <img
-            src={founderHeroGlow}
-            alt="Idealizador d'Os Novos Nordestinos"
-            loading="eager"
-            decoding="async"
-            className="absolute inset-0 w-full h-full"
-            style={{ objectFit: "cover", objectPosition: "top center" }}
-          />
+        {/* Direita */}
+        <div className="hero-photo-wrap order-1 md:order-2"
+          style={{ minHeight: "55vw", maxHeight: "100vh" }}>
           <div className="hero-photo-glow" />
-          <div className="hero-photo-mask" />
+          <img src={founderHeroGlow} alt="Idealizador d'Os Novos Nordestinos" loading="eager" decoding="async" />
+          <div className="hero-photo-mask-left" />
+          <div className="hero-photo-mask-bottom" />
 
           {/* Badge ONN — 2K26 */}
           <div className="absolute top-6 right-6 z-10 flex items-center gap-3">
-            <span className="label-meta" style={{ color: "var(--accent)", letterSpacing: "0.3em" }}>
-              ONN
-            </span>
-            <span className="block w-12 h-px" style={{ background: "var(--accent-dim)" }} />
-            <span className="label-meta label-meta--accent">2K26</span>
+            <span style={{ fontFamily: "var(--font)", fontWeight: 700, fontSize: 10, letterSpacing: "0.22em", color: "rgba(242,240,235,0.6)" }}>ONN</span>
+            <span className="block w-12 h-px" style={{ background: "rgba(242,240,235,0.25)" }} />
+            <span style={{ fontFamily: "var(--font)", fontWeight: 700, fontSize: 10, letterSpacing: "0.22em", color: "var(--accent)" }}>2K26</span>
           </div>
         </div>
       </div>
@@ -577,26 +606,20 @@ function HeroIntro() {
   );
 }
 
-function Stat({ num, label }: { num: string; label: string }) {
+function Stat({ value, label, suffix = "" }: { value: number; label: string; suffix?: string }) {
   return (
     <div>
-      <div
-        className="accent-text"
-        style={{
-          fontFamily: "var(--font-display)",
-          fontSize: "clamp(32px, 4vw, 44px)",
-          lineHeight: 1,
-          letterSpacing: "0.02em",
-        }}
-      >
-        {num}
+      <div className="accent-text"
+        style={{ fontFamily: "var(--font)", fontWeight: 900, fontSize: "clamp(32px, 4vw, 44px)", lineHeight: 1, letterSpacing: "-0.02em" }}>
+        <Counter end={value} />
+        {suffix}
       </div>
-      <div className="label-meta" style={{ marginTop: 8 }}>{label}</div>
+      <div className="typo-label" style={{ marginTop: 6 }}>{label}</div>
     </div>
   );
 }
 
-/* ─────────── MANIFESTO — grid 2 cols + 2x2 cards ─────────── */
+/* ─────────── MANIFESTO ─────────── */
 function ManifestoSection() {
   const cards = [
     { title: "Diagnóstico de Posicionamento", desc: "Vamos analisar como o mercado realmente enxerga você hoje — onde está sua autoridade, onde estão os ruídos e onde mora o dinheiro escondido na sua percepção." },
@@ -606,35 +629,27 @@ function ManifestoSection() {
   ];
 
   return (
-    <section
-      id="manifesto"
-      className="relative px-6"
-      style={{
-        background: "var(--bg)",
-        paddingTop: "clamp(72px, 12vw, 110px)",
-        paddingBottom: "clamp(72px, 12vw, 110px)",
-      }}
-    >
-      <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center">
-        {/* Esquerda */}
+    <section id="manifesto" className="relative px-6"
+      style={{ background: "var(--bg)", paddingTop: 120, paddingBottom: 120, borderTop: "1px solid var(--border-subtle)" }}>
+      <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-14 md:gap-[88px] items-center">
         <div>
           <Reveal>
             <span className="eyebrow">Quem Somos</span>
           </Reveal>
           <Reveal delay={80}>
-            <h2 className="headline" style={{ marginTop: 12 }}>
+            <h2 className="typo-headline" style={{ marginTop: 10 }}>
               O Nordeste<br />
               Sempre Produziu.<br />
-              <span className="accent-text">Agora é Visto.</span>
+              <span className="highlight-word">Agora é Visto.</span>
             </h2>
           </Reveal>
           <Reveal delay={160}>
-            <p className="body-text" style={{ marginTop: 24 }}>
+            <p className="typo-body" style={{ marginTop: 22 }}>
               Nascemos com um propósito: mostrar pro Brasil que o Nordeste produz
               empresários sofisticados, negócios milionários e marcas no nível
               das maiores do país.
             </p>
-            <p className="body-text">
+            <p className="typo-body">
               Hoje, à frente do movimento, ajudamos empresários nordestinos a
               implementar uma <strong>Arquitetura de Posicionamento Digital</strong> de
               ponta a ponta — transformando autoridade em ticket maior, mais
@@ -657,11 +672,10 @@ function ManifestoSection() {
           </Reveal>
         </div>
 
-        {/* Direita — grid 2x2 */}
         <div className="grid grid-cols-2 gap-[2px]">
           {cards.map((c, i) => (
             <Reveal key={i} delay={i * 80}>
-              <div className="feature-card h-full">
+              <div className="card h-full">
                 <span className="num">{String(i + 1).padStart(2, "0")}</span>
                 <h4>{c.title}</h4>
                 <p>{c.desc}</p>
@@ -674,7 +688,7 @@ function ManifestoSection() {
   );
 }
 
-/* ─────────── AUDIENCE — 3 cards centered header ─────────── */
+/* ─────────── AUDIENCE ─────────── */
 function AudienceSection() {
   const profiles = [
     { icon: <Store size={22} />, title: "Donos de negócios do mundo físico", desc: "Lojas, clínicas, escritórios, prestadores de serviço presencial. Você sente que está preso na operação e que o digital não traduz o tamanho real da sua empresa." },
@@ -684,19 +698,9 @@ function AudienceSection() {
   ];
 
   return (
-    <section
-      id="para-quem"
-      className="relative px-6"
-      style={{
-        background: "var(--bg-surface)",
-        borderTop: "1px solid var(--border-subtle)",
-        borderBottom: "1px solid var(--border-subtle)",
-        paddingTop: "clamp(72px, 12vw, 110px)",
-        paddingBottom: "clamp(72px, 12vw, 110px)",
-      }}
-    >
+    <section id="para-quem" className="relative px-6"
+      style={{ background: "var(--bg-surface)", borderTop: "1px solid var(--border-subtle)", borderBottom: "1px solid var(--border-subtle)", paddingTop: 110, paddingBottom: 110 }}>
       <div className="max-w-[1200px] mx-auto">
-        {/* Header centralizado */}
         <div className="text-center mb-16">
           <Reveal>
             <div className="flex justify-center">
@@ -704,25 +708,22 @@ function AudienceSection() {
             </div>
           </Reveal>
           <Reveal delay={80}>
-            <h2 className="headline" style={{ marginTop: 16 }}>
-              Esse movimento<br />
-              <span className="accent-text">faz sentido pra você se</span>
+            <h2 className="typo-headline" style={{ marginTop: 14 }}>
+              Esse movimento é<br />
+              <span className="accent-text">para você se…</span>
             </h2>
           </Reveal>
           <Reveal delay={160}>
-            <p className="body-text mx-auto" style={{ marginTop: 12, maxWidth: 480 }}>
+            <p className="typo-body mx-auto text-center" style={{ marginTop: 12, maxWidth: 480 }}>
               Você se encaixa em um desses perfis e quer usar posicionamento pra
               crescer de verdade.
             </p>
           </Reveal>
         </div>
 
-        {/* Grid 4 cards (com border container) */}
         <Reveal>
-          <div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[1px] rounded-lg overflow-hidden"
-            style={{ background: "var(--border-subtle)", border: "1px solid var(--border-subtle)" }}
-          >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[1px] rounded-lg overflow-hidden"
+            style={{ background: "var(--border-subtle)", border: "1px solid var(--border-subtle)" }}>
             {profiles.map((p, i) => (
               <div key={i} className="audience-card">
                 <div className="icon-box">{p.icon}</div>
@@ -737,34 +738,28 @@ function AudienceSection() {
   );
 }
 
-/* ─────────── FOUNDER — quem está por trás ─────────── */
+/* ─────────── FOUNDER ─────────── */
 function FounderSection() {
   return (
-    <section
-      className="relative px-6"
-      style={{
-        background: "var(--bg)",
-        paddingTop: "clamp(72px, 12vw, 110px)",
-        paddingBottom: "clamp(72px, 12vw, 110px)",
-      }}
-    >
+    <section className="relative px-6"
+      style={{ background: "var(--bg)", paddingTop: 120, paddingBottom: 120, borderTop: "1px solid var(--border-subtle)" }}>
       <div className="max-w-[900px] mx-auto">
         <Reveal>
           <span className="eyebrow">Quem Está Por Trás</span>
         </Reveal>
         <Reveal delay={80}>
-          <h2 className="headline" style={{ marginTop: 12 }}>
+          <h2 className="typo-headline" style={{ marginTop: 10 }}>
             Muito Prazer,<br />
             <span className="accent-text">Os Novos Nordestinos</span>
           </h2>
         </Reveal>
         <Reveal delay={160}>
-          <p className="label-meta label-meta--accent" style={{ marginTop: 20 }}>
+          <p className="typo-label typo-label--accent" style={{ marginTop: 18 }}>
             Movimento de Posicionamento Digital · Especialistas em Autoridade de Marca
           </p>
         </Reveal>
         <Reveal delay={220}>
-          <p className="body-text" style={{ marginTop: 20, maxWidth: 720 }}>
+          <p className="typo-body" style={{ marginTop: 18, maxWidth: 720 }}>
             Nascemos com um propósito: mostrar pro Brasil que o Nordeste produz
             empresários sofisticados, negócios milionários e marcas no nível
             das maiores do país. Hoje, à frente do movimento, ajudamos
@@ -787,7 +782,7 @@ function FounderSection() {
   );
 }
 
-/* ─────────── IMPACT — 4 ganhos lista vertical ─────────── */
+/* ─────────── IMPACT (Ganhos) ─────────── */
 function ImpactSection() {
   const gains = [
     { lead: "Sua autoridade cresce sozinha", desc: "porque o seu nome passa a circular nos lugares certos, com o peso certo, sem você precisar correr atrás." },
@@ -797,28 +792,18 @@ function ImpactSection() {
   ];
 
   return (
-    <section
-      id="ganhos"
-      className="relative px-6"
-      style={{
-        background: "var(--bg-surface)",
-        borderTop: "1px solid var(--border-subtle)",
-        borderBottom: "1px solid var(--border-subtle)",
-        paddingTop: "clamp(72px, 12vw, 110px)",
-        paddingBottom: "clamp(72px, 12vw, 110px)",
-      }}
-    >
+    <section id="ganhos" className="relative px-6"
+      style={{ background: "var(--bg)", borderTop: "1px solid var(--border-subtle)", paddingTop: 120, paddingBottom: 120 }}>
       <div className="max-w-[1100px] mx-auto">
-        {/* Header 2 cols */}
         <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 items-end mb-14">
           <div>
             <Reveal>
               <span className="eyebrow">Como Isso Muda Sua Vida</span>
             </Reveal>
             <Reveal delay={80}>
-              <h2 className="headline" style={{ marginTop: 12 }}>
-                Essa foi feita<br />
-                <span className="accent-text">pra você que</span>
+              <h2 className="typo-headline" style={{ marginTop: 12 }}>
+                O que muda<br />
+                <span className="accent-text">na sua vida</span>
               </h2>
             </Reveal>
           </div>
@@ -829,28 +814,27 @@ function ImpactSection() {
           </Reveal>
         </div>
 
-        {/* Lista */}
         <div className="flex flex-col gap-[2px]">
           {gains.map((g, i) => (
             <Reveal key={i} delay={i * 80}>
-              <a href="#cta-final" className="gain-item">
-                <span className="gain-num">{String(i + 1).padStart(2, "0")}</span>
+              <a href="#cta-final" className="ganho-item">
+                <span className="ganho-numero">{String(i + 1).padStart(2, "0")}</span>
                 <div>
-                  <p className="gain-title">{g.lead}</p>
-                  <p className="gain-desc">{g.desc}</p>
+                  <p className="ganho-titulo">{g.lead}</p>
+                  <p className="ganho-desc">{g.desc}</p>
                 </div>
-                <span className="gain-arrow">→</span>
+                <span className="ganho-arrow">→</span>
               </a>
             </Reveal>
           ))}
         </div>
 
         <Reveal delay={400}>
-          <blockquote className="quote-block mt-12" style={{ maxWidth: 560 }}>
+          <blockquote className="quote-block" style={{ marginTop: 48, maxWidth: 560 }}>
             <p>
               Você deixa de viver no <span style={{ color: "var(--text-primary)" }}>volume exaustivo</span>
               {" "}— e passa a viver no{" "}
-              <span className="accent-text">valor premium.</span>
+              <span className="highlight-word">valor premium.</span>
             </p>
           </blockquote>
         </Reveal>
@@ -862,23 +846,17 @@ function ImpactSection() {
 /* ─────────── DURANTE ANOS HEADLINE ─────────── */
 function DuranteAnosHeadline() {
   return (
-    <section
-      className="relative px-6"
-      style={{
-        background: "var(--bg)",
-        paddingTop: "clamp(80px, 12vw, 130px)",
-        paddingBottom: "clamp(80px, 12vw, 130px)",
-      }}
-    >
+    <section className="relative px-6"
+      style={{ background: "var(--bg)", paddingTop: 100, paddingBottom: 100, borderTop: "1px solid var(--border-subtle)" }}>
       <div className="max-w-[1100px] mx-auto text-center">
         <Reveal>
-          <h2 className="display" style={{ fontSize: "clamp(48px, 7vw, 88px)" }}>
+          <h2 className="typo-display" style={{ fontSize: "clamp(48px, 7vw, 88px)" }}>
             Durante anos tentaram<br />
-            contar a <span className="accent-text">nossa história.</span>
+            contar a <span className="highlight-word">nossa história.</span>
           </h2>
         </Reveal>
         <Reveal delay={120}>
-          <p className="label-meta label-meta--accent" style={{ marginTop: 28, letterSpacing: "0.4em" }}>
+          <p className="typo-label typo-label--accent" style={{ marginTop: 28 }}>
             Agora é a nossa vez.
           </p>
         </Reveal>
@@ -890,34 +868,17 @@ function DuranteAnosHeadline() {
 /* ─────────── FINAL CTA ─────────── */
 function FinalCTA() {
   return (
-    <section
-      id="cta-final"
-      className="relative overflow-hidden px-6"
-      style={{
-        background: "var(--bg-surface)",
-        borderTop: "1px solid var(--border-subtle)",
-        paddingTop: "clamp(100px, 14vw, 150px)",
-        paddingBottom: "clamp(100px, 14vw, 150px)",
-      }}
-    >
-      {/* Glow centro topo */}
-      <div
-        aria-hidden
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse 60% 50% at 50% 10%, rgba(224,140,50,0.09), transparent 70%)",
-        }}
-      />
-      {/* Anéis concêntricos */}
-      <div className="cta-rings" aria-hidden>
-        <svg width="800" height="800" viewBox="0 0 800 800" fill="none">
-          <circle cx="400" cy="400" r="200" stroke="rgba(224,140,50,0.04)" />
-          <circle cx="400" cy="400" r="280" stroke="rgba(224,140,50,0.04)" />
-          <circle cx="400" cy="400" r="360" stroke="rgba(224,140,50,0.04)" />
-          <circle cx="400" cy="400" r="380" stroke="rgba(224,140,50,0.03)" />
-        </svg>
+    <section id="cta-final" className="section-cta px-6"
+      style={{ paddingTop: 150, paddingBottom: 150 }}>
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <span className="watermark-onn">ONN</span>
       </div>
+      <svg className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+        width="900" height="900" viewBox="0 0 900 900" fill="none" style={{ zIndex: 0 }}>
+        <circle cx="450" cy="450" r="200" stroke="rgba(224,140,50,0.04)" strokeWidth="1" />
+        <circle cx="450" cy="450" r="320" stroke="rgba(224,140,50,0.03)" strokeWidth="1" />
+        <circle cx="450" cy="450" r="440" stroke="rgba(224,140,50,0.02)" strokeWidth="1" />
+      </svg>
 
       <div className="relative z-10 max-w-[900px] mx-auto text-center">
         <Reveal>
@@ -926,20 +887,20 @@ function FinalCTA() {
           </div>
         </Reveal>
         <Reveal delay={80}>
-          <h2 className="display" style={{ marginTop: 22, fontSize: "clamp(54px, 8vw, 96px)" }}>
+          <h2 className="typo-display" style={{ marginTop: 22 }}>
             Pronto para ser<br />
             <span className="accent-text">visto de verdade?</span>
           </h2>
         </Reveal>
         <Reveal delay={160}>
-          <p className="body-text mx-auto" style={{ marginTop: 20, maxWidth: 440 }}>
+          <p className="typo-body mx-auto" style={{ marginTop: 18, maxWidth: 440, fontSize: 17 }}>
             Entre para o movimento exclusivo de empresários que estão
             redefinindo o padrão de autoridade nordestina no cenário digital
             nacional.
           </p>
         </Reveal>
         <Reveal delay={240}>
-          <div className="flex flex-wrap items-center justify-center gap-4" style={{ marginTop: 48 }}>
+          <div className="flex flex-wrap items-center justify-center gap-5" style={{ marginTop: 48 }}>
             <a href="#" className="btn-primary btn-primary--lg">
               Solicitar avaliação estratégica
               <ArrowRight size={14} />
@@ -962,38 +923,18 @@ function FinalCTA() {
 /* ─────────── FOOTER ─────────── */
 function Footer() {
   return (
-    <footer
-      className="px-6"
-      style={{
-        background: "var(--bg)",
-        borderTop: "1px solid var(--border-subtle)",
-        paddingTop: "clamp(60px, 8vw, 90px)",
-        paddingBottom: "clamp(40px, 6vw, 60px)",
-      }}
-    >
-      <div className="max-w-[1100px] mx-auto text-center">
-        <Reveal>
-          <p className="body-text mx-auto" style={{ maxWidth: 560 }}>
-            Você não está contratando marketing comum.
-            <br />
-            <strong>Você está entrando para um movimento irreversível.</strong>
-          </p>
-        </Reveal>
-        <Reveal delay={120}>
-          <div className="flex flex-wrap justify-center gap-3" style={{ marginTop: 36 }}>
-            {["Autoridade", "Liberdade", "Posicionamento", "Representatividade"].map((p, i) => (
-              <span key={i} className="btn-pill" style={{ pointerEvents: "none" }}>
-                {p}
-              </span>
-            ))}
-          </div>
-        </Reveal>
-        <Reveal delay={200}>
-          <div className="flex items-center justify-center gap-3" style={{ marginTop: 48 }}>
-            <img src={logoOnn} alt="Os Novos Nordestinos" className="w-7 h-7 object-contain" />
-            <span className="label-meta">Os Novos Nordestinos</span>
-          </div>
-        </Reveal>
+    <footer className="px-6"
+      style={{ background: "var(--bg)", borderTop: "1px solid var(--border-subtle)", paddingTop: 40, paddingBottom: 40 }}>
+      <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+        <p style={{ fontFamily: "var(--font)", fontWeight: 400, fontSize: 12, color: "var(--text-ghost)" }}>
+          © 2026 Os Novos Nordestinos. Todos os direitos reservados.
+        </p>
+        <div className="flex items-center gap-3">
+          <img src={logoOnn} alt="ONN" className="w-5 h-5 object-contain opacity-60" />
+          <span style={{ fontFamily: "var(--font)", fontWeight: 700, fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--text-ghost)" }}>
+            ONN — 2K26
+          </span>
+        </div>
       </div>
     </footer>
   );
