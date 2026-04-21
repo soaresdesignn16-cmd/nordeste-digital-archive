@@ -454,70 +454,80 @@ function ArrowDivider() {
 /* ── HERO INTRO — bloco de abertura após o VSL ── */
 function HeroIntro() {
   return (
-    <section className="relative pt-16 pb-12 px-4 md:px-6 overflow-hidden">
+    <section className="relative pt-16 pb-12 px-4 md:px-6 overflow-hidden bg-[#0a0606]">
       <ArrowDivider />
-      <div className="max-w-[1200px] mx-auto px-1 md:px-8 py-10 md:py-20 relative">
+      <div className="max-w-[1200px] mx-auto px-1 md:px-8 py-10 md:py-16 relative">
         <Reveal>
-          {/* Glow laranja cinematográfico atrás da foto */}
-          <div
-            aria-hidden
-            className="absolute right-[-10%] top-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-custom/10 blur-[120px] rounded-full pointer-events-none"
-          />
+          <div className="relative overflow-hidden rounded-[28px] min-h-[640px] md:min-h-[680px] bg-[#0a0606]">
+            {/* Camada 1 — sol/brasa em CSS puro (gradientes radiais empilhados) */}
+            <div
+              aria-hidden
+              className="hero-sun animate-pulse-sun pointer-events-none absolute inset-0"
+            />
 
-          {/* Grid 2 colunas no desktop, stack vertical no mobile */}
-          <div className="relative grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-center">
-            {/* Mobile: foto no topo / Desktop: foto à direita (col 2) */}
-            <div className="relative order-1 md:order-2 w-full h-[55vh] min-h-[360px] md:h-[640px] md:min-h-[640px]">
-              <img
-                src={founderHero}
-                alt="Idealizador d'Os Novos Nordestinos"
-                loading="eager"
-                decoding="async"
-                className="absolute inset-0 w-full h-full object-contain object-center md:object-right [mask-image:radial-gradient(ellipse_at_center,black_50%,transparent_82%)] [-webkit-mask-image:radial-gradient(ellipse_at_center,black_50%,transparent_82%)]"
-              />
-            </div>
+            {/* Camada 2 — vinheta escura para fundir o sol no fundo */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_70%_55%,transparent_30%,#0a0606_88%)]"
+            />
 
-            {/* Texto — col 1 no desktop, abaixo no mobile */}
-            <div className="relative order-2 md:order-1 text-center md:text-left">
-              <div className="mb-4 flex justify-center md:justify-start">
-                <SectionPill>O Movimento</SectionPill>
+            {/* Camada 3 — Foto do idealizador, sobreposta à direita */}
+            <img
+              src={founderHero}
+              alt="Idealizador d'Os Novos Nordestinos"
+              loading="eager"
+              decoding="async"
+              className="pointer-events-none absolute right-[-10%] bottom-0 w-[88%] h-[60%] object-contain object-right-bottom md:right-0 md:w-[55%] md:h-[105%] [mask-image:linear-gradient(to_left,black_55%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_left,black_55%,transparent_100%)] md:[mask-image:linear-gradient(to_left,black_60%,transparent_100%)] md:[-webkit-mask-image:linear-gradient(to_left,black_60%,transparent_100%)]"
+            />
+
+            {/* Camada 4 — Texto à esquerda + CTA */}
+            <div className="relative grid grid-cols-1 md:grid-cols-2 gap-6 items-center h-full p-6 md:p-12 min-h-[640px] md:min-h-[680px]">
+              <div className="relative z-10 text-left max-w-[560px]">
+                {/* Pill "O MOVIMENTO" com linha decorativa */}
+                <div className="mb-5 flex items-center gap-3">
+                  <span className="h-px w-10 bg-primary-custom" />
+                  <span className="text-primary-custom uppercase tracking-[0.3em] text-xs font-semibold">
+                    O Movimento
+                  </span>
+                </div>
+
+                <p className="font-semibold uppercase tracking-[0.18em] text-cream-muted text-[clamp(11px,1.6vw,14px)] mb-3">
+                  Chegou a hora do Brasil conhecer
+                </p>
+
+                <h1 className="font-black leading-[0.92] tracking-[-0.02em] text-[clamp(40px,9vw,84px)]">
+                  <span className="block text-cream-base">OS NOVOS</span>
+                  <span className="block text-primary-custom drop-shadow-[0_2px_24px_rgba(224,140,50,0.55)]">
+                    NORDESTINOS
+                  </span>
+                </h1>
+
+                <p className="text-cream-muted text-[clamp(13px,2vw,17px)] leading-relaxed mt-6">
+                  Empresários e profissionais que já constroem resultado, mas
+                  agora decidiram ser{" "}
+                  <strong className="text-foreground italic">
+                    vistos, valorizados e respeitados
+                  </strong>{" "}
+                  no nível que realmente são.
+                </p>
+
+                <div className="mt-8">
+                  <BrutalistButton href="#cta-final" size="lg">
+                    Iniciar avaliação{" "}
+                    <span
+                      aria-hidden="true"
+                      className="text-[0.85em] leading-none translate-y-[1px]"
+                    >
+                      ▶
+                    </span>
+                  </BrutalistButton>
+                </div>
               </div>
 
-              <p className="font-semibold uppercase tracking-[0.18em] text-cream-muted text-[clamp(11px,1.6vw,14px)] mb-3">
-                Chegou a hora do Brasil conhecer
-              </p>
-
-              <h1 className="font-black leading-[0.92] tracking-[-0.02em] text-[clamp(40px,9vw,84px)]">
-                <span className="block text-cream-base">OS NOVOS</span>
-                <span className="block text-primary-custom drop-shadow-[0_2px_24px_rgba(224,140,50,0.55)]">
-                  NORDESTINOS
-                </span>
-              </h1>
-
-              <p className="text-cream-muted text-[clamp(13px,2vw,17px)] leading-relaxed max-w-[560px] mx-auto md:mx-0 mt-6">
-                Empresários e profissionais que já constroem resultado, mas
-                agora decidiram ser{" "}
-                <strong className="text-foreground">
-                  vistos, valorizados e respeitados
-                </strong>{" "}
-                no nível que realmente são.
-              </p>
+              {/* Coluna direita reservada visualmente para a foto/sol */}
+              <div className="hidden md:block" />
             </div>
           </div>
-
-          {/* Card "clientes melhores" — abaixo do bloco */}
-          <TiltCard
-            tilt={false}
-            spotlight
-            className="card-premium max-w-[420px] mx-auto p-6 mt-12 text-center"
-          >
-            <p className="text-sm text-foreground/90 mb-1">
-              Você não precisa de mais clientes.
-            </p>
-            <p className="text-sm font-black text-primary-custom uppercase tracking-wider">
-              Você precisa de clientes melhores.
-            </p>
-          </TiltCard>
         </Reveal>
       </div>
     </section>
