@@ -412,7 +412,7 @@ function LogoIcon({ className, eager = false }: { className?: string; eager?: bo
 /* ── DURANTE ANOS HEADLINE — manchete editorial estática antes do CTA final ── */
 function DuranteAnosHeadline() {
   return (
-    <section className="relative py-24 md:py-32 px-6">
+    <section className="relative py-14 md:py-20 px-6">
       <div className="max-w-[1100px] mx-auto text-center">
         <Reveal>
           <h2 className="font-black uppercase tracking-tight leading-[0.98] text-[clamp(34px,7vw,68px)] headline-gradient">
@@ -441,7 +441,7 @@ function SectionPill({ children }: { children: ReactNode }) {
 /* ── Seta indicadora entre seções ── */
 function ArrowDivider() {
   return (
-    <div className="w-full flex justify-center py-10">
+    <div className="w-full flex justify-center py-4">
       <ChevronDown
         className="text-primary-custom/70 animate-bounce"
         size={28}
@@ -454,8 +454,7 @@ function ArrowDivider() {
 /* ── HERO INTRO — bloco de abertura após o VSL ── */
 function HeroIntro() {
   return (
-    <section className="relative pt-16 pb-12 px-4 md:px-6 overflow-hidden bg-[#0a0606]">
-      <ArrowDivider />
+    <section className="relative pt-4 pb-8 px-4 md:px-6 overflow-hidden bg-[#0a0606]">
       <div className="max-w-[1280px] mx-auto relative">
         <Reveal>
           <div className="relative overflow-hidden min-h-[420px] md:min-h-[640px] bg-[#0a0606]">
@@ -465,18 +464,18 @@ function HeroIntro() {
               alt="Idealizador d'Os Novos Nordestinos"
               loading="eager"
               decoding="async"
-              className="pointer-events-none absolute right-0 top-0 h-full w-[48%] object-cover opacity-100 md:w-[60%] md:object-right"
-              style={{ objectPosition: "30% center" }}
+              className="pointer-events-none absolute right-0 top-0 h-full w-[55%] object-cover opacity-100 md:w-[60%] md:object-right"
+              style={{ objectPosition: "center 30%" }}
             />
 
             {/* Vinheta de fusão horizontal — preto à esquerda funde no glow */}
             <div
               aria-hidden
-              className="pointer-events-none absolute inset-y-0 left-0 w-[58%] md:w-[55%] bg-gradient-to-r from-[#0a0606] via-[#0a0606]/85 to-transparent"
+              className="pointer-events-none absolute inset-y-0 left-0 w-[50%] md:w-[55%] bg-gradient-to-r from-[#0a0606] via-[#0a0606]/85 to-transparent"
             />
 
             {/* Texto à esquerda + CTA */}
-            <div className="relative grid grid-cols-[1.05fr_0.95fr] md:grid-cols-2 gap-3 md:gap-6 items-center min-h-[420px] md:min-h-[640px] p-4 md:p-12">
+            <div className="relative grid grid-cols-[0.95fr_1.05fr] md:grid-cols-2 gap-3 md:gap-6 items-center min-h-[420px] md:min-h-[640px] p-4 md:p-12">
               <div className="relative z-10 text-left max-w-[560px]">
                 {/* Pill "O MOVIMENTO" com linha decorativa */}
                 <div className="mb-3 md:mb-5 flex items-center gap-2 md:gap-3">
@@ -506,7 +505,7 @@ function HeroIntro() {
                 </p>
 
                 <div className="mt-5 md:mt-8">
-                  <BrutalistButton href="#cta-final" size="lg">
+                  <BrutalistButton href="#cta-final" size="md">
                     Iniciar avaliação{" "}
                     <span
                       aria-hidden="true"
@@ -547,7 +546,7 @@ function StepsSection() {
   ];
 
   return (
-    <section className="relative py-20 px-6">
+    <section className="relative py-12 px-6">
       <div className="max-w-[760px] mx-auto">
         <Reveal>
           <ArrowDivider />
@@ -632,7 +631,7 @@ function AudienceSection() {
   ];
 
   return (
-    <section className="relative py-20 px-6">
+    <section className="relative py-12 px-6">
       <div className="max-w-[760px] mx-auto">
         <Reveal>
           <ArrowDivider />
@@ -684,22 +683,26 @@ function AudienceSection() {
 /* ── FOUNDER SECTION — apresentação do idealizador (estilo "Muito prazer") ── */
 function FounderSection() {
   return (
-    <section className="relative py-20 px-6">
+    <section className="relative py-12 px-6">
       <div className="max-w-[760px] mx-auto">
         <Reveal>
           <ArrowDivider />
           <div className="mb-8 flex justify-center">
             <SectionPill>Quem Está Por Trás</SectionPill>
           </div>
-          <h2 className="mb-6 text-left">
-            <span className="block headline-gradient font-black uppercase tracking-tight leading-[0.95] text-[clamp(38px,7vw,72px)] drop-shadow-[0_0_30px_rgba(224,140,50,0.35)]">
-              Os Novos Nordestinos
-            </span>
-            <span className="block mt-3 italic font-normal text-cream-muted/95 text-[clamp(18px,2.6vw,26px)] tracking-tight">
+          {/* Kicker "MUITO PRAZER," — Poppins extrabold com linha decorativa */}
+          <div className="mb-4 flex items-center gap-3">
+            <span className="h-px w-10 bg-primary-custom" />
+            <span className="font-sans text-cream-base font-extrabold uppercase tracking-[0.4em] text-xs">
               Muito prazer,
             </span>
+          </div>
+          <h2 className="mb-5 text-left">
+            <span className="block headline-gradient font-black uppercase tracking-tight leading-[0.95] text-[clamp(32px,6vw,60px)] drop-shadow-[0_0_30px_rgba(224,140,50,0.35)]">
+              Os Novos Nordestinos
+            </span>
           </h2>
-          <p className="text-sm font-semibold text-primary-custom tracking-[0.15em] mb-5 uppercase">
+          <p className="text-[11px] font-bold text-primary-custom tracking-[0.3em] mb-6 uppercase">
             Movimento de Posicionamento Digital • Especialistas em Autoridade de Marca
           </p>
           <p className="text-sm md:text-base text-cream-muted leading-relaxed mb-6">
@@ -781,7 +784,7 @@ function ImpactSection() {
   ];
 
   return (
-    <section className="py-24 relative bg-background">
+    <section className="py-14 relative bg-background">
       <div className="max-w-6xl mx-auto px-6">
         <Reveal>
           <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-primary-custom mb-6 block text-gold-glow text-left">
@@ -793,7 +796,14 @@ function ImpactSection() {
 
           <div className="grid md:grid-cols-2 gap-5">
             {cards.map((c, i) => (
-              <Reveal key={i} delay={i * 0.08}>
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: i % 2 === 0 ? -80 : 80 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: i % 2 === 0 ? -80 : 80 }}
+                viewport={{ amount: 0.3 }}
+                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: i * 0.05 }}
+              >
                 <div className="card-premium relative px-6 py-6 text-left h-full rounded-xl border border-primary-custom/25 transition-shadow duration-300 hover:border-primary-custom/50 hover:shadow-[0_0_40px_-12px_rgba(224,140,50,0.55)]">
                   <div className="w-11 h-11 rounded-lg bg-primary-custom/12 border border-primary-custom/35 flex items-center justify-center text-primary-custom icon-gold-glow mb-4">
                     {c.icon}
@@ -803,7 +813,7 @@ function ImpactSection() {
                     <span className="text-muted-foreground">{c.desc}</span>
                   </p>
                 </div>
-              </Reveal>
+              </motion.div>
             ))}
           </div>
 
@@ -835,7 +845,7 @@ function FinalCTA() {
   return (
     <section
       id="cta-final"
-      className="cta-stack relative overflow-hidden scroll-mt-20 py-24"
+      className="cta-stack relative overflow-hidden scroll-mt-20 py-16"
     >
       {/* Glow ambiente */}
       <div className="absolute inset-0 pointer-events-none">
@@ -877,12 +887,12 @@ function FinalCTA() {
       {/* CTA final centralizado */}
       <div className="relative z-30 max-w-3xl mx-auto px-6 pb-20 text-center">
         <Reveal>
-          <div className="flex flex-col items-center gap-6">
+          <div className="flex flex-col items-center gap-5">
             <blockquote className="blockquote-gold max-w-[560px] mx-auto mb-2 text-base md:text-lg font-black uppercase tracking-tight">
               Agora é a nossa vez de ocupar o lugar certo.
             </blockquote>
-            <BrutalistButton href="#" size="xl">
-              Solicitar minha avaliação estratégica <span aria-hidden="true" className="text-[0.85em] leading-none translate-y-[1px]">▶</span>
+            <BrutalistButton href="#" size="lg" className="max-w-[420px] w-full justify-center">
+              Solicitar avaliação estratégica <span aria-hidden="true" className="text-[0.85em] leading-none translate-y-[1px]">▶</span>
             </BrutalistButton>
             <p className="max-w-[420px] text-[11px] text-muted-custom font-semibold tracking-wide leading-relaxed">
               Entre para o movimento exclusivo de empresários que estão
