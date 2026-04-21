@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import logoOnn from "@/assets/logo-onn.png";
 import vslBg from "@/assets/vsl-bg.png";
-import founderHeroGlow from "@/assets/founder-hero-glow.jpg";
+import founderHeroGlow from "@/assets/founder-hero-new.png";
 import { VSLPlayer } from "@/components/VSLPlayer";
 
 export const Route = createFileRoute("/")({
@@ -586,7 +586,7 @@ function HeroIntro() {
         <div className="hero-photo-wrap order-1 md:order-2"
           style={{ minHeight: "55vw", maxHeight: "100vh" }}>
           <div className="hero-photo-glow" />
-          <img src={founderHeroGlow} alt="Idealizador d'Os Novos Nordestinos" loading="eager" decoding="async" />
+          <img src={founderHeroGlow} alt="Idealizador d'Os Novos Nordestinos" loading="eager" decoding="async" className="pt-0 pb-0 my-0 mx-0 mb-0 mr-0" />
           <div className="hero-photo-mask-left" />
           <div className="hero-photo-mask-bottom" />
 
