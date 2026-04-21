@@ -312,7 +312,6 @@ function NovosNordestinos() {
 
       {isUnlocked && (
         <main>
-          <Nav />
           <div id="hero-intro">
             <HeroIntro />
           </div>
