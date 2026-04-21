@@ -889,14 +889,14 @@ function ImpactSection() {
         <div className="flex flex-col gap-[2px]">
           {gains.map((g, i) => (
             <Reveal key={i} delay={i * 80}>
-              <a href="#cta-final" className="ganho-item">
+              <div className="ganho-item">
                 <span className="ganho-numero">{String(i + 1).padStart(2, "0")}</span>
                 <div>
                   <p className="ganho-titulo">{g.lead}</p>
                   <p className="ganho-desc">{g.desc}</p>
                 </div>
                 <span className="ganho-arrow">→</span>
-              </a>
+              </div>
             </Reveal>
           ))}
         </div>
