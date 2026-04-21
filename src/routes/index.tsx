@@ -458,23 +458,23 @@ function HeroIntro() {
       <div className="max-w-[1280px] mx-auto relative">
         <Reveal>
           <div className="relative overflow-hidden min-h-[420px] md:min-h-[640px] bg-[#0a0606]">
-            {/* Foto do idealizador (glow embutido na própria imagem) */}
+            {/* Foto do idealizador como fundo COMPLETO da seção */}
             <img
               src={founderHeroGlow}
               alt="Idealizador d'Os Novos Nordestinos"
               loading="eager"
               decoding="async"
-              className="pointer-events-none absolute right-0 top-0 h-full w-[55%] object-cover object-[78%_center] opacity-100 md:w-[60%] md:object-[75%_center]"
+              className="pointer-events-none absolute inset-0 w-full h-full object-cover object-center opacity-100"
             />
 
-            {/* Vinheta de fusão horizontal — preto à esquerda funde no glow */}
+            {/* Vinheta escura à esquerda — garante legibilidade dos textos sobrepostos */}
             <div
               aria-hidden
-              className="pointer-events-none absolute inset-y-0 left-0 w-[50%] md:w-[55%] bg-gradient-to-r from-[#0a0606] via-[#0a0606]/85 to-transparent"
+              className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#0a0606] via-[#0a0606]/75 via-40% to-transparent"
             />
 
-            {/* Texto à esquerda + CTA */}
-            <div className="relative grid grid-cols-[0.95fr_1.05fr] md:grid-cols-2 gap-3 md:gap-6 items-center min-h-[420px] md:min-h-[640px] p-4 md:p-12">
+            {/* Texto sobreposto à esquerda + CTA */}
+            <div className="relative grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6 items-center min-h-[420px] md:min-h-[640px] p-5 md:p-12">
               <div className="relative z-10 text-left max-w-[560px]">
                 {/* Pill "O MOVIMENTO" com linha decorativa */}
                 <div className="mb-3 md:mb-5 flex items-center gap-2 md:gap-3">
