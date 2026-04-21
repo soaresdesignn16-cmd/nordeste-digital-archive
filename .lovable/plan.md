@@ -1,34 +1,68 @@
 
 
-## Plano — Padronizar todos os botões CTA igual à referência
+## Plano — Efeito 3D nos cilindros (pílulas) antes do CTA final
 
-A referência mostra um botão laranja vibrante (gradiente amarelo-âmbar → laranja queimado), cantos bem arredondados, texto preto grande em **Poppins Black** e uma seta ▶ preta sólida à direita. Todos os CTAs do site (`BrutalistButton`) já usam a classe `.btn-gold`, então basta atualizar a classe em `src/styles.css` para todos os botões herdarem o novo visual automaticamente — sem mexer em cada chamada individual.
+A seção `FinalCTA` tem 6 pílulas ("Cobrar mais", "Atender menos", "Ter mais tempo", "Ser reconhecido", "Posicionamento real", "Autoridade construída") que aparecem logo depois da manchete *"Durante anos tentaram contar a nossa história"*. Hoje elas só fazem fade-in e ficam estáticas — vou transformá-las em **cilindros vivos com profundidade** pra dar respiração visual antes da CTA final.
 
-### Mudanças em `src/styles.css` (linhas 275–309)
+### O efeito (referência do vídeo Pinterest)
 
-**`.btn-gold` (base):**
-- Gradiente mais vibrante e quente: `linear-gradient(180deg, #F5A24A 0%, #E07A28 55%, #C8631A 100%)` — replica o tom amarelo/âmbar no topo descendo pro laranja queimado da referência.
-- `border-radius: 14px` (mais arredondado, igual à imagem).
-- `padding: 18px 34px` (base maior, mais "presença").
-- `font-size: 15px`, `letter-spacing: 0.04em`.
-- Mantém `font-family: var(--font-display)`, `font-weight: 900`, `text-transform: uppercase`, `color: #0A0A0A`.
-- Sombra mais cinematográfica: `box-shadow: 0 14px 32px -10px rgba(224, 122, 40, 0.55), inset 0 1px 0 rgba(255, 220, 170, 0.6), inset 0 -2px 0 rgba(140, 60, 10, 0.25)` — dá leve relevo (highlight no topo + sombra interna embaixo) igual à referência.
-- Hover: leve `translateY(-2px)` + sombra reforçada (mantido).
+Cada pílula vai parecer um **cilindro metálico flutuando**, com 3 camadas de movimento:
 
-**`.btn-gold-lg`:**
-- `padding: 22px 44px`, `font-size: 17px`, `border-radius: 16px`.
+1. **Levitação contínua** — sobe e desce 6px num ciclo de 3.5s, cada pílula com delay diferente (0.2s entre elas) → cria onda orgânica.
+2. **Brilho especular viajando** — uma faixa de luz branca translúcida atravessa a superfície da esquerda pra direita a cada 4s, simulando reflexo metálico de cilindro polido.
+3. **Inclinação 3D no hover/scroll** — leve `rotateX(8deg)` permanente + `rotateY` reagindo ao mouse (desktop). Sombra projetada embaixo pulsa junto com a levitação, dando ilusão de "objeto solto no espaço".
 
-**`.btn-gold-xl`:**
-- `padding: 26px 56px`, `font-size: 19px`, `border-radius: 18px`, `letter-spacing: 0.06em`.
+```text
+ANTES (pílula chapada):              DEPOIS (cilindro 3D flutuante):
+                                      ╱─────────────╲   ← brilho viajando
+  [• COBRAR MAIS]                    │ ●  COBRAR MAIS │  ← inclinada, com volume
+                                      ╲─────────────╱
+   sombra simples                       ▒▒▒▒▒▒▒▒▒▒▒    ← sombra que pulsa
+                                       (sobe/desce 6px)
+```
 
-**Seta ▶:**
-- A seta já é renderizada inline em cada chamada (`<span aria-hidden>▶</span>`). Para garantir que fique igual à referência (preta, sólida, alinhada), aumento o tamanho relativo no CSS: adicionar regra `.btn-gold > span[aria-hidden]` com `font-size: 1em; line-height: 1; transform: translateY(0);` e `gap: 0.8rem` no `.btn-gold` para dar respiro entre o texto e a seta.
+### Mudanças técnicas
+
+**1. `src/styles.css` — classe `.cta-pill` (linhas 599–624)**
+
+- Adicionar `transform-style: preserve-3d` + `perspective: 600px` no container pai.
+- Aplicar `rotateX(6deg)` permanente pra dar inclinação de cilindro visto de cima.
+- Gradiente reforçado com 3 stops pra sugerir curvatura cilíndrica:
+  `linear-gradient(180deg, #F5A24A 0%, #E07A28 50%, #A04D12 100%)`.
+- Sombra dupla: sombra projetada abaixo (`0 24px 40px -12px`) + glow ambiente.
+- Pseudo-elemento `::before` com faixa branca translúcida em `skewX(-20deg)` + animação `pill-shimmer 4s infinite` (delay escalonado por pílula via `--shimmer-delay`).
+- Pseudo-elemento `::after` com gradiente top→bottom pra simular highlight de cilindro polido (linha de luz no topo).
+- `overflow: hidden` no pill pra clipar o shimmer.
+
+**2. Novas keyframes em `src/styles.css`**
+
+```css
+@keyframes pill-float {
+  0%, 100% { transform: perspective(600px) rotateX(6deg) translateY(0); }
+  50%      { transform: perspective(600px) rotateX(6deg) translateY(-6px); }
+}
+@keyframes pill-shimmer {
+  0%, 60%  { transform: translateX(-120%) skewX(-20deg); }
+  100%     { transform: translateX(220%) skewX(-20deg); }
+}
+@keyframes pill-shadow-pulse {
+  0%, 100% { opacity: 0.55; transform: translateX(-50%) scale(1); }
+  50%      { opacity: 0.8;  transform: translateX(-50%) scale(1.08); }
+}
+```
+
+**3. `src/routes/index.tsx` — `FinalCTA` (linhas 849–865)**
+
+- Adicionar wrapper `<div className="pill-3d-stage">` em volta da pílula pra aplicar `perspective` e a sombra projetada (div absoluta separada animada com `pill-shadow-pulse`).
+- Passar `style={{ "--shimmer-delay": ${i * 0.6}s, "--float-delay": ${i * 0.2}s }}` em cada pílula → cada cilindro brilha e flutua em momentos levemente diferentes (efeito onda).
+- Manter o `motion.div` de entrada (fade-in inicial), animação contínua via CSS depois.
 
 ### Resultado
 
-Todos os 3 CTAs principais da LP — "Quero ser selecionado", "Quero entrar para o movimento", "Solicitar minha avaliação estratégica" — passam automaticamente a usar o visual da referência: laranja vibrante, mais arredondado, texto Poppins Black grande e seta preta destacada. Mobile e desktop herdam o mesmo estilo (o tamanho é controlado pela prop `size` que já está em uso).
+As 6 pílulas deixam de ser tags chapadas e viram **cilindros vivos** que respiram, refletem luz e flutuam — exatamente o efeito de profundidade que o vídeo de referência mostra. Cria tensão visual e movimento crescente que conduz naturalmente o olho até a CTA final ("Solicitar minha avaliação estratégica"), aumentando o impacto do fechamento.
 
-### Arquivo alterado
+### Arquivos alterados
 
-- `src/styles.css` — atualização das classes `.btn-gold`, `.btn-gold-lg`, `.btn-gold-xl` (linhas 275–309).
+- `src/styles.css` — atualizar `.cta-pill`, adicionar keyframes e `.pill-3d-stage`.
+- `src/routes/index.tsx` — wrapper das pílulas no `FinalCTA` com delays escalonados.
 
