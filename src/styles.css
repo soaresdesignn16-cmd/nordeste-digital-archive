@@ -738,18 +738,18 @@
     height: 360vh;
   }
   .audience-pin__header {
-    padding-top: 60px;
-    padding-bottom: 16px;
+    padding-top: 48px;
+    padding-bottom: 12px;
   }
   .fan-stack-wrap {
-    padding: 20px 24px 60px;
+    padding: 20px 32px 88px;
   }
   .fan-stack {
-    width: min(320px, 82vw);
-    height: min(420px, 115vw);
+    width: min(300px, 76vw);
+    height: min(400px, 108vw);
   }
   .fan-card {
-    padding: 28px 24px 32px;
+    padding: 26px 22px 30px;
   }
   .fan-card h3 {
     font-size: 16px;
