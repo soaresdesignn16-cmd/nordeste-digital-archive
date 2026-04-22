@@ -1211,7 +1211,7 @@
   }
 }
 
-/* ─────────── Founder Bleed (full-width photo background) ─────────── */
+/* ─────────── Founder Bleed ─────────── */
 .founder-bleed {
   position: relative;
   width: 100%;
@@ -1224,48 +1224,53 @@
   padding: 0 24px 56px;
   border-top: 1px solid var(--border-subtle);
 }
+
 .founder-bleed__bg {
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
   width: 100%;
-  height: 50%;
+  height: 55%;
   object-fit: cover;
   object-position: center top;
   z-index: 0;
   pointer-events: none;
-  /* No filters — preserve natural warm tones of the photo */
   filter: none;
 }
+
 .founder-bleed__overlay {
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  height: 50%;
+  width: 100%;
+  height: 55%;
   background: linear-gradient(
     to bottom,
     transparent 0%,
-    transparent 45%,
-    rgba(0, 0, 0, 0.5) 65%,
-    #000000 85%,
-    #000000 100%
+    transparent 40%,
+    rgba(0,0,0,0.6) 62%,
+    #000 82%,
+    #000 100%
   );
   z-index: 1;
   pointer-events: none;
 }
+
 .founder-bleed__content {
   position: relative;
   z-index: 2;
   width: 100%;
   max-width: 720px;
   margin: 0;
-  padding-top: 52vh;
+  padding-top: 0;
+  margin-top: auto;
   text-align: left;
 }
+
 .founder-bleed__label {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -1274,14 +1279,15 @@
   margin-bottom: 10px;
   line-height: 1;
 }
+
 .founder-bleed__dash {
   display: inline-block;
   width: 28px;
   height: 2px;
   background: #C8780A;
-  vertical-align: middle;
-  margin-right: 10px;
+  flex-shrink: 0;
 }
+
 .typo-headline--display {
   font-weight: 900;
   line-height: 0.95;
@@ -1291,16 +1297,11 @@
   font-size: clamp(38px, 10vw, 54px);
   text-align: left;
 }
-.founder-bleed__line {
-  display: block;
-  margin: 0;
-}
-.founder-bleed__line--white {
-  color: #ffffff;
-}
-.founder-bleed__line--gold {
-  color: #C8780A;
-}
+
+.founder-bleed__line { display: block; margin: 0; }
+.founder-bleed__line--white { color: #ffffff; }
+.founder-bleed__line--gold  { color: #C8780A; }
+
 .founder-bleed__sub {
   margin: 0 0 44px;
   font-size: 10.5px;
@@ -1311,130 +1312,128 @@
   font-weight: 500;
   text-align: left;
 }
+
+/* ── CTA Button ── */
 .founder-cta {
   position: relative;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 0;
   width: 88%;
+  max-width: 520px;
   height: 68px;
   margin: 0;
-  padding: 0 18px 0 18px;
+  padding: 0 18px;
   border-radius: 10px;
   background: #C8780A;
   color: #1a1205;
   text-decoration: none;
   border: none;
   outline: none;
-  box-shadow: none;
   cursor: pointer;
   transition: opacity 0.2s ease;
 }
-.founder-cta::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 60%;
-  height: 100%;
-  background: linear-gradient(
-    120deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.35) 50%,
-    transparent 100%
-  );
-  transition: left 0.4s ease;
-  pointer-events: none;
-}
-@media (hover: hover) and (pointer: fine) {
-  .founder-cta:hover::before {
-    left: 140%;
-  }
-  .founder-cta:hover {
-    opacity: 0.95;
-    cursor: pointer;
-  }
-}
+
 .founder-cta__icon {
   width: 38px;
   height: 38px;
   margin-right: 14px;
   flex-shrink: 0;
-  filter: none;
 }
+
 .founder-cta__text {
   display: flex;
   flex-direction: column;
-  line-height: 1.25;
-  text-align: left;
-}
-.founder-cta__text > span {
-  display: block;
+  font-size: 15px;
   font-weight: 800;
-  font-size: 16px;
-  color: #1a1205;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  line-height: 1.25;
+  color: #1a1205;
 }
 
+/* shine sweep on hover */
+.founder-cta::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 55%;
+  height: 100%;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    rgba(255,255,255,0.38) 50%,
+    transparent 100%
+  );
+  transition: left 0.45s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .founder-cta:hover::before { left: 150%; }
+  .founder-cta:hover { opacity: 0.93; }
+}
+
+/* ── Desktop (1024px+) ── */
 @media (min-width: 1024px) {
   .founder-bleed {
-    min-height: 100vh;
     padding: 0;
-    display: flex;
     align-items: flex-end;
     justify-content: flex-start;
   }
+
   .founder-bleed__bg {
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    object-position: center top;
+    object-position: 65% top;
   }
+
   .founder-bleed__overlay {
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
     background: linear-gradient(
+      to right,
+      rgba(0,0,0,0.92) 0%,
+      rgba(0,0,0,0.75) 40%,
+      rgba(0,0,0,0.2) 70%,
+      transparent 100%
+    ),
+    linear-gradient(
       to bottom,
-      rgba(0, 0, 0, 0.1) 0%,
-      rgba(0, 0, 0, 0.3) 40%,
-      rgba(0, 0, 0, 0.85) 65%,
-      #000000 85%
+      transparent 0%,
+      rgba(0,0,0,0.5) 60%,
+      #000 90%
     );
   }
+
   .founder-bleed__content {
-    position: relative;
-    z-index: 2;
     padding: 0 0 80px 80px;
-    max-width: 600px;
+    max-width: 580px;
     margin: 0;
+    padding-top: 0;
+    margin-top: auto;
   }
+
   .founder-cta {
     max-width: 460px;
     width: 100%;
   }
 }
 
+/* ── Mobile (max 640px) ── */
 @media (max-width: 640px) {
   .founder-bleed {
-    min-height: 100vh;
     padding: 0 24px 56px;
   }
   .founder-bleed__bg {
-    height: 50%;
+    height: 55%;
     object-position: center top;
   }
   .founder-bleed__overlay {
-    height: 50%;
-  }
-  .founder-bleed__content {
-    padding-top: 52vh;
+    height: 55%;
   }
 }
 
