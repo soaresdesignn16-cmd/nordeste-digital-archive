@@ -442,6 +442,7 @@ function NovosNordestinos() {
           <FounderSection />
           <ImpactSection />
           <DuranteAnosHeadline />
+          <CTABlock />
           <FinalCTA />
           <Footer />
         </main>
@@ -1370,6 +1371,21 @@ function FinalCTA() {
   return (
     <section ref={sectionRef} id="cta-final" className="section-cta px-6"
       style={{ paddingTop: 150, paddingBottom: 150 }}>
+      <div className="relative z-10 max-w-[900px] mx-auto text-center">
+        <h2 ref={headlineRef} className="typo-display final-cta-headline">
+          Pronto para ser<br />
+          <span className="accent-text">visto de verdade?</span>
+        </h2>
+      </div>
+    </section>
+  );
+}
+
+/* ─────────── CTA BLOCK (eyebrow + paragraph + buttons + quote) ─────────── */
+function CTABlock() {
+  return (
+    <section id="cta-block" className="section-cta-block px-6"
+      style={{ paddingTop: 120, paddingBottom: 120 }}>
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <span className="watermark-onn">ONN</span>
       </div>
@@ -1385,12 +1401,6 @@ function FinalCTA() {
           <div className="flex justify-center">
             <span className="eyebrow eyebrow--center">A Hora É Agora</span>
           </div>
-        </Reveal>
-        <Reveal delay={80}>
-          <h2 ref={headlineRef} className="typo-display final-cta-headline" style={{ marginTop: 22 }}>
-            Pronto para ser<br />
-            <span className="accent-text">visto de verdade?</span>
-          </h2>
         </Reveal>
         <Reveal delay={160}>
           <RevealWords className="typo-body mx-auto" style={{ marginTop: 18, maxWidth: 440, fontSize: 17 }}>
