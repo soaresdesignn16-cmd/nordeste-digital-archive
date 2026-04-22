@@ -1269,7 +1269,7 @@
   font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #c8861a;
+  color: #C8780A;
   font-weight: 400;
   margin-bottom: 10px;
   line-height: 1;
@@ -1278,7 +1278,7 @@
   display: inline-block;
   width: 28px;
   height: 2px;
-  background: #c8861a;
+  background: #C8780A;
   vertical-align: middle;
   margin-right: 10px;
 }
@@ -1299,7 +1299,7 @@
   color: #ffffff;
 }
 .founder-bleed__line--gold {
-  color: #f0a830;
+  color: #C8780A;
 }
 .founder-bleed__sub {
   margin: 0 0 44px;
@@ -1312,6 +1312,8 @@
   text-align: left;
 }
 .founder-cta {
+  position: relative;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -1321,7 +1323,7 @@
   margin: 0;
   padding: 0 18px 0 18px;
   border-radius: 10px;
-  background: #f0a830;
+  background: #C8780A;
   color: #1a1205;
   text-decoration: none;
   border: none;
@@ -1329,6 +1331,21 @@
   box-shadow: none;
   cursor: pointer;
   transition: opacity 0.2s ease;
+}
+.founder-cta::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.18) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
 }
 .founder-cta:hover {
   opacity: 0.92;
