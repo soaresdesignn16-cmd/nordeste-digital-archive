@@ -1,56 +1,65 @@
 
 
-## Scroll mais leve, rápido e reativo (estilo premium UI/UX)
+## Substituir seção "Quem Está Por Trás" — full-bleed com foto de fundo
 
-Objetivo: matar a sensação de "arrasto"/blur e deixar o feedback do scroll instantâneo, como Linear, Vercel, Awwwards top-tier. Sem mudar layout, conteúdo ou a animação do leque (Audience).
+Reformular o `FounderSection()` em `src/routes/index.tsx` (linhas 1079–1131) para uma seção full-width com a foto enviada como background, gradient overlay forte para preto, e texto + CTA na metade inferior.
 
-### Mudanças em `src/styles.css`
+### Asset
 
-1. **Remover `filter: blur()` das revelações** (linhas 392–407 e 410–413).
-   - `.reveal`: `transform: translateY(32px) → translateY(16px)`, sem blur, duração `0.75s → 0.45s`, easing `cubic-bezier(0.22, 1, 0.36, 1)` (ease-out forte, "snappy").
-   - `@keyframes fadeInUp`: remover `filter: blur()`, encurtar translate para `16px`.
-   - `.hero-anim`: duração `0.85s → 0.5s`. Delays compactados: `0/60/120/200/280/360ms` (era até 580ms).
+- Copiar `user-uploads://image-3.png` para `src/assets/founder-armchair.jpg` e importar no topo do `index.tsx` junto aos outros assets.
+- Remover o import `founder-portrait.jpg` se não for mais usado (vou checar — está usado só nesta seção).
 
-2. **Reveal-words mais rápidos** (linhas 1046–1056).
-   - `transition: color 0.45s → 0.22s, opacity 0.45s → 0.22s`. Texto acompanha o scroll sem "rastro".
-   - Mesma coisa em `.scroll-fade`: `0.5s → 0.28s`, translate `8px → 4px`.
+### Estrutura da nova seção
 
-3. **Cortar transições longas espalhadas**.
-   - `.highlight-word::after`: `width 0.8s → 0.4s`, sem delay de 0.3s (linha 459).
-   - Cards/botões com `0.35s cubic-bezier(0.16,1,0.3,1)` (linhas 537, 585) → `0.22s ease-out`. Mantém o hover suave mas sem inércia.
+```text
+<section class="founder-bleed">
+  <div class="founder-bleed__bg" />        ← <img> da foto, position absolute
+  <div class="founder-bleed__overlay" />   ← gradient transparente → #000
+  <div class="founder-bleed__content">     ← texto na metade inferior
+     [— QUEM ESTÁ POR TRÁS]
+     <h2>MUITO PRAZER,
+         <span class="accent">OS NOVOS<br/>NORDESTINOS</span></h2>
+     <p>MOVIMENTO DE POSICIONAMENTO DIGITAL.<br/>
+        ESPECIALISTAS EM AUTORIDADE DE MARCA.</p>
+     <a class="founder-cta">[logo] QUERO ENTRAR PARA O MOVIMENTO →</a>
+  </div>
+</section>
+```
 
-4. **Reduzir altura do pin do Audience no mobile**: `360vh → 280vh` (linha 738). Menos scroll preso na mesma seção = sensação geral de site mais ágil. Ranges das fases já são proporcionais (`progress / total`), nada quebra.
+- Mantém `Reveal` wrappers para preservar entrada animada já usada no resto do site.
+- Mantém o link âncora `#cta-final` no botão.
+- Remove o bloco `RevealWords` com o parágrafo longo "Nascemos com um propósito…" e o `<div class="founder-stage">` antigo (substituídos pela foto de fundo + texto enxuto pedido).
 
-### Mudanças em `src/routes/index.tsx`
+### Estilos novos (em `src/styles.css`, após o bloco `.founder-stage` linha ~1235)
 
-5. **Remover o atraso artificial do cursor custom** (linhas 236–243).
-   - Trocar o `setTimeout(80ms)` por movimento direto do `outer` (segue o mouse no mesmo frame). Cursor premium é instantâneo, não "perseguidor lento".
+- `.founder-bleed`: `position: relative; width: 100%; min-height: 100vh; background:#000; overflow:hidden; display:flex; flex-direction:column; justify-content:flex-end; padding: 0 24px 80px;`
+- `.founder-bleed__bg`: `position:absolute; inset:0 0 auto 0; height:65%; object-fit:cover; object-position:center top; z-index:0;` — em mobile `height:55%`.
+- `.founder-bleed__overlay`: `position:absolute; inset:0; background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.35) 30%, #000 55%, #000 100%); z-index:1;`
+- `.founder-bleed__content`: `position:relative; z-index:2; max-width: 720px; margin: 0 auto; width:100%; padding-top: 55vh;` — empurra o texto pra metade inferior. Em mobile `padding-top: 50vh`.
+- Label gold com traço: `.founder-bleed__label` — flex com `<span class="dash">` (linha 24px gold) + texto uppercase tracking 0.18em, 12px, cor `var(--accent)`.
+- Heading: reusa `.typo-headline` mas com `font-weight: 900; line-height: 1; text-transform: uppercase; letter-spacing: -0.01em;`. Inline style ou modifier `.typo-headline--display`.
+- Subtext: `.founder-bleed__sub` — uppercase, 12px, letter-spacing 0.18em, color `rgba(255,255,255,0.55)`, line-height 1.9.
+- `.founder-cta`: variante do `.btn-primary`, `width:100%; max-width:500px; padding:18px 28px; border-radius:10px; font-size:13px;` com `<img src={logoOnn} class="founder-cta__icon">` (24px) à esquerda. Em desktop centralizado.
 
-6. **Otimizar `CustomCursor`**:
-   - Trocar `MutationObserver` em `document.body` (subtree completo) por **event delegation**: um único listener `mouseover`/`mouseout` no `document` que checa `e.target.closest("a, button, [role='button']")`. Elimina re-binds constantes durante renders do React.
+### Desktop (≥ 1024px)
 
-7. **Tornar `useScrollProgressReveal` mais reativo** (linhas 81–149).
-   - `activeRatio: 0.75 → 0.85` (palavras "acendem" mais cedo, não esperam chegar quase no topo).
-   - Já usa rAF + IO — manter.
+Mantém o mesmo layout full-bleed centralizado (opção mais limpa do que dividir 50/50 com a foto — combina mais com o resto do site, que é centered). A foto cobre os ~60% superiores em widescreen, texto centralizado abaixo. Min-height vira `min-height: 92vh`.
 
-8. **Throttle do header `scrolled`** (linhas 586–591): envolver em rAF pra não disparar setState a cada pixel de scroll.
+### Animações / performance
+
+- Reuso dos componentes `Reveal` existentes para fade-in (sem novo CSS).
+- Sem `filter: blur`, mantém a regra do projeto de scroll snappy.
+- `loading="eager"` + `fetchpriority="high"` na foto (seção crítica acima do CTA final) e adicionar preload no `head().links` como já é feito com `founderHeroGlow`.
 
 ### O que NÃO muda
 
-- Animação do leque (Audience cards) — ordem direita/esquerda/direita, rotações, easings dela: intactos.
-- Layout, cores, tipografia, conteúdo.
-- VSL, accordion, navegação, formulários.
-- `prefers-reduced-motion` e `low-gpu` continuam funcionando.
-
-### Resultado esperado
-
-- Scroll responde no frame, sem blur custoso na GPU.
-- Revelações ~40% mais curtas → sensação de "site que acompanha você" em vez de "site que termina depois de você".
-- Cursor desktop gruda no mouse (estilo Vercel/Linear).
-- Menos handlers e menos work por scroll event.
+- Nada antes (`AudienceSection`) ou depois (`ImpactSection`) é alterado.
+- Variáveis CSS, tokens, accent color (`var(--accent)` ≈ gold já existente — confere com o `#c8861a` pedido).
+- Header, footer, nav.
 
 ### Arquivos editados
 
-- `src/styles.css` — durações, easings, remoção de blur, altura mobile do pin.
-- `src/routes/index.tsx` — cursor sem delay + delegation, header throttled, `activeRatio` reveal.
+- `src/routes/index.tsx` — adicionar import da nova foto, reescrever `FounderSection`, adicionar preload no `head()`. Remover import `founderPortrait` se não usado em outro lugar (vou conferir antes).
+- `src/styles.css` — adicionar bloco `.founder-bleed*` e `.founder-cta`. Remover `.founder-stage` antigo (não será mais usado).
+- `src/assets/founder-armchair.jpg` — novo asset (copiado do upload).
 
