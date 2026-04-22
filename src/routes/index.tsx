@@ -1374,14 +1374,19 @@ function FinalCTA() {
   }, []);
 
   return (
-    <section ref={sectionRef} id="cta-final" className="section-cta px-6"
-      style={{ minHeight: "70vh", paddingTop: 0, paddingBottom: 0 }}>
+    <section ref={sectionRef} id="cta-final" className="section-cta px-6">
       <div className="final-cta-sticky">
         <div className="final-cta-inner relative max-w-[1100px] mx-auto text-center">
           <h2 ref={headlineRef} className="typo-display final-cta-headline">
             Pronto para ser<br />
             <span className="accent-text">visto de verdade?</span>
           </h2>
+          <div className="final-cta-actions">
+            <a href="#cta-block" className="btn-primary btn-primary--lg">
+              A Sua Chance
+              <ArrowRight size={14} />
+            </a>
+          </div>
         </div>
       </div>
     </section>
