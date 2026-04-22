@@ -616,7 +616,7 @@
 /* ─────────── AUDIENCE PIN (fan-out cards scroll) ─────────── */
 .audience-pin {
   position: relative;
-  height: 420vh;
+  height: 300vh;
 }
 .audience-pin__sticky {
   position: sticky;
