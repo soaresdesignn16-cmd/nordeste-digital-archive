@@ -930,7 +930,12 @@ function AudienceSection() {
       // 0.79 → 0.88 : focus bg-1,  0.88 → 1.00 : slide bg-1 out
       const seg = (start: number, end: number) =>
         Math.max(0, Math.min(1, (progress - start) / (end - start)));
-      const fanProgress = Math.min(1, progress / 0.25);
+      // No mobile: faixa de abertura mais longa (0 → 0.30) + easing ease-out
+      // pra suavizar a chegada no leque totalmente aberto.
+      const fanRaw = isMobile ? Math.min(1, progress / 0.3) : Math.min(1, progress / 0.25);
+      const fanProgress = isMobile
+        ? 1 - Math.pow(1 - fanRaw, 2.2)
+        : fanRaw;
       const focusLead = seg(0.25, 0.34);
       const slideLead = seg(0.34, 0.43);
       const focus3 = seg(0.43, 0.52);

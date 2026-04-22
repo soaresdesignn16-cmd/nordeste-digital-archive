@@ -751,6 +751,7 @@
   .fan-card {
     padding: 22px 18px 24px;
     border-radius: 20px;
+    transition: transform 180ms cubic-bezier(0.22, 0.61, 0.36, 1);
   }
   .fan-card h3 {
     font-size: 14px;
