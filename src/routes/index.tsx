@@ -1324,10 +1324,12 @@ function FinalCTA() {
       ticking = false;
       const rect = section.getBoundingClientRect();
       const vh = window.innerHeight;
-      const raw = (vh - rect.top) / (vh + rect.height);
-      const t = smoothstep(clamp(raw, 0, 1));
-      const scale = (1.9 - 1.35 * t).toFixed(3);
-      const opacity = (1 - 0.8 * t).toFixed(3);
+      // Progress: 0 when section top hits viewport top, 1 when section bottom approaches viewport bottom
+      const total = Math.max(1, rect.height - vh);
+      const scrolled = clamp(-rect.top, 0, total);
+      const t = smoothstep(scrolled / total);
+      const scale = (1.9 - 1.5 * t).toFixed(3);
+      const opacity = (1 - 0.85 * t).toFixed(3);
       headline.style.setProperty("--headline-scale", scale);
       headline.style.setProperty("--headline-opacity", opacity);
     };
@@ -1370,12 +1372,14 @@ function FinalCTA() {
 
   return (
     <section ref={sectionRef} id="cta-final" className="section-cta px-6"
-      style={{ paddingTop: 150, paddingBottom: 150 }}>
-      <div className="relative z-10 max-w-[900px] mx-auto text-center">
-        <h2 ref={headlineRef} className="typo-display final-cta-headline">
-          Pronto para ser<br />
-          <span className="accent-text">visto de verdade?</span>
-        </h2>
+      style={{ minHeight: "200vh", paddingTop: 0, paddingBottom: 0 }}>
+      <div className="final-cta-sticky">
+        <div className="relative z-10 max-w-[1100px] mx-auto text-center">
+          <h2 ref={headlineRef} className="typo-display final-cta-headline">
+            Pronto para ser<br />
+            <span className="accent-text">visto de verdade?</span>
+          </h2>
+        </div>
       </div>
     </section>
   );
@@ -1386,7 +1390,7 @@ function CTABlock() {
   return (
     <section id="cta-block" className="section-cta-block px-6"
       style={{ paddingTop: 120, paddingBottom: 120 }}>
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ zIndex: 0 }}>
         <span className="watermark-onn">ONN</span>
       </div>
       <svg className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"

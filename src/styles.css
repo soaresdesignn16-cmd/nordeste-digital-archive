@@ -1570,6 +1570,7 @@
   position: relative;
   background: var(--bg);
   overflow: hidden;
+  isolation: isolate;
 }
 .section-cta-block::before {
   content: "";
