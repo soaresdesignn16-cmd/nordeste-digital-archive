@@ -17,6 +17,7 @@ import {
 import logoOnn from "@/assets/logo-onn.png";
 import vslBg from "@/assets/vsl-bg.png";
 import founderHeroGlow from "@/assets/founder-hero-new.png";
+import founderPortrait from "@/assets/founder-portrait.jpg";
 import { VSLPlayer } from "@/components/VSLPlayer";
 
 export const Route = createFileRoute("/")({
@@ -943,24 +944,41 @@ function FounderSection() {
           </RevealWords>
         </Reveal>
         <Reveal delay={280}>
-          <div
-            className="founder-photo-placeholder"
-            style={{
-              marginTop: 56,
-              width: "100%",
-              maxWidth: 720,
-              aspectRatio: "16 / 10",
-              borderRadius: 12,
-              border: "1px dashed var(--border-subtle)",
-              background: "var(--bg-surface)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <span className="typo-label" style={{ color: "var(--text-ghost)" }}>
-              Espaço reservado para foto
-            </span>
+          <div className="founder-stage">
+            <div className="marquee marquee--back" aria-hidden="true">
+              <div className="marquee__track">
+                {[...Array(2)].map((_, i) => (
+                  <React.Fragment key={i}>
+                    <span>POSICIONAMENTO •</span>
+                    <span>AUTORIDADE •</span>
+                    <span>LEGADO •</span>
+                    <span>PRESENÇA •</span>
+                    <span>ESTRATÉGIA •</span>
+                    <span>MARCA •</span>
+                  </React.Fragment>
+                ))}
+              </div>
+            </div>
+            <img
+              src={founderPortrait}
+              alt="Fundador — Os Novos Nordestinos"
+              className="founder-stage__photo"
+              loading="lazy"
+            />
+            <div className="marquee marquee--front" aria-hidden="true">
+              <div className="marquee__track">
+                {[...Array(2)].map((_, i) => (
+                  <React.Fragment key={i}>
+                    <span>NORDESTE •</span>
+                    <span>PREMIUM •</span>
+                    <span>EMPRESÁRIO •</span>
+                    <span>TICKET ALTO •</span>
+                    <span>RESPEITO •</span>
+                    <span>MOVIMENTO •</span>
+                  </React.Fragment>
+                ))}
+              </div>
+            </div>
           </div>
         </Reveal>
         <Reveal delay={340}>
