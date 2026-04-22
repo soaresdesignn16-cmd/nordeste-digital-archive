@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useEffect, useRef, type ReactNode } from "react";
+import React, { useState, useEffect, useRef, type ReactNode } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   ChevronDown,
@@ -72,6 +72,127 @@ function useRevealObserver(deps: unknown[] = []) {
     return () => io.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
+}
+
+/* ─────────── SCROLL-PROGRESS REVEAL (word-by-word + block-by-block) ─────────── */
+function useScrollProgressReveal(
+  ref: React.RefObject<HTMLElement | null>,
+  selector: string,
+  opts: { activeRatio?: number; deactivate?: boolean } = {},
+) {
+  const { activeRatio = 0.75, deactivate = true } = opts;
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const root = ref.current;
+    if (!root) return;
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReduced) {
+      root.querySelectorAll<HTMLElement>(selector).forEach((el) => el.classList.add("is-active"));
+      return;
+    }
+
+    let raf = 0;
+    let ticking = false;
+    let visible = false;
+
+    const update = () => {
+      ticking = false;
+      const els = root.querySelectorAll<HTMLElement>(selector);
+      const line = window.innerHeight * activeRatio;
+      els.forEach((el) => {
+        const r = el.getBoundingClientRect();
+        const center = r.top + r.height / 2;
+        const isActive = center < line;
+        if (isActive) {
+          if (!el.classList.contains("is-active")) el.classList.add("is-active");
+        } else if (deactivate) {
+          if (el.classList.contains("is-active")) el.classList.remove("is-active");
+        }
+      });
+    };
+
+    const onScroll = () => {
+      if (!visible || ticking) return;
+      ticking = true;
+      raf = requestAnimationFrame(update);
+    };
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          visible = e.isIntersecting;
+          if (visible) {
+            ticking = true;
+            raf = requestAnimationFrame(update);
+          }
+        });
+      },
+      { rootMargin: "200px 0px 200px 0px" },
+    );
+    io.observe(root);
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    // initial
+    ticking = true;
+    raf = requestAnimationFrame(update);
+
+    return () => {
+      io.disconnect();
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, [ref, selector, activeRatio, deactivate]);
+}
+
+function splitNodeIntoWords(node: ReactNode, keyPrefix: string): ReactNode[] {
+  if (node == null || node === false || node === true) return [];
+  if (typeof node === "string" || typeof node === "number") {
+    const text = String(node);
+    const parts = text.split(/(\s+)/);
+    return parts.map((part, i) => {
+      if (part.length === 0) return null;
+      if (/^\s+$/.test(part)) return part;
+      return (
+        <span key={`${keyPrefix}-w-${i}`} className="reveal-word">
+          {part}
+        </span>
+      );
+    });
+  }
+  if (Array.isArray(node)) {
+    return node.flatMap((n, i) => splitNodeIntoWords(n, `${keyPrefix}-${i}`));
+  }
+  // React element: recurse into children, preserve element type and props
+  if (typeof node === "object" && "type" in (node as object)) {
+    const el = node as React.ReactElement<{ children?: ReactNode }>;
+    if (el.props && "children" in el.props) {
+      const newChildren = splitNodeIntoWords(el.props.children, `${keyPrefix}-c`);
+      return [
+        React.cloneElement(el, { key: `${keyPrefix}-el`, children: newChildren } as Partial<{ children?: ReactNode }>),
+      ];
+    }
+  }
+  return [node];
+}
+
+function RevealWords({
+  children,
+  className = "",
+  style,
+}: {
+  children: ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
+}) {
+  const ref = useRef<HTMLParagraphElement>(null);
+  useScrollProgressReveal(ref, ".reveal-word", { activeRatio: 0.75, deactivate: true });
+  return (
+    <p ref={ref} className={className} style={style}>
+      {splitNodeIntoWords(children, "rw")}
+    </p>
+  );
 }
 
 function Reveal({
@@ -811,7 +932,7 @@ function FounderSection() {
           </p>
         </Reveal>
         <Reveal delay={220}>
-          <p className="typo-body" style={{ marginTop: 28, maxWidth: 720, lineHeight: 1.8 }}>
+          <RevealWords className="typo-body" style={{ marginTop: 28, maxWidth: 720, lineHeight: 1.8 }}>
             Nascemos com um propósito: mostrar pro Brasil que o Nordeste produz
             empresários sofisticados, negócios milionários e marcas no nível
             das maiores do país. Hoje, à frente do movimento, ajudamos
@@ -819,7 +940,7 @@ function FounderSection() {
             <strong>Arquitetura de Posicionamento Digital</strong>{" "}
             de ponta a ponta — transformando autoridade em ticket maior, mais
             tempo livre e respeito de mercado.
-          </p>
+          </RevealWords>
         </Reveal>
         <Reveal delay={280}>
           <div
@@ -864,6 +985,9 @@ function ImpactSection() {
     { lead: "Sua agenda finalmente desafoga", desc: "você atende menos, com mais qualidade, e recupera tempo pra viver, pensar e crescer de verdade." },
   ];
 
+  const listRef = useRef<HTMLDivElement>(null);
+  useScrollProgressReveal(listRef, ".ganho-item", { activeRatio: 0.78, deactivate: true });
+
   return (
     <section id="ganhos" className="relative px-6"
       style={{ background: "var(--bg)", borderTop: "1px solid var(--border-subtle)", paddingTop: 120, paddingBottom: 120 }}>
@@ -887,18 +1011,16 @@ function ImpactSection() {
           </Reveal>
         </div>
 
-        <div className="flex flex-col gap-[2px]">
+        <div ref={listRef} className="flex flex-col gap-[2px]">
           {gains.map((g, i) => (
-            <Reveal key={i} delay={i * 80}>
-              <div className="ganho-item">
-                <span className="ganho-numero">{String(i + 1).padStart(2, "0")}</span>
-                <div>
-                  <p className="ganho-titulo">{g.lead}</p>
-                  <p className="ganho-desc">{g.desc}</p>
-                </div>
-                <span className="ganho-arrow">→</span>
+            <div key={i} className="ganho-item scroll-fade">
+              <span className="ganho-numero">{String(i + 1).padStart(2, "0")}</span>
+              <div>
+                <p className="ganho-titulo">{g.lead}</p>
+                <p className="ganho-desc">{g.desc}</p>
               </div>
-            </Reveal>
+              <span className="ganho-arrow">→</span>
+            </div>
           ))}
         </div>
 
