@@ -682,7 +682,7 @@
 .fan-card--bg-2 {
   z-index: calc(2 + var(--focus-2) * 10);
   transform:
-    translateX(calc(var(--slide-2) * -160%ZZ + var(--fan) * -4%))
+    translateX(calc(var(--slide-2) * -160% + var(--fan) * -4%))
     translateY(calc(8px - var(--fan) * 8px - var(--focus-2) * 8px))
     scale(calc(0.96 + var(--fan) * 0.04 + var(--focus-2) * 0.06))
     rotate(calc(var(--fan) * -14deg + var(--fan) * var(--focus-2) * 14deg - var(--slide-2) * 5deg));
