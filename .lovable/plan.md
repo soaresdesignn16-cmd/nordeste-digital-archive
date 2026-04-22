@@ -1,82 +1,227 @@
 
 
-## Ajustar animação do leque: pilha de "pasta" inicial → leque abre no scroll
+## Redesign editorial da seção "Quem Somos" — pixel-perfect à referência
 
-O JSX e o hook de scroll já estão certos, mas hoje os 4 cards começam **perfeitamente sobrepostos** (você só vê 1 card) e o leque que abre atrás fica **escondido** pelo card da frente até a fase 2 do slide. Resultado: parece que nada acontece até o card principal sair. Vou corrigir só o **CSS** (`src/styles.css`, bloco `.fan-card*`) pra que:
+Trocar o layout atual da `ManifestoSection` (que hoje é grid 2 colunas com texto à esquerda + 4 cards à direita) por um **layout editorial single-column mobile-first**, com background architectural sutil mascarado à direita, fiel à referência enviada.
 
-1. **Estado inicial = pasta empilhada** com cards "espiando" por trás (igual papel numa pasta).
-2. **Durante o scroll** o leque abre **visivelmente** atrás do card da frente (vê os 3 saindo em ângulo enquanto o principal ainda está no centro).
-3. **Final do scroll** o card principal desliza pra esquerda e o leque já aberto fica todo à mostra.
+Os 4 cards do Manifesto (Diagnóstico, Mapeamento, Arquitetura, Implementação) **permanecem**, mas movem pra **abaixo** do bloco editorial — como uma segunda fileira dentro da mesma seção, separados por respiro vertical. Assim nada se perde.
 
-### 1. Estado inicial — visual de pasta
+### 1. Asset — imagem de fundo
 
-Cada card de fundo recebe um leve **offset vertical + escala decrescente + sombra empilhada** quando `--fan = 0`, criando o look de pasta:
+- Copiar `user-uploads://image-2.png` para `src/assets/quem-somos-bg.jpg` e importar como módulo ES6 (`import quemSomosBg from "@/assets/quem-somos-bg.jpg"`).
+- A imagem já é a foto arquitetônica escura (escadaria + figura solitária) — usar como `background-image` da seção, posicionada `right center`, com gradient mask `linear-gradient(to right, #0a0a0a 40%, transparent 100%)` por cima e `opacity: 0.25`.
+
+### 2. Estrutura JSX — `ManifestoSection` reescrita
+
+Layout mobile-first single column, todos os blocos stack vertical, left-aligned, dentro de um `max-w-[640px]`:
+
+```text
+┌─────────────────────────────────────┐
+│ ▬ QUEM SOMOS                        │  ← BLOCK 1 (line + label)
+│                                     │
+│ O NORDESTE                          │  ← BLOCK 2 (italic white 800)
+│ SEMPRE                              │      (upright white 900)
+│ PRODUZIU.                           │      (upright white 900)
+│ AGORA É VISTO.                      │      (orange 900)
+│ ─────────────────────               │  ← orange divider
+│                                     │
+│ ▰ Nascemos com um propósito:        │  ← BLOCK 3 (orange box)
+│                                     │
+│ Mostrar para o Brasil que           │  ← BLOCK 4 (intro text)
+│ o nordeste produz                   │
+│                                     │
+│ ┌─ Empresários sofisticados ─┐     │  ← BLOCK 5 (3 outlined cards)
+│ ┌─ Negócios milionários ─────┐     │
+│ ┌─ Marcas no nível das ──────┐     │
+│ └─  maiores do país. ────────┘     │
+│                                     │
+│ Hoje, à frente do movimento,        │  ← BLOCK 6
+│ ajudamos                            │
+│                                     │
+│ ▰ EMPRESÁRIOS NORDESTINOS           │  ← BLOCK 7 (orange box)
+│                                     │
+│ a implementar uma                   │  ← BLOCK 8 (closing)
+│ Arquitetura de Posicionamento       │
+│ Digital de ponta a ponta.           │
+│ Transformando autoridade em…        │
+└─────────────────────────────────────┘
+       ↓ (separador, 80px gap)
+┌─ 4 cards do Manifesto (preservados, grid 2×2) ─┐
+```
+
+### 3. Estilos CSS — novo bloco `.quem-somos-*` em `src/styles.css`
+
+Adicionar antes do bloco `.founder-stage` (em torno da linha 1036). Override local da cor primária pra `#D4861A` (variante exata pedida) sem mexer no design system global:
 
 ```css
-.fan-card--bg-1 {            /* card mais ao fundo */
-  transform:
-    translateY(calc(12px - var(--fan) * 12px))
-    scale(calc(0.94 + var(--fan) * 0.06))
-    rotate(calc(var(--fan) * -22deg));
+.quem-somos {
+  --qs-accent: #D4861A;
+  --qs-bg: #0a0a0a;
+  position: relative;
+  background: var(--qs-bg);
+  padding: 60px 24px;
+  overflow: hidden;
 }
-.fan-card--bg-2 {
-  transform:
-    translateY(calc(8px - var(--fan) * 8px))
-    scale(calc(0.96 + var(--fan) * 0.04))
-    rotate(calc(var(--fan) * -14deg));
+.quem-somos::before {                /* imagem arquitetural mascarada */
+  content: "";
+  position: absolute; inset: 0;
+  background: url('@/assets/quem-somos-bg.jpg') right center / cover no-repeat;
+  opacity: 0.25;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 100%);
+          mask-image: linear-gradient(to right, transparent 0%, #000 100%);
+  pointer-events: none;
 }
-.fan-card--bg-3 {
-  transform:
-    translateY(calc(4px - var(--fan) * 4px))
-    scale(calc(0.98 + var(--fan) * 0.02))
-    rotate(calc(var(--fan) * -7deg));
+.quem-somos__content { position: relative; z-index: 1; max-width: 640px; }
+
+/* BLOCK 1 — eyebrow */
+.qs-eyebrow {
+  display: flex; align-items: center; gap: 12px;
+  font: 500 11px/1 'Poppins'; color: var(--qs-accent);
+  letter-spacing: 0.2em; text-transform: uppercase;
+  margin-bottom: 28px;
 }
-.fan-card--lead {            /* card da frente, sempre reto */
-  transform:
-    translateX(calc(var(--slide) * -135%))
-    rotate(calc(var(--slide) * -4deg));
-  opacity: calc(1 - var(--slide) * 0.1);
+.qs-eyebrow::before { content:""; width: 28px; height: 2px; background: var(--qs-accent); }
+
+/* BLOCK 2 — headline */
+.qs-headline {
+  font-family: 'Poppins'; font-size: clamp(42px, 8vw, 56px);
+  line-height: 1.05; color: #fff; margin: 0;
+}
+.qs-headline .l1 { font-style: italic; font-weight: 800; display: block; }
+.qs-headline .l2,
+.qs-headline .l3 { font-style: normal; font-weight: 900; display: block; }
+.qs-headline .l4 { font-weight: 900; color: var(--qs-accent); display: block; }
+.qs-divider { height: 2px; background: var(--qs-accent); border: 0;
+  margin: 16px 0 24px; width: 100%; }
+
+/* BLOCK 3 / 7 — orange highlight */
+.qs-highlight {
+  display: inline-block;
+  background: var(--qs-accent); color: var(--qs-bg);
+  border-radius: 4px; padding: 10px 14px;
+  font: 600 italic 17px/1.2 'Poppins';
+  margin-bottom: 12px;
+}
+.qs-highlight--upper { font-weight: 700; text-transform: uppercase; }
+
+/* BLOCK 4 / 6 / 8 — body paragraphs */
+.qs-body { color: #fff; font: 400 16px/1.5 'Poppins'; margin: 0 0 20px; }
+.qs-body--close { line-height: 1.7; margin-bottom: 0; }
+.qs-body em { font-style: italic; font-weight: 500; }
+.qs-body strong { font-weight: 700; }
+
+/* BLOCK 5 — outlined cards */
+.qs-cards { display: flex; flex-direction: column; gap: 10px;
+  margin: 8px 0 28px; }
+.qs-card {
+  border: 1.5px solid var(--qs-accent); border-radius: 6px;
+  padding: 14px 18px; color: #fff;
+  font: 500 15px/1.4 'Poppins'; background: transparent;
+}
+
+/* Spacing entre Block 6 → 7 → 8 */
+.qs-block-6 { margin-bottom: 8px; }
+.qs-spacer-top { margin-top: 28px; }
+
+/* Manifesto cards (preservados) — gap acima */
+.quem-somos__manifesto-cards { margin-top: 80px; }
+
+@media (min-width: 768px) {
+  .quem-somos { padding: 96px 48px; }
+  .quem-somos__content { margin-inline: auto; }
 }
 ```
 
-Resultado visual quando `--fan=0` e `--slide=0`:
-- Card 1 (fundo): 12px abaixo, 94% de tamanho → aparece como uma "borda" embaixo do principal.
-- Card 2: 8px abaixo, 96% → segunda borda peek.
-- Card 3: 4px abaixo, 98% → terceira borda peek.
-- Lead: tamanho cheio, em cima, no centro — exatamente como uma pasta de papéis empilhados.
+### 4. JSX — substituir corpo de `ManifestoSection`
 
-### 2. Ângulos do leque mais abertos
+Manter o nome `ManifestoSection` e o `id="manifesto"` (links âncora continuam funcionando). Substituir o grid 2 colunas por:
 
-Aumento os ângulos finais (`-22°`, `-14°`, `-7°` em vez de `-18°/-12°/-6°`) pra o leque abrir mais visível e os cards "vazarem" pelos lados do principal **antes** do slide acontecer, dando o efeito de leque do vídeo.
+```tsx
+<section id="manifesto" className="quem-somos"
+  style={{ borderTop: "1px solid var(--border-subtle)" }}>
+  <div className="quem-somos__content mx-auto">
+    {/* BLOCK 1 */}
+    <Reveal><div className="qs-eyebrow">Quem Somos</div></Reveal>
 
-### 3. Origem da rotação centralizada na base
+    {/* BLOCK 2 */}
+    <Reveal delay={80}>
+      <h2 className="qs-headline">
+        <span className="l1">O Nordeste</span>
+        <span className="l2">Sempre</span>
+        <span className="l3">Produziu.</span>
+        <span className="l4">Agora é visto.</span>
+      </h2>
+      <hr className="qs-divider" />
+    </Reveal>
 
-Trocar `transform-origin: bottom left` por `transform-origin: bottom center` no `.fan-card` — assim o leque abre simétrico em torno do eixo central da pilha (não pra um canto só), igual ao gesto natural de abrir um leque de cartas.
+    {/* BLOCK 3 */}
+    <Reveal delay={140}>
+      <div className="qs-highlight">Nascemos com um propósito:</div>
+    </Reveal>
 
-### 4. Sombra empilhada no estado pasta
+    {/* BLOCK 4 */}
+    <Reveal delay={180}>
+      <p className="qs-body">
+        Mostrar para o <em>Brasil</em> que o <strong>nordeste produz</strong>
+      </p>
+    </Reveal>
 
-Adicionar transição suave da sombra: quando empilhado, sombras mais leves e curtas (look de pasta); quando o leque abre, sombras dramáticas (look de cards individuais).
+    {/* BLOCK 5 */}
+    <Reveal delay={220}>
+      <div className="qs-cards">
+        <div className="qs-card">Empresários sofisticados</div>
+        <div className="qs-card">Negócios milionários</div>
+        <div className="qs-card">Marcas no nível das maiores do país.</div>
+      </div>
+    </Reveal>
 
-```css
-.fan-card {
-  box-shadow:
-    0 calc(8px + var(--fan) * 14px) calc(20px + var(--fan) * 30px) rgba(0,0,0,0.45),
-    0 4px 10px rgba(0,0,0,0.3);
-}
+    {/* BLOCK 6 */}
+    <Reveal delay={260}>
+      <p className="qs-body qs-block-6">Hoje, à frente do movimento, ajudamos</p>
+    </Reveal>
+
+    {/* BLOCK 7 */}
+    <Reveal delay={300}>
+      <div className="qs-highlight qs-highlight--upper">EMPRESÁRIOS NORDESTINOS</div>
+    </Reveal>
+
+    {/* BLOCK 8 */}
+    <Reveal delay={340}>
+      <p className="qs-body qs-body--close">
+        a implementar uma <strong>Arquitetura de Posicionamento Digital</strong> de ponta a ponta.
+        <br />
+        <em>Transformando autoridade</em> em ticket maior, mais tempo livre e respeito de mercado.
+      </p>
+    </Reveal>
+
+    {/* 4 cards do Manifesto (preservados) */}
+    <div className="quem-somos__manifesto-cards grid grid-cols-1 sm:grid-cols-2 gap-[2px]">
+      {cards.map((c, i) => (
+        <Reveal key={i} delay={i * 80}>
+          <div className="card h-full">
+            <span className="num">{String(i + 1).padStart(2, "0")}</span>
+            <h4>{c.title}</h4>
+            <RevealWords>{c.desc}</RevealWords>
+          </div>
+        </Reveal>
+      ))}
+    </div>
+  </div>
+</section>
 ```
 
-### 5. z-index — manter ordem correta
+Removemos o `<blockquote className="quote-block">` e o botão "Fazer parte do movimento" do bloco antigo — a referência não pede esses elementos e o CTA já está repetido na `FounderSection` logo abaixo.
 
-`bg-1 < bg-2 < bg-3 < lead` (já está assim). Confirmar que mesmo com translate/scale a ordem de empilhamento não muda — z-index resolve isso.
+### 5. Sem mudanças
 
-### Sem mudanças
+- `AudienceSection`, `FounderSection`, `ImpactSection`, `HeroSection` — intocadas.
+- Cor accent global do design system (`--accent: #E08C32`) — preservada; o override `#D4861A` é **escopado** apenas dentro de `.quem-somos`.
+- Fonte Poppins — já carregada, sem mudança.
+- Os 4 cards do Manifesto e seu conteúdo — preservados, só re-posicionados abaixo do bloco editorial.
 
-- JSX em `src/routes/index.tsx` — intocado (4 cards: 3 bg + 1 lead, refs e hook idênticos).
-- Lógica de fases (A: 0–55% leque, B: 55–100% slide) — preservada.
-- Mobile e `prefers-reduced-motion` — fallback de lista vertical empilhada continua igual.
-- Cores, ícones, tipografia e textos dos perfis — preservados.
+### Arquivos editados
 
-### Arquivo editado
-
-- `src/styles.css` — só o bloco `.fan-card*` (linhas 651–707): novas fórmulas de transform com `translateY + scale + rotate` combinados, `transform-origin: bottom center`, sombra dinâmica em função de `--fan`.
+- `src/assets/quem-somos-bg.jpg` — novo asset (cópia de `user-uploads://image-2.png`).
+- `src/routes/index.tsx` — refatorar JSX da `ManifestoSection` (linhas 796–863) para o layout single-column editorial; importar o novo asset.
+- `src/styles.css` — adicionar bloco `.quem-somos`, `.qs-eyebrow`, `.qs-headline`, `.qs-divider`, `.qs-highlight`, `.qs-body`, `.qs-card` antes da seção `.founder-stage` (~linha 1036).
 
