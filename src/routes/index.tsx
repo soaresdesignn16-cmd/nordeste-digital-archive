@@ -1098,8 +1098,9 @@ function FounderSection() {
         </Reveal>
         <Reveal delay={80}>
           <h2 className="typo-headline typo-headline--display">
-            Muito Prazer,<br />
-            <span className="accent-text">Os Novos<br />Nordestinos</span>
+            <span className="founder-bleed__line founder-bleed__line--white">Muito Prazer,</span>
+            <span className="founder-bleed__line founder-bleed__line--gold">Os Novos</span>
+            <span className="founder-bleed__line founder-bleed__line--gold">Nordestinos</span>
           </h2>
         </Reveal>
         <Reveal delay={160}>
@@ -1110,9 +1111,14 @@ function FounderSection() {
         </Reveal>
         <Reveal delay={240}>
           <a href="#cta-final" className="founder-cta">
-            <img src={logoOnn} alt="" className="founder-cta__icon" aria-hidden="true" />
-            <span>Quero Entrar Para o Movimento</span>
-            <ArrowRight size={16} />
+            <svg className="founder-cta__icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M20 2 L36 11 L36 29 L20 38 L4 29 L4 11 Z" stroke="#1a1205" strokeWidth="2.5" strokeLinejoin="round" fill="none" />
+              <path d="M13 27 L13 13 L27 27 L27 13" stroke="#1a1205" strokeWidth="2.8" strokeLinecap="square" strokeLinejoin="miter" fill="none" />
+            </svg>
+            <span className="founder-cta__text">
+              <span>Quero Entrar</span>
+              <span>Para o Movimento</span>
+            </span>
           </a>
         </Reveal>
       </div>
