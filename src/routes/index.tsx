@@ -486,10 +486,10 @@ function VSLGate({
           <span className="accent-text">Assista isso</span>
         </h1>
 
-        <p className="typo-body mx-auto text-center hero-anim hero-d-3" style={{ maxWidth: 420, marginTop: 14 }}>
+        <RevealWords className="typo-body mx-auto text-center hero-anim hero-d-3" style={{ maxWidth: 420, marginTop: 14 }}>
           O que você vai ver nos próximos minutos pode mudar a forma como você
           se posiciona no digital.
-        </p>
+        </RevealWords>
 
         <div className="hero-anim hero-d-4" style={{ marginTop: 48 }}>
           <div className="video-frame">
@@ -701,11 +701,11 @@ function HeroIntro() {
             <h1 className="typo-display accent-text hero-anim hero-d-3 text-5xl" style={{ marginTop: 2 }}>
               Os Novos<br />Nordestinos
             </h1>
-            <p className="typo-body hero-anim hero-d-4" style={{ marginTop: 24 }}>
+            <RevealWords className="typo-body hero-anim hero-d-4" style={{ marginTop: 24 }}>
               <strong>Empresário e profissionais nordestinos</strong> que já constroem resultado, mas agora decidiram ser{" "}
               <span className="accent-text" style={{ fontWeight: 400 }}>vistos, valorizados e respeitados</span>{" "}
               no nível que realmente são.
-            </p>
+            </RevealWords>
             <div className="flex flex-wrap items-center gap-6 hero-anim hero-d-5" style={{ marginTop: 36 }}>
               <a href="#cta-final" className="btn-primary">
                 Iniciar Avaliação
@@ -741,11 +741,11 @@ function HeroIntro() {
             <h1 className="typo-display accent-text hero-anim hero-d-3 text-5xl" style={{ marginTop: 2 }}>
               Os Novos<br />Nordestinos
             </h1>
-            <p className="typo-body hero-anim hero-d-4" style={{ marginTop: 24 }}>
+            <RevealWords className="typo-body hero-anim hero-d-4" style={{ marginTop: 24 }}>
               <strong>Empresário e profissionais nordestinos</strong> que já constroem resultado, mas agora decidiram ser{" "}
               <span className="accent-text" style={{ fontWeight: 400 }}>vistos, valorizados e respeitados</span>{" "}
               no nível que realmente são.
-            </p>
+            </RevealWords>
             <div className="flex flex-wrap items-center gap-6 hero-anim hero-d-5" style={{ marginTop: 36 }}>
               <a href="#cta-final" className="btn-primary">
                 Iniciar Avaliação
@@ -818,17 +818,17 @@ function ManifestoSection() {
             </h2>
           </Reveal>
           <Reveal delay={160}>
-            <p className="typo-body" style={{ marginTop: 22 }}>
+            <RevealWords className="typo-body" style={{ marginTop: 22 }}>
               Nascemos com um propósito: mostrar pro Brasil que o Nordeste produz
               empresários sofisticados, negócios milionários e marcas no nível
               das maiores do país.
-            </p>
-            <p className="typo-body">
+            </RevealWords>
+            <RevealWords className="typo-body">
               Hoje, à frente do movimento, ajudamos empresários nordestinos a
               implementar uma <strong>Arquitetura de Posicionamento Digital</strong> de
               ponta a ponta — transformando autoridade em ticket maior, mais
               tempo livre e respeito de mercado.
-            </p>
+            </RevealWords>
           </Reveal>
           <Reveal delay={240}>
             <blockquote className="quote-block" style={{ marginTop: 32 }}>
@@ -852,7 +852,7 @@ function ManifestoSection() {
               <div className="card h-full">
                 <span className="num">{String(i + 1).padStart(2, "0")}</span>
                 <h4>{c.title}</h4>
-                <p>{c.desc}</p>
+                <RevealWords>{c.desc}</RevealWords>
               </div>
             </Reveal>
           ))}
@@ -888,10 +888,10 @@ function AudienceSection() {
             </h2>
           </Reveal>
           <Reveal delay={160}>
-            <p className="typo-body mx-auto text-center" style={{ marginTop: 12, maxWidth: 480 }}>
+            <RevealWords className="typo-body mx-auto text-center" style={{ marginTop: 12, maxWidth: 480 }}>
               Você se encaixa em um desses perfis e quer usar posicionamento pra
               crescer de verdade.
-            </p>
+            </RevealWords>
           </Reveal>
         </div>
 
@@ -902,7 +902,7 @@ function AudienceSection() {
               <div key={i} className="audience-card">
                 <div className="icon-box">{p.icon}</div>
                 <h3>{p.title}</h3>
-                <p>{p.desc}</p>
+                <RevealWords>{p.desc}</RevealWords>
               </div>
             ))}
           </div>
@@ -945,40 +945,12 @@ function FounderSection() {
         </Reveal>
         <Reveal delay={280}>
           <div className="founder-stage">
-            <div className="marquee marquee--back" aria-hidden="true">
-              <div className="marquee__track">
-                {[...Array(2)].map((_, i) => (
-                  <React.Fragment key={i}>
-                    <span>POSICIONAMENTO •</span>
-                    <span>AUTORIDADE •</span>
-                    <span>LEGADO •</span>
-                    <span>PRESENÇA •</span>
-                    <span>ESTRATÉGIA •</span>
-                    <span>MARCA •</span>
-                  </React.Fragment>
-                ))}
-              </div>
-            </div>
             <img
               src={founderPortrait}
               alt="Fundador — Os Novos Nordestinos"
               className="founder-stage__photo"
               loading="lazy"
             />
-            <div className="marquee marquee--front" aria-hidden="true">
-              <div className="marquee__track">
-                {[...Array(2)].map((_, i) => (
-                  <React.Fragment key={i}>
-                    <span>NORDESTE •</span>
-                    <span>PREMIUM •</span>
-                    <span>EMPRESÁRIO •</span>
-                    <span>TICKET ALTO •</span>
-                    <span>RESPEITO •</span>
-                    <span>MOVIMENTO •</span>
-                  </React.Fragment>
-                ))}
-              </div>
-            </div>
           </div>
         </Reveal>
         <Reveal delay={340}>
@@ -1034,8 +1006,8 @@ function ImpactSection() {
             <div key={i} className="ganho-item scroll-fade">
               <span className="ganho-numero">{String(i + 1).padStart(2, "0")}</span>
               <div>
-                <p className="ganho-titulo">{g.lead}</p>
-                <p className="ganho-desc">{g.desc}</p>
+                <RevealWords className="ganho-titulo">{g.lead}</RevealWords>
+                <RevealWords className="ganho-desc">{g.desc}</RevealWords>
               </div>
               <span className="ganho-arrow">→</span>
             </div>
@@ -1106,11 +1078,11 @@ function FinalCTA() {
           </h2>
         </Reveal>
         <Reveal delay={160}>
-          <p className="typo-body mx-auto" style={{ marginTop: 18, maxWidth: 440, fontSize: 17 }}>
+          <RevealWords className="typo-body mx-auto" style={{ marginTop: 18, maxWidth: 440, fontSize: 17 }}>
             Entre para o movimento exclusivo de empresários que estão
             redefinindo o padrão de autoridade nordestina no cenário digital
             nacional.
-          </p>
+          </RevealWords>
         </Reveal>
         <Reveal delay={240}>
           <div className="flex flex-wrap items-center justify-center gap-5" style={{ marginTop: 48 }}>
