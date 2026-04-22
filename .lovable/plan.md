@@ -1,66 +1,95 @@
 
 
-## Padronizar heights do FinalCTA (768/1024) + adicionar botão "A Sua Chance" abaixo da headline final
+## Reordenar FinalCTA + efeito word-reveal na headline final
 
-### 1. Padronizar heights entre 768px e 1024px
+### Problema atual
 
-Hoje há 3 fontes de altura conflitantes (inline 70vh, mobile 70svh, tablet/desktop 70vh) que causam salto perceptível ao cruzar 768→769px e ao mostrar/esconder a barra de endereço mobile.
+1. **Ordem errada**: hoje renderiza `DuranteAnosHeadline` → `CTABlock` (com botão "Solicitar avaliação estratégica" + frase "Agora é a nossa vez de ocupar o lugar certo") → `FinalCTA` (headline "Pronto para ser visto…" + botão "A Sua Chance"). O botão "A Sua Chance" aparece **depois** do CTA principal e tenta linkar para `#cta-block` que está **acima** dele — fica solto, parecendo "em cima da CTA".
+2. **Efeito de scale não acontece no espaço vazio**: como o `FinalCTA` vem depois do `CTABlock`, o scroll-zoom da headline acontece já no fim da página, sem o "respiro" entre o "Durante anos…" e o CTA.
+3. **Falta efeito word-reveal**: a headline "Pronto para ser visto de verdade?" hoje aparece já colorida; o usuário quer que apareça transparente e ganhe cor palavra por palavra (mesmo efeito do `RevealWords` já usado nos parágrafos).
 
-**`src/routes/index.tsx`** (linhas 1377–1378):
-- Remover o `style={{ minHeight: "70vh", paddingTop: 0, paddingBottom: 0 }}` do `<section>` — passa a ser controlado pelo CSS.
+### Mudanças
 
-**`src/styles.css`**:
-- `.section-cta` (regra base): adicionar `min-height: 70dvh; padding-top: 0; padding-bottom: 0;`.
-- `.final-cta-sticky` (regra base): trocar `height: 70vh` por `height: 70dvh`.
-- Remover `height: 70svh` do bloco `@media (max-width: 768px)`.
-- Remover `height: 70vh` do bloco `@media (min-width: 769px) and (max-width: 1024px)`.
-- Remover `height: 70vh` do bloco `@media (min-width: 1025px)`.
+#### 1. Reordenar componentes — `src/routes/index.tsx` (linhas 444–446)
 
-Resultado: altura única `70dvh` em todos os breakpoints — sem salto entre tablet e desktop, sem glitch da barra do navegador mobile (o `dvh` se adapta automaticamente). As media queries continuam controlando apenas scale da headline e gradient.
-
-### 2. Botão "A Sua Chance" abaixo da headline
-
-**`src/routes/index.tsx`** (dentro de `FinalCTA`, após o `<h2>` na linha 1384):
-
-Adicionar wrapper com botão laranja de destaque centralizado abaixo da headline:
+Trocar a ordem para: `DuranteAnosHeadline` → `FinalCTA` → `CTABlock` → `Footer`.
 
 ```
-<div className="final-cta-actions">
-  <a href="#cta-block" className="btn-primary btn-primary--lg">
-    A Sua Chance
-    <ArrowRight size={14} />
-  </a>
-</div>
+<DuranteAnosHeadline />
+<FinalCTA />
+<CTABlock />
+<Footer />
 ```
 
-O botão usa as mesmas classes `btn-primary btn-primary--lg` já usadas no `CTABlock` (consistência visual com os outros CTAs primários da página). O `href="#cta-block"` faz scroll suave até o bloco final onde está o "Solicitar avaliação estratégica".
+Agora o `FinalCTA` ocupa o "espaço vazio" entre as duas seções de texto pesado, o efeito de scale acontece naturalmente nesse intervalo, e o botão "A Sua Chance" linka para `#cta-block` que fica **abaixo** (faz sentido como funil descendente).
 
-**`src/styles.css`** — adicionar regra `.final-cta-actions`:
-- `margin-top: 40px; display: flex; justify-content: center;`
-- Mobile (`max-width: 768px`): `margin-top: 28px`.
+#### 2. Aumentar scale inicial e ajustar curva — `src/routes/index.tsx` (linhas 1332–1338, dentro de `FinalCTA`)
 
-O botão fica dentro do `.final-cta-sticky` junto com a headline — quando a section pina no centro do viewport, headline + botão aparecem juntos centralizados verticalmente. O `dvh: 70` continua acomodando ambos confortavelmente em todos os tamanhos.
+Hoje começa em 1.4/1.6/1.9 e termina em 1.0. Para "começar bem grande e diminuir até caber certinho" em ambos breakpoints, aumentar valor inicial:
+
+- Mobile (`≤768px`): start 2.2 → end 1.0
+- Tablet (`769–1024`): start 2.6 → end 1.0
+- Desktop (`≥1025`): start 3.2 → end 1.0
+
+Atualizar também o `scale()` default no CSS (`.final-cta-headline` e media queries) para bater com os novos valores iniciais — evita "pulo" no primeiro frame antes do JS rodar.
+
+#### 3. Efeito word-reveal na headline final — `src/routes/index.tsx` (linhas 1380–1383)
+
+Substituir o `<h2>` atual por uma versão que separa cada palavra num `<span class="reveal-word">` (mesmo padrão do `RevealWords` já existente). Como precisamos manter o `<h2>` (display heading, não `<p>`), criar a estrutura inline:
+
+```
+<h2 ref={headlineRef} className="typo-display final-cta-headline">
+  <span className="reveal-word">Pronto</span>{" "}
+  <span className="reveal-word">para</span>{" "}
+  <span className="reveal-word">ser</span>
+  <br />
+  <span className="reveal-word accent-text">visto</span>{" "}
+  <span className="reveal-word accent-text">de</span>{" "}
+  <span className="reveal-word accent-text">verdade?</span>
+</h2>
+```
+
+Adicionar dentro do `useEffect` do `FinalCTA` uma chamada ao mesmo hook usado pelo `RevealWords`:
+
+```
+useScrollProgressReveal(headlineRef, ".reveal-word", { activeRatio: 0.6, deactivate: false });
+```
+
+`activeRatio: 0.6` = palavras ganham cor quando passam pelos 60% da viewport (mais cedo, casa com o sticky). `deactivate: false` = uma vez coloridas, ficam coloridas (não desbotam ao continuar rolando).
+
+#### 4. Garantir que `.reveal-word` funcione dentro de `.final-cta-headline` — `src/styles.css`
+
+Hoje `.reveal-word` herda `color: var(--text-ghost)` e `opacity: 0.25`. Para a headline final isso está correto — começa apagada e ganha cor. Adicionar regra específica para preservar o `accent-text` (laranja) nas palavras "visto de verdade?" quando ativas:
+
+```
+.final-cta-headline .reveal-word.accent-text.is-active {
+  color: var(--accent);
+}
+```
+
+E remover a sobrescrita `color: var(--text-primary)` da regra global `.reveal-word.is-active` quando dentro de `.final-cta-headline .accent-text` (já resolvido pela regra acima com especificidade maior).
 
 ### Resultado esperado
 
-- Transição suave entre 768/769/1024/1025px sem nenhum salto visual.
-- Headline "Pronto para ser visto de verdade?" + botão laranja "A Sua Chance" aparecem juntos, centralizados, fixos por 70dvh.
-- Botão clicável leva ao bloco de CTA logo abaixo (mantém o funil natural).
-
-### O que NÃO muda
-
-- Texto da headline, lógica de scale, isolation/z-index, gradient — preservados.
-- `CTABlock`, `Footer`, demais seções — intactos.
-- Espaçamento final reduzido (já em 70dvh) — mantido.
+- Ordem: "Agora é a nossa vez" (DuranteAnos) → espaço com headline gigante encolhendo → "A Hora É Agora" / "Solicitar avaliação estratégica" (CTABlock) → footer.
+- "Pronto para ser visto de verdade?" começa **enorme e transparente**, vai diminuindo conforme rola, e cada palavra ganha cor uma a uma (branco → "visto de verdade?" em laranja).
+- Botão "A Sua Chance" embaixo da headline aponta para o CTA principal logo abaixo (funil natural).
+- Efeito acontece no respiro entre as duas seções, não no fim morto da página.
 
 ### Arquivos editados
 
 - `src/routes/index.tsx`:
-  - Linhas 1377–1378: remover prop `style` inline da `<section>`.
-  - Após linha 1384: adicionar `<div className="final-cta-actions">` com botão "A Sua Chance".
+  - Linhas 444–446: reordenar para `<FinalCTA />` antes de `<CTABlock />`.
+  - Linhas 1335–1337: ajustar `startScale` (2.2 / 2.6 / 3.2).
+  - Linhas 1380–1383: substituir headline plain por `<span class="reveal-word">` por palavra.
+  - Após linha 1374 (dentro do `useEffect` ou logo após): adicionar `useScrollProgressReveal(headlineRef, ".reveal-word", { activeRatio: 0.6, deactivate: false })` chamado no nível do componente (fora do useEffect).
 - `src/styles.css`:
-  - `.section-cta` base: adicionar `min-height: 70dvh; padding-top: 0; padding-bottom: 0`.
-  - `.final-cta-sticky` base: `70vh` → `70dvh`.
-  - Remover `height` duplicado das 3 media queries (768, 769–1024, 1025+).
-  - Adicionar `.final-cta-actions` (desktop + mobile).
+  - Linhas 1626, 1644, 1657, 1667: atualizar default do `transform: scale()` para bater com novos valores (2.2 / 2.6 / 3.2).
+  - Após linha 1669: adicionar regra `.final-cta-headline .reveal-word.accent-text.is-active { color: var(--accent); }`.
+
+### O que NÃO muda
+
+- Heights `70dvh` da `.section-cta` / `.final-cta-sticky` — preservados.
+- Lógica do `.final-cta-actions` (botão "A Sua Chance") — preservada.
+- `CTABlock`, `Footer`, `DuranteAnosHeadline` — intactos (só muda a posição do FinalCTA).
 
