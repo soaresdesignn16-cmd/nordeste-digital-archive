@@ -897,7 +897,23 @@ function AudienceSection() {
     if (!wrapper || !stack) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) return;
+    // Detecta dispositivo fraco (GPU/CPU/RAM limitada): celulares antigos.
+    // Critérios: pouca RAM (<= 2GB) OU poucos núcleos (<= 4) em conexão lenta,
+    // OU navegador pediu economia de dados. Mantém o efeito em qualquer device decente.
+    const nav = navigator as Navigator & {
+      deviceMemory?: number;
+      connection?: { saveData?: boolean; effectiveType?: string };
+    };
+    const lowMemory = typeof nav.deviceMemory === "number" && nav.deviceMemory <= 2;
+    const lowCores = typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4;
+    const saveData = nav.connection?.saveData === true;
+    const slowNet = nav.connection?.effectiveType === "2g" || nav.connection?.effectiveType === "slow-2g";
+    const isMobile = window.matchMedia("(max-width: 540px)").matches;
+    const lowGpu = saveData || lowMemory || (isMobile && lowCores && slowNet);
+    if (lowGpu) {
+      document.documentElement.classList.add("low-gpu");
+    }
+    if (reduced || lowGpu) return;
 
     let ticking = false;
     const update = () => {
