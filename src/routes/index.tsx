@@ -18,6 +18,7 @@ import logoOnn from "@/assets/logo-onn.png";
 import vslBg from "@/assets/vsl-bg.png";
 import founderHeroGlow from "@/assets/founder-hero-new.png";
 import founderPortrait from "@/assets/founder-portrait.jpg";
+import quemSomosBg from "@/assets/quem-somos-bg.jpg";
 import { VSLPlayer } from "@/components/VSLPlayer";
 
 export const Route = createFileRoute("/")({
@@ -803,50 +804,64 @@ function ManifestoSection() {
   ];
 
   return (
-    <section id="manifesto" className="relative px-6"
-      style={{ background: "var(--bg)", paddingTop: 120, paddingBottom: 120, borderTop: "1px solid var(--border-subtle)" }}>
-      <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-14 md:gap-[88px] items-center">
-        <div>
-          <Reveal>
-            <span className="eyebrow">Quem Somos</span>
-          </Reveal>
-          <Reveal delay={80}>
-            <h2 className="typo-headline" style={{ marginTop: 10 }}>
-              O Nordeste<br />
-              Sempre Produziu.<br />
-              <span className="highlight-word">Agora é Visto.</span>
-            </h2>
-          </Reveal>
-          <Reveal delay={160}>
-            <RevealWords className="typo-body" style={{ marginTop: 22 }}>
-              Nascemos com um propósito: mostrar pro Brasil que o Nordeste produz
-              empresários sofisticados, negócios milionários e marcas no nível
-              das maiores do país.
-            </RevealWords>
-            <RevealWords className="typo-body">
-              Hoje, à frente do movimento, ajudamos empresários nordestinos a
-              implementar uma <strong>Arquitetura de Posicionamento Digital</strong> de
-              ponta a ponta — transformando autoridade em ticket maior, mais
-              tempo livre e respeito de mercado.
-            </RevealWords>
-          </Reveal>
-          <Reveal delay={240}>
-            <blockquote className="quote-block" style={{ marginTop: 32 }}>
-              <p>Posicionamento não é vaidade. É a diferença entre ser escolhido pelo preço — ou pelo prestígio.</p>
-              <span className="quote-author">Movimento ONN</span>
-            </blockquote>
-          </Reveal>
-          <Reveal delay={320}>
-            <div style={{ marginTop: 32 }}>
-              <a href="#cta-final" className="btn-ghost">
-                Fazer parte do movimento
-                <ArrowRight size={14} />
-              </a>
-            </div>
-          </Reveal>
-        </div>
+    <section
+      id="manifesto"
+      className="quem-somos"
+      style={{
+        borderTop: "1px solid var(--border-subtle)",
+        backgroundImage: `url(${quemSomosBg})`,
+      }}
+    >
+      <div className="quem-somos__content mx-auto">
+        <Reveal>
+          <div className="qs-eyebrow">Quem Somos</div>
+        </Reveal>
 
-        <div className="grid grid-cols-2 gap-[2px]">
+        <Reveal delay={80}>
+          <h2 className="qs-headline">
+            <span className="l1">O Nordeste</span>
+            <span className="l2">Sempre</span>
+            <span className="l3">Produziu.</span>
+            <span className="l4">Agora é visto.</span>
+          </h2>
+          <hr className="qs-divider" />
+        </Reveal>
+
+        <Reveal delay={140}>
+          <div className="qs-highlight">Nascemos com um propósito:</div>
+        </Reveal>
+
+        <Reveal delay={180}>
+          <p className="qs-body">
+            Mostrar para o <em>Brasil</em> que o <strong>nordeste produz</strong>
+          </p>
+        </Reveal>
+
+        <Reveal delay={220}>
+          <div className="qs-cards">
+            <div className="qs-card">Empresários sofisticados</div>
+            <div className="qs-card">Negócios milionários</div>
+            <div className="qs-card">Marcas no nível das maiores do país.</div>
+          </div>
+        </Reveal>
+
+        <Reveal delay={260}>
+          <p className="qs-body qs-block-6">Hoje, à frente do movimento, ajudamos</p>
+        </Reveal>
+
+        <Reveal delay={300}>
+          <div className="qs-highlight qs-highlight--upper">EMPRESÁRIOS NORDESTINOS</div>
+        </Reveal>
+
+        <Reveal delay={340}>
+          <p className="qs-body qs-body--close">
+            a implementar uma <strong>Arquitetura de Posicionamento Digital</strong> de ponta a ponta.
+            <br />
+            <em>Transformando autoridade</em> em ticket maior, mais tempo livre e respeito de mercado.
+          </p>
+        </Reveal>
+
+        <div className="quem-somos__manifesto-cards grid grid-cols-1 sm:grid-cols-2 gap-[2px]">
           {cards.map((c, i) => (
             <Reveal key={i} delay={i * 80}>
               <div className="card h-full">
