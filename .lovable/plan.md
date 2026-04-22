@@ -1,65 +1,77 @@
 
 
-## Substituir seção "Quem Está Por Trás" — full-bleed com foto de fundo
+## Efeito Scroll-Zoom Frase a Frase — Seção "Durante anos tentaram contar a nossa história"
 
-Reformular o `FounderSection()` em `src/routes/index.tsx` (linhas 1079–1131) para uma seção full-width com a foto enviada como background, gradient overlay forte para preto, e texto + CTA na metade inferior.
+Transformar `DuranteAnosHeadline()` (linhas 1195–1215 de `src/routes/index.tsx`) em uma seção pinned com efeito de **parallax de escala** atrelado ao scroll: cada frase entra grande, encolhe e desaparece "indo para o fundo" antes da próxima frase aparecer.
 
-### Asset
+### Comportamento
 
-- Copiar `user-uploads://image-3.png` para `src/assets/founder-armchair.jpg` e importar no topo do `index.tsx` junto aos outros assets.
-- Remover o import `founder-portrait.jpg` se não for mais usado (vou checar — está usado só nesta seção).
+Três frases em sequência, controladas por scroll progress:
 
-### Estrutura da nova seção
+1. `Durante anos tentaram` (frase 1)
+2. `contar a nossa história.` (frase 2, com `nossa história` em accent)
+3. `Agora é a nossa vez.` (frase 3, accent)
+
+Para cada frase: começa em `scale: 1.6, opacity: 0`, vai a `scale: 1, opacity: 1` (estado neutro centralizado), depois encolhe para `scale: 0.5, opacity: 0` (recua para o fundo). Curvas com easing suave (smoothstep), sem motion blur.
 
 ```text
-<section class="founder-bleed">
-  <div class="founder-bleed__bg" />        ← <img> da foto, position absolute
-  <div class="founder-bleed__overlay" />   ← gradient transparente → #000
-  <div class="founder-bleed__content">     ← texto na metade inferior
-     [— QUEM ESTÁ POR TRÁS]
-     <h2>MUITO PRAZER,
-         <span class="accent">OS NOVOS<br/>NORDESTINOS</span></h2>
-     <p>MOVIMENTO DE POSICIONAMENTO DIGITAL.<br/>
-        ESPECIALISTAS EM AUTORIDADE DE MARCA.</p>
-     <a class="founder-cta">[logo] QUERO ENTRAR PARA O MOVIMENTO →</a>
+progress  0 ─── 0.33 ─── 0.66 ─── 1
+frase1    █████░░░░░░░░░░░░░░░░░░░
+frase2    ░░░░░██████░░░░░░░░░░░░░
+frase3    ░░░░░░░░░░░░░██████░░░░░
+```
+
+Cada frase tem 3 fases dentro da sua janela: enter (grande+invisível → tamanho neutro), hold curto (legível), exit (encolhe+fade para o fundo). Levemente sobrepostas para fluidez.
+
+### Implementação
+
+**Sem nova dependência** — segue padrão já usado em `AudienceSection` (pin via `position: sticky` + `useScroll`/`requestAnimationFrame` calculando progress local). Não introduz GSAP/Framer (o projeto não usa, e o pattern de scroll já existe).
+
+Estrutura nova:
+
+```tsx
+<section className="durante-anos-pin">
+  <div className="durante-anos-stage">           // sticky, h:100vh, flex center
+    <h2 className="durante-anos-phrase" data-i="0">Durante anos tentaram</h2>
+    <h2 className="durante-anos-phrase" data-i="1">contar a <span class="highlight-word">nossa história.</span></h2>
+    <h2 className="durante-anos-phrase durante-anos-phrase--accent" data-i="2">Agora é a nossa vez.</h2>
   </div>
 </section>
 ```
 
-- Mantém `Reveal` wrappers para preservar entrada animada já usada no resto do site.
-- Mantém o link âncora `#cta-final` no botão.
-- Remove o bloco `RevealWords` com o parágrafo longo "Nascemos com um propósito…" e o `<div class="founder-stage">` antigo (substituídos pela foto de fundo + texto enxuto pedido).
+- `.durante-anos-pin`: `position: relative; height: 280vh;` (desktop) / `220vh` (mobile) — distância scrollável que dá tempo para as 3 frases.
+- `.durante-anos-stage`: `position: sticky; top: 0; height: 100vh; display: flex; align-items: center; justify-content: center;`
+- `.durante-anos-phrase`: `position: absolute; will-change: transform, opacity; transform: scale(var(--s, 1)); opacity: var(--o, 0);` — todas empilhadas no centro.
 
-### Estilos novos (em `src/styles.css`, após o bloco `.founder-stage` linha ~1235)
+Hook de scroll (inline na função, igual ao `AudienceSection`):
+- `useEffect` com listener `scroll` + `rAF` calcula `progress = (window.scrollY - sectionTop) / (sectionHeight - vh)`, clampado 0–1.
+- Para cada frase `i ∈ {0,1,2}`, janela: `start = i / 3`, `end = (i+1) / 3`, com overlap de `0.05` nas bordas para crossfade.
+- Dentro da janela calcula `local = (progress - start) / (end - start)`:
+  - `0 → 0.4`: enter — `scale 1.6 → 1`, `opacity 0 → 1`
+  - `0.4 → 0.6`: hold — `scale 1`, `opacity 1`
+  - `0.6 → 1`: exit — `scale 1 → 0.5`, `opacity 1 → 0`
+- Aplica via CSS vars `--s` e `--o` em cada `<h2>` por `ref`. Easing smoothstep `t*t*(3-2t)` (mesmo já usado no projeto).
 
-- `.founder-bleed`: `position: relative; width: 100%; min-height: 100vh; background:#000; overflow:hidden; display:flex; flex-direction:column; justify-content:flex-end; padding: 0 24px 80px;`
-- `.founder-bleed__bg`: `position:absolute; inset:0 0 auto 0; height:65%; object-fit:cover; object-position:center top; z-index:0;` — em mobile `height:55%`.
-- `.founder-bleed__overlay`: `position:absolute; inset:0; background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.35) 30%, #000 55%, #000 100%); z-index:1;`
-- `.founder-bleed__content`: `position:relative; z-index:2; max-width: 720px; margin: 0 auto; width:100%; padding-top: 55vh;` — empurra o texto pra metade inferior. Em mobile `padding-top: 50vh`.
-- Label gold com traço: `.founder-bleed__label` — flex com `<span class="dash">` (linha 24px gold) + texto uppercase tracking 0.18em, 12px, cor `var(--accent)`.
-- Heading: reusa `.typo-headline` mas com `font-weight: 900; line-height: 1; text-transform: uppercase; letter-spacing: -0.01em;`. Inline style ou modifier `.typo-headline--display`.
-- Subtext: `.founder-bleed__sub` — uppercase, 12px, letter-spacing 0.18em, color `rgba(255,255,255,0.55)`, line-height 1.9.
-- `.founder-cta`: variante do `.btn-primary`, `width:100%; max-width:500px; padding:18px 28px; border-radius:10px; font-size:13px;` com `<img src={logoOnn} class="founder-cta__icon">` (24px) à esquerda. Em desktop centralizado.
+### Performance
 
-### Desktop (≥ 1024px)
+- Sem `filter: blur`. Apenas `transform: scale` + `opacity` (composited, GPU-friendly).
+- `rAF` throttle, `passive: true` no listener.
+- `prefers-reduced-motion`: desativa o pin e renderiza as 3 frases empilhadas estáticas (`scale: 1, opacity: 1`).
+- Mobile: mesma lógica, altura reduzida (220vh) e `font-size` clamp menor.
 
-Mantém o mesmo layout full-bleed centralizado (opção mais limpa do que dividir 50/50 com a foto — combina mais com o resto do site, que é centered). A foto cobre os ~60% superiores em widescreen, texto centralizado abaixo. Min-height vira `min-height: 92vh`.
+### Estilos novos em `src/styles.css`
 
-### Animações / performance
-
-- Reuso dos componentes `Reveal` existentes para fade-in (sem novo CSS).
-- Sem `filter: blur`, mantém a regra do projeto de scroll snappy.
-- `loading="eager"` + `fetchpriority="high"` na foto (seção crítica acima do CTA final) e adicionar preload no `head().links` como já é feito com `founderHeroGlow`.
+Bloco `.durante-anos-pin`, `.durante-anos-stage`, `.durante-anos-phrase`, `.durante-anos-phrase--accent` com tipografia herdando de `.typo-display` (mantém `clamp(48px, 7vw, 88px)`).
 
 ### O que NÃO muda
 
-- Nada antes (`AudienceSection`) ou depois (`ImpactSection`) é alterado.
-- Variáveis CSS, tokens, accent color (`var(--accent)` ≈ gold já existente — confere com o `#c8861a` pedido).
-- Header, footer, nav.
+- Seções vizinhas (`FounderSection` antes, `FinalCTA` depois) — intactas.
+- `Footer`, header, CTAs.
+- Cores e tokens (`var(--accent)`, `.highlight-word`).
+- A frase "Agora é a nossa vez de ocupar o lugar certo." dentro do `FinalCTA` (linha 1264) permanece como assinatura final.
 
 ### Arquivos editados
 
-- `src/routes/index.tsx` — adicionar import da nova foto, reescrever `FounderSection`, adicionar preload no `head()`. Remover import `founderPortrait` se não usado em outro lugar (vou conferir antes).
-- `src/styles.css` — adicionar bloco `.founder-bleed*` e `.founder-cta`. Remover `.founder-stage` antigo (não será mais usado).
-- `src/assets/founder-armchair.jpg` — novo asset (copiado do upload).
+- `src/routes/index.tsx` — reescrever `DuranteAnosHeadline()` com hook de scroll e três frases pinned.
+- `src/styles.css` — adicionar bloco `.durante-anos-*` (~30 linhas).
 
