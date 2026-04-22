@@ -993,8 +993,8 @@
   /* overflow: clip preserva sticky (overflow: hidden quebra sticky em alguns ancestrais) */
   overflow: clip;
   isolation: isolate;
-  /* altura grande = mais espaço de scroll para o sticky animar a headline encolhendo */
-  min-height: 250dvh;
+  /* headline estática — sem scroll runway */
+  min-height: 100dvh;
   padding-top: 0;
   padding-bottom: 0;
 }
