@@ -1119,10 +1119,7 @@ function FounderSection() {
         </Reveal>
         <Reveal delay={240}>
           <a href="#cta-final" className="founder-cta">
-            <svg className="founder-cta__icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M20 2 L36 11 L36 29 L20 38 L4 29 L4 11 Z" stroke="#1a1205" strokeWidth="2.5" strokeLinejoin="round" fill="none" />
-              <path d="M13 27 L13 13 L27 27 L27 13" stroke="#1a1205" strokeWidth="2.8" strokeLinecap="square" strokeLinejoin="miter" fill="none" />
-            </svg>
+            <img src={logoOnn} alt="" className="founder-cta__icon" />
             <span className="founder-cta__text">
               <span>Quero Entrar</span>
               <span>Para o Movimento</span>
