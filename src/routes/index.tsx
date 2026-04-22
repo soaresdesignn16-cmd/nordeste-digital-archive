@@ -18,7 +18,8 @@ import logoOnn from "@/assets/logo-onn.png";
 import vslBg from "@/assets/vsl-bg.png";
 import founderHeroGlow from "@/assets/founder-hero-new.png";
 import founderPortrait from "@/assets/founder-portrait.jpg";
-import quemSomosBg from "@/assets/quem-somos-bg.jpg";
+import quemSomosBgMobile from "@/assets/quem-somos-bg-mobile.jpg";
+import quemSomosBgDesktop from "@/assets/quem-somos-bg-desktop.jpg";
 import { VSLPlayer } from "@/components/VSLPlayer";
 
 export const Route = createFileRoute("/")({
@@ -809,7 +810,8 @@ function ManifestoSection() {
       className="quem-somos"
       style={{
         borderTop: "1px solid var(--border-subtle)",
-        ["--qs-bg-image" as string]: `url(${quemSomosBg})`,
+        ["--qs-bg-image-mobile" as string]: `url(${quemSomosBgMobile})`,
+        ["--qs-bg-image-desktop" as string]: `url(${quemSomosBgDesktop})`,
       } as React.CSSProperties}
     >
       <div className="quem-somos__content mx-auto">
