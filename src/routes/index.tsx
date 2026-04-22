@@ -1325,10 +1325,11 @@ function FinalCTA() {
       const total = Math.max(1, rect.height - vh);
       const scrolled = clamp(-rect.top, 0, total);
       const t = smoothstep(scrolled / total);
-      const scale = (1.9 - 1.5 * t).toFixed(3);
-      const opacity = (1 - 0.85 * t).toFixed(3);
+      const isMobile = window.innerWidth < 768;
+      const startScale = isMobile ? 1.4 : 1.9;
+      const delta = isMobile ? 1.0 : 1.5;
+      const scale = (startScale - delta * t).toFixed(3);
       headline.style.setProperty("--headline-scale", scale);
-      headline.style.setProperty("--headline-opacity", opacity);
     };
 
     const onScroll = () => {
