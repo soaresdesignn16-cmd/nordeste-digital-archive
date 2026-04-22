@@ -776,7 +776,10 @@ function HeroIntro() {
         </div>
 
         <div className="hero-photo-wrap" style={{ minHeight: "55vw", maxHeight: "100vh" }}>
+          <div className="hero-photo-glow" aria-hidden="true" />
           <img src={founderHeroGlow} alt="Idealizador d'Os Novos Nordestinos" loading="eager" decoding="async" />
+          <div className="hero-photo-mask-left" aria-hidden="true" />
+          <div className="hero-photo-mask-bottom" aria-hidden="true" />
           <div className="absolute top-6 right-6 z-10 flex items-center gap-3">
             <span style={{ fontFamily: "var(--font)", fontWeight: 700, fontSize: 10, letterSpacing: "0.22em", color: "rgba(242,240,235,0.6)" }}>ONN</span>
             <span className="block w-12 h-px" style={{ background: "rgba(242,240,235,0.25)" }} />
