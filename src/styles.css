@@ -745,17 +745,20 @@
     padding: 20px 32px 88px;
   }
   .fan-stack {
-    width: min(300px, 76vw);
-    height: min(400px, 108vw);
+    width: min(240px, 62vw);
+    height: min(330px, 88vw);
   }
   .fan-card {
-    padding: 26px 22px 30px;
+    padding: 22px 18px 24px;
+    border-radius: 20px;
   }
   .fan-card h3 {
-    font-size: 16px;
+    font-size: 14px;
   }
   .fan-card p {
-    font-size: 13px;
+    font-size: 12px;
+    line-height: 1.5;
+    margin-top: 8px;
   }
 }
 
