@@ -985,6 +985,9 @@ function ImpactSection() {
     { lead: "Sua agenda finalmente desafoga", desc: "você atende menos, com mais qualidade, e recupera tempo pra viver, pensar e crescer de verdade." },
   ];
 
+  const listRef = useRef<HTMLDivElement>(null);
+  useScrollProgressReveal(listRef, ".ganho-item", { activeRatio: 0.78, deactivate: true });
+
   return (
     <section id="ganhos" className="relative px-6"
       style={{ background: "var(--bg)", borderTop: "1px solid var(--border-subtle)", paddingTop: 120, paddingBottom: 120 }}>
@@ -1008,18 +1011,16 @@ function ImpactSection() {
           </Reveal>
         </div>
 
-        <div className="flex flex-col gap-[2px]">
+        <div ref={listRef} className="flex flex-col gap-[2px]">
           {gains.map((g, i) => (
-            <Reveal key={i} delay={i * 80}>
-              <div className="ganho-item">
-                <span className="ganho-numero">{String(i + 1).padStart(2, "0")}</span>
-                <div>
-                  <p className="ganho-titulo">{g.lead}</p>
-                  <p className="ganho-desc">{g.desc}</p>
-                </div>
-                <span className="ganho-arrow">→</span>
+            <div key={i} className="ganho-item scroll-fade">
+              <span className="ganho-numero">{String(i + 1).padStart(2, "0")}</span>
+              <div>
+                <p className="ganho-titulo">{g.lead}</p>
+                <p className="ganho-desc">{g.desc}</p>
               </div>
-            </Reveal>
+              <span className="ganho-arrow">→</span>
+            </div>
           ))}
         </div>
 
