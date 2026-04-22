@@ -924,57 +924,105 @@ function AudienceSection() {
     }
     if (reduced || lowGpu) return;
 
+    // Cacheia métricas pesadas (offsetHeight força layout). Só recalcula no resize.
+    let total = wrapper.offsetHeight - window.innerHeight;
+    let viewportH = window.innerHeight;
+    const recalc = () => {
+      total = wrapper.offsetHeight - window.innerHeight;
+      viewportH = window.innerHeight;
+    };
+
+    // Pré-calcula constantes do timeline pra evitar trabalho por frame.
+    const FAN_END = isMobile ? 0.3 : 0.25;
+    const INV_FAN_END = 1 / FAN_END;
+
+    // Cache do último valor escrito em cada custom property — evita
+    // setProperty redundante (cada chamada invalida estilo computado).
+    const last: Record<string, string> = {};
+    const setVar = (name: string, value: number) => {
+      const v = value.toFixed(2);
+      if (last[name] === v) return;
+      last[name] = v;
+      stack.style.setProperty(name, v);
+    };
+
+    let visible = false;
     let ticking = false;
+    let lastProgress = -1;
+
     const update = () => {
       ticking = false;
-      const rect = wrapper.getBoundingClientRect();
-      const total = wrapper.offsetHeight - window.innerHeight;
       if (total <= 0) return;
-      const progress = Math.max(0, Math.min(1, -rect.top / total));
-      // Timeline:
-      // 0.00 → 0.25 : fan out
-      // 0.25 → 0.34 : focus lead, 0.34 → 0.43 : slide lead out (left)
-      // 0.43 → 0.52 : focus bg-3,  0.52 → 0.61 : slide bg-3 out
-      // 0.61 → 0.70 : focus bg-2,  0.70 → 0.79 : slide bg-2 out
-      // 0.79 → 0.88 : focus bg-1,  0.88 → 1.00 : slide bg-1 out
-      const seg = (start: number, end: number) =>
-        Math.max(0, Math.min(1, (progress - start) / (end - start)));
-      // No mobile: faixa de abertura mais longa (0 → 0.30) + easing ease-out
-      // pra suavizar a chegada no leque totalmente aberto.
-      const fanRaw = isMobile ? Math.min(1, progress / 0.3) : Math.min(1, progress / 0.25);
+      // getBoundingClientRect().top em vez de calcular de novo offsetTop.
+      const top = wrapper.getBoundingClientRect().top;
+      const progress = top >= 0 ? 0 : top <= -total ? 1 : -top / total;
+      // Skip se variação < 0.3% (sub-pixel em telas comuns).
+      if (Math.abs(progress - lastProgress) < 0.003) return;
+      lastProgress = progress;
+
+      const seg = (start: number, end: number) => {
+        const v = (progress - start) / (end - start);
+        return v <= 0 ? 0 : v >= 1 ? 1 : v;
+      };
+
+      let fanRaw = progress * INV_FAN_END;
+      if (fanRaw > 1) fanRaw = 1;
+      // No mobile mantém ease-out, mas sem Math.pow (mais barato).
       const fanProgress = isMobile
-        ? 1 - Math.pow(1 - fanRaw, 2.2)
+        ? 1 - (1 - fanRaw) * (1 - fanRaw) * (1 - fanRaw) * 0.7 - (1 - fanRaw) * (1 - fanRaw) * 0.3
         : fanRaw;
-      const focusLead = seg(0.25, 0.34);
-      const slideLead = seg(0.34, 0.43);
-      const focus3 = seg(0.43, 0.52);
-      const slide3 = seg(0.52, 0.61);
-      const focus2 = seg(0.61, 0.7);
-      const slide2 = seg(0.7, 0.79);
-      const focus1 = seg(0.79, 0.88);
-      const slide1 = seg(0.88, 1);
-      stack.style.setProperty("--fan", fanProgress.toFixed(3));
-      stack.style.setProperty("--focus", focusLead.toFixed(3));
-      stack.style.setProperty("--slide", slideLead.toFixed(3));
-      stack.style.setProperty("--focus-3", focus3.toFixed(3));
-      stack.style.setProperty("--slide-3", slide3.toFixed(3));
-      stack.style.setProperty("--focus-2", focus2.toFixed(3));
-      stack.style.setProperty("--slide-2", slide2.toFixed(3));
-      stack.style.setProperty("--focus-1", focus1.toFixed(3));
-      stack.style.setProperty("--slide-1", slide1.toFixed(3));
+
+      setVar("--fan", fanProgress);
+      setVar("--focus", seg(0.25, 0.34));
+      setVar("--slide", seg(0.34, 0.43));
+      setVar("--focus-3", seg(0.43, 0.52));
+      setVar("--slide-3", seg(0.52, 0.61));
+      setVar("--focus-2", seg(0.61, 0.7));
+      setVar("--slide-2", seg(0.7, 0.79));
+      setVar("--focus-1", seg(0.79, 0.88));
+      setVar("--slide-1", seg(0.88, 1));
     };
+
     const onScroll = () => {
+      if (!visible || ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    };
+
+    const onResize = () => {
+      recalc();
+      lastProgress = -1;
       if (!ticking) {
-        window.requestAnimationFrame(update);
         ticking = true;
+        requestAnimationFrame(update);
       }
     };
+
+    // Só escuta scroll quando o pin está realmente em cena.
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          visible = e.isIntersecting;
+          if (visible) {
+            lastProgress = -1;
+            if (!ticking) {
+              ticking = true;
+              requestAnimationFrame(update);
+            }
+          }
+        }
+      },
+      { rootMargin: "100px 0px 100px 0px" },
+    );
+    io.observe(wrapper);
+
     update();
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    window.addEventListener("resize", onResize);
     return () => {
+      io.disconnect();
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("resize", onResize);
     };
   }, []);
 
