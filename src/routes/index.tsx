@@ -883,7 +883,7 @@ function AudienceSection() {
     const stack = stackRef.current;
     if (!wrapper || !stack) return;
 
-    const isMobile = () => window.matchMedia("(max-width: 768px)").matches;
+    const isMobile = () => window.matchMedia("(max-width: 540px)").matches;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) return;
 
