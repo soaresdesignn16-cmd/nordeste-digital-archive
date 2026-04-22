@@ -932,7 +932,7 @@ function FounderSection() {
           </p>
         </Reveal>
         <Reveal delay={220}>
-          <p className="typo-body" style={{ marginTop: 28, maxWidth: 720, lineHeight: 1.8 }}>
+          <RevealWords className="typo-body" style={{ marginTop: 28, maxWidth: 720, lineHeight: 1.8 }}>
             Nascemos com um propósito: mostrar pro Brasil que o Nordeste produz
             empresários sofisticados, negócios milionários e marcas no nível
             das maiores do país. Hoje, à frente do movimento, ajudamos
@@ -940,7 +940,7 @@ function FounderSection() {
             <strong>Arquitetura de Posicionamento Digital</strong>{" "}
             de ponta a ponta — transformando autoridade em ticket maior, mais
             tempo livre e respeito de mercado.
-          </p>
+          </RevealWords>
         </Reveal>
         <Reveal delay={280}>
           <div
