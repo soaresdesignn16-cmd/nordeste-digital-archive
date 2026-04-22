@@ -165,13 +165,14 @@ function splitNodeIntoWords(node: ReactNode, keyPrefix: string): ReactNode[] {
     return node.flatMap((n, i) => splitNodeIntoWords(n, `${keyPrefix}-${i}`));
   }
   // React element: recurse into children, preserve element type and props
-  const el = node as React.ReactElement<{ children?: ReactNode }>;
-  if (el.props && "children" in el.props) {
-    const newChildren = splitNodeIntoWords(el.props.children, `${keyPrefix}-c`);
-    return [
-      // eslint-disable-next-line react/no-children-prop
-      <el.type key={`${keyPrefix}-el`} {...el.props} children={newChildren} />,
-    ];
+  if (typeof node === "object" && "type" in (node as object)) {
+    const el = node as React.ReactElement<{ children?: ReactNode }>;
+    if (el.props && "children" in el.props) {
+      const newChildren = splitNodeIntoWords(el.props.children, `${keyPrefix}-c`);
+      return [
+        React.cloneElement(el, { key: `${keyPrefix}-el`, children: newChildren } as Partial<{ children?: ReactNode }>),
+      ];
+    }
   }
   return [node];
 }
@@ -193,6 +194,8 @@ function RevealWords({
     </p>
   );
 }
+
+function Reveal({
   children,
   delay = 0,
   className = "",
