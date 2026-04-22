@@ -1322,8 +1322,8 @@ function FinalCTA() {
       const vh = window.innerHeight;
       const raw = (vh - rect.top) / (vh + rect.height);
       const t = smoothstep(clamp(raw, 0, 1));
-      const scale = (1.15 - 0.55 * t).toFixed(3);
-      const opacity = (1 - 0.75 * t).toFixed(3);
+      const scale = (1.9 - 1.35 * t).toFixed(3);
+      const opacity = (1 - 0.8 * t).toFixed(3);
       headline.style.setProperty("--headline-scale", scale);
       headline.style.setProperty("--headline-opacity", opacity);
     };
@@ -1335,12 +1335,32 @@ function FinalCTA() {
     };
 
     update();
+    // Recalculate after layout settles (fonts/images above shifting offsets)
+    const raf1 = requestAnimationFrame(() => {
+      requestAnimationFrame(update);
+    });
+
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") update();
+    };
+
+    const ro = new ResizeObserver(() => onScroll());
+    ro.observe(section);
+    if (document.body) ro.observe(document.body);
+
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll, { passive: true });
+    window.addEventListener("load", update);
+    document.addEventListener("visibilitychange", onVisibility);
+
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
+      window.removeEventListener("load", update);
+      document.removeEventListener("visibilitychange", onVisibility);
+      ro.disconnect();
       cancelAnimationFrame(rafId);
+      cancelAnimationFrame(raf1);
     };
   }, []);
 
