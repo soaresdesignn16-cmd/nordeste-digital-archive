@@ -862,51 +862,103 @@ function ManifestoSection() {
   );
 }
 
-/* ─────────── AUDIENCE ─────────── */
+/* ─────────── AUDIENCE (Polaroid pin scroll) ─────────── */
 function AudienceSection() {
   const profiles = [
-    { icon: <Store size={22} />, title: "Donos de negócios do mundo físico", desc: "Lojas, clínicas, escritórios, prestadores de serviço presencial. Você sente que está preso na operação e que o digital não traduz o tamanho real da sua empresa." },
-    { icon: <TrendingUp size={22} />, title: "Empresários em escala", desc: "Sua empresa já fatura bem, mas ainda faz 80% dos processos na mão. Está na hora de profissionalizar a percepção e escalar com margem — não com volume." },
-    { icon: <Scale size={22} />, title: "Profissionais liberais", desc: "Advogados, médicos, contadores, consultores. Você vende seu tempo e sabe que tem um teto. Posicionamento te ajuda a cobrar mais, atender melhor e parar de ser refém da própria agenda." },
-    { icon: <Briefcase size={22} />, title: "Especialistas e autoridades", desc: "Você já tem conhecimento, resultado e bagagem. Falta apenas a estrutura digital pra que o mercado pare de te tratar como mais um e comece a te tratar como referência." },
+    { icon: <Store size={22} />, title: "Donos de negócios do mundo físico", desc: "Lojas, clínicas, escritórios, prestadores de serviço presencial. Você sente que está preso na operação e que o digital não traduz o tamanho real da sua empresa.", rotation: -3, offset: 0 },
+    { icon: <TrendingUp size={22} />, title: "Empresários em escala", desc: "Sua empresa já fatura bem, mas ainda faz 80% dos processos na mão. Está na hora de profissionalizar a percepção e escalar com margem — não com volume.", rotation: 4, offset: 140 },
+    { icon: <Scale size={22} />, title: "Profissionais liberais", desc: "Advogados, médicos, contadores, consultores. Você vende seu tempo e sabe que tem um teto. Posicionamento te ajuda a cobrar mais, atender melhor e parar de ser refém da própria agenda.", rotation: -2, offset: 0 },
+    { icon: <Briefcase size={22} />, title: "Especialistas e autoridades", desc: "Você já tem conhecimento, resultado e bagagem. Falta apenas a estrutura digital pra que o mercado pare de te tratar como mais um e comece a te tratar como referência.", rotation: 3, offset: 140 },
   ];
 
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const trackRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const wrapper = wrapperRef.current;
+    const track = trackRef.current;
+    if (!wrapper || !track) return;
+
+    const isMobile = () => window.matchMedia("(max-width: 768px)").matches;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) return;
+
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      if (isMobile()) {
+        track.style.transform = "";
+        return;
+      }
+      const rect = wrapper.getBoundingClientRect();
+      const total = wrapper.offsetHeight - window.innerHeight;
+      if (total <= 0) return;
+      const progress = Math.max(0, Math.min(1, -rect.top / total));
+      const maxX = track.scrollWidth - window.innerWidth;
+      if (maxX <= 0) return;
+      track.style.transform = `translate3d(${-progress * maxX}px, 0, 0)`;
+    };
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(update);
+        ticking = true;
+      }
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
   return (
-    <section id="para-quem" className="relative px-6"
-      style={{ background: "var(--bg-surface)", borderTop: "1px solid var(--border-subtle)", borderBottom: "1px solid var(--border-subtle)", paddingTop: 110, paddingBottom: 110 }}>
-      <div className="max-w-[1200px] mx-auto">
-        <div className="text-center mb-16">
-          <Reveal>
-            <div className="flex justify-center">
-              <span className="eyebrow eyebrow--center">Para Quem É</span>
-            </div>
-          </Reveal>
-          <Reveal delay={80}>
-            <h2 className="typo-headline" style={{ marginTop: 14 }}>
-              Esse movimento é<br />
-              <span className="accent-text">para você se…</span>
-            </h2>
-          </Reveal>
-          <Reveal delay={160}>
-            <RevealWords className="typo-body mx-auto text-center" style={{ marginTop: 12, maxWidth: 480 }}>
-              Você se encaixa em um desses perfis e quer usar posicionamento pra
-              crescer de verdade.
-            </RevealWords>
-          </Reveal>
+    <section
+      id="para-quem"
+      ref={wrapperRef}
+      className="audience-pin"
+      style={{ background: "var(--bg-surface)", borderTop: "1px solid var(--border-subtle)", borderBottom: "1px solid var(--border-subtle)" }}
+    >
+      <div className="audience-pin__sticky">
+        <div className="audience-pin__header px-6">
+          <div className="max-w-[1200px] mx-auto text-center">
+            <Reveal>
+              <div className="flex justify-center">
+                <span className="eyebrow eyebrow--center">Para Quem É</span>
+              </div>
+            </Reveal>
+            <Reveal delay={80}>
+              <h2 className="typo-headline" style={{ marginTop: 14 }}>
+                Esse movimento é<br />
+                <span className="accent-text">para você se…</span>
+              </h2>
+            </Reveal>
+            <Reveal delay={160}>
+              <RevealWords className="typo-body mx-auto text-center" style={{ marginTop: 12, maxWidth: 480 }}>
+                Você se encaixa em um desses perfis e quer usar posicionamento pra crescer de verdade.
+              </RevealWords>
+            </Reveal>
+          </div>
         </div>
 
-        <Reveal>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[1px] rounded-lg overflow-hidden"
-            style={{ background: "var(--border-subtle)", border: "1px solid var(--border-subtle)" }}>
-            {profiles.map((p, i) => (
-              <div key={i} className="audience-card">
-                <div className="icon-box">{p.icon}</div>
-                <h3>{p.title}</h3>
-                <RevealWords>{p.desc}</RevealWords>
-              </div>
-            ))}
-          </div>
-        </Reveal>
+        <div className="polaroid-track" ref={trackRef}>
+          {profiles.map((p, i) => (
+            <div
+              key={i}
+              className="polaroid-card"
+              style={{
+                ["--rotation" as string]: `${p.rotation}deg`,
+                marginTop: p.offset,
+              }}
+            >
+              <div className="icon-box">{p.icon}</div>
+              <h3>{p.title}</h3>
+              <p>{p.desc}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
