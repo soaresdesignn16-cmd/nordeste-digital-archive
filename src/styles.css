@@ -643,8 +643,8 @@
 }
 .fan-stack {
   position: relative;
-  width: 360px;
-  height: 440px;
+  width: min(360px, 78vw);
+  height: min(440px, 96vw);
   --fan: 0;
   --slide: 0;
 }
@@ -717,7 +717,7 @@
   margin-top: 12px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 540px) {
   .audience-pin {
     height: auto;
   }
