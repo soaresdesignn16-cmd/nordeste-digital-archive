@@ -906,17 +906,31 @@ function AudienceSection() {
       const total = wrapper.offsetHeight - window.innerHeight;
       if (total <= 0) return;
       const progress = Math.max(0, Math.min(1, -rect.top / total));
-      const fanProgress = Math.min(1, progress / 0.4);
+      // Timeline:
+      // 0.00 → 0.25 : fan out
+      // 0.25 → 0.34 : focus lead, 0.34 → 0.43 : slide lead out (left)
+      // 0.43 → 0.52 : focus bg-3,  0.52 → 0.61 : slide bg-3 out
+      // 0.61 → 0.70 : focus bg-2,  0.70 → 0.79 : slide bg-2 out
+      // 0.79 → 0.88 : focus bg-1,  0.88 → 1.00 : slide bg-1 out
       const seg = (start: number, end: number) =>
         Math.max(0, Math.min(1, (progress - start) / (end - start)));
-      const slideLead = seg(0.4, 0.55);
-      const slide3 = seg(0.55, 0.7);
-      const slide2 = seg(0.7, 0.85);
-      const slide1 = seg(0.85, 1);
+      const fanProgress = Math.min(1, progress / 0.25);
+      const focusLead = seg(0.25, 0.34);
+      const slideLead = seg(0.34, 0.43);
+      const focus3 = seg(0.43, 0.52);
+      const slide3 = seg(0.52, 0.61);
+      const focus2 = seg(0.61, 0.7);
+      const slide2 = seg(0.7, 0.79);
+      const focus1 = seg(0.79, 0.88);
+      const slide1 = seg(0.88, 1);
       stack.style.setProperty("--fan", fanProgress.toFixed(3));
+      stack.style.setProperty("--focus", focusLead.toFixed(3));
       stack.style.setProperty("--slide", slideLead.toFixed(3));
+      stack.style.setProperty("--focus-3", focus3.toFixed(3));
       stack.style.setProperty("--slide-3", slide3.toFixed(3));
+      stack.style.setProperty("--focus-2", focus2.toFixed(3));
       stack.style.setProperty("--slide-2", slide2.toFixed(3));
+      stack.style.setProperty("--focus-1", focus1.toFixed(3));
       stack.style.setProperty("--slide-1", slide1.toFixed(3));
     };
     const onScroll = () => {
