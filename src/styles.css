@@ -1672,6 +1672,16 @@
   color: var(--accent);
 }
 
+/* Fallback: se o JS não rodou (ou IO falhou), garante que o texto apareça com cor */
+html:not(.reveal-ready) .final-cta-headline .reveal-word {
+  color: var(--text-primary);
+  opacity: 1;
+}
+html:not(.reveal-ready) .final-cta-headline .reveal-word.accent-text {
+  color: var(--accent);
+  opacity: 1;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .final-cta-headline {
     transform: scale(1);

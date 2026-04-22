@@ -89,15 +89,30 @@ function useScrollProgressReveal(
     if (typeof window === "undefined") return;
     const root = ref.current;
     if (!root) return;
+
+    // Sinaliza ao CSS que o JS de reveal está vivo (libera fallback)
+    document.documentElement.classList.add("reveal-ready");
+
+    const activateAll = () => {
+      root.querySelectorAll<HTMLElement>(selector).forEach((el) => el.classList.add("is-active"));
+    };
+
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReduced) {
-      root.querySelectorAll<HTMLElement>(selector).forEach((el) => el.classList.add("is-active"));
+      activateAll();
+      return;
+    }
+
+    // Fallback: IntersectionObserver indisponível
+    if (typeof IntersectionObserver === "undefined") {
+      activateAll();
       return;
     }
 
     let raf = 0;
     let ticking = false;
     let visible = false;
+    let watchdog: ReturnType<typeof setTimeout> | null = null;
 
     const update = () => {
       ticking = false;
@@ -121,32 +136,45 @@ function useScrollProgressReveal(
       raf = requestAnimationFrame(update);
     };
 
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          visible = e.isIntersecting;
-          if (visible) {
-            ticking = true;
-            raf = requestAnimationFrame(update);
-          }
-        });
-      },
-      { rootMargin: "200px 0px 200px 0px" },
-    );
-    io.observe(root);
+    try {
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            visible = e.isIntersecting;
+            if (visible) {
+              ticking = true;
+              raf = requestAnimationFrame(update);
+            }
+          });
+        },
+        { rootMargin: "200px 0px 200px 0px" },
+      );
+      io.observe(root);
 
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    // initial
-    ticking = true;
-    raf = requestAnimationFrame(update);
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll);
+      // initial
+      ticking = true;
+      raf = requestAnimationFrame(update);
 
-    return () => {
-      io.disconnect();
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-      cancelAnimationFrame(raf);
-    };
+      // Watchdog: se nada ativou em 1.5s, força ativar tudo
+      watchdog = setTimeout(() => {
+        const els = root.querySelectorAll<HTMLElement>(selector);
+        const anyActive = Array.from(els).some((el) => el.classList.contains("is-active"));
+        if (!anyActive) els.forEach((el) => el.classList.add("is-active"));
+      }, 1500);
+
+      return () => {
+        io.disconnect();
+        window.removeEventListener("scroll", onScroll);
+        window.removeEventListener("resize", onScroll);
+        cancelAnimationFrame(raf);
+        if (watchdog) clearTimeout(watchdog);
+      };
+    } catch {
+      activateAll();
+      return;
+    }
   }, [ref, selector, activeRatio, deactivate]);
 }
 
@@ -442,8 +470,8 @@ function NovosNordestinos() {
           <FounderSection />
           <ImpactSection />
           <DuranteAnosHeadline />
-          <FinalCTA />
           <CTABlock />
+          <FinalCTA />
           <Footer />
         </main>
       )}
@@ -1388,12 +1416,6 @@ function FinalCTA() {
             <span className="reveal-word accent-text">de</span>{" "}
             <span className="reveal-word accent-text">verdade?</span>
           </h2>
-          <div className="final-cta-actions">
-            <a href="#cta-block" className="btn-primary btn-primary--lg">
-              A Sua Chance
-              <ArrowRight size={14} />
-            </a>
-          </div>
         </div>
       </div>
     </section>
