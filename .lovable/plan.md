@@ -1,68 +1,39 @@
 
 
-## Reorganizar fim da página: CTA sai da FinalCTA e vai para o fim da DuranteAnos
+## Ajustar a sessão "Muito Prazer" para desktop/tablet + colocar logo real no botão
 
-Hoje a `FinalCTA` tem:
-1. Eyebrow "A Hora É Agora"
-2. Headline gigante "Pronto para ser visto de verdade?" (efeito recede)
-3. Parágrafo de apoio
-4. CTA primário "Solicitar avaliação estratégica" + CTA secundário "Conhecer o manifesto"
-5. Quote final "Agora é a nossa vez de ocupar o lugar certo."
+Dois problemas na seção `FounderSection`:
 
-O efeito recede sobrepõe a headline em cima do parágrafo/CTA porque o `scale` chega a 1.9 e ocupa quase toda a tela. Resultado: letras embaralhadas em cima dos botões, e ainda sobra um vazio preto ao final da `DuranteAnosHeadline` antes da `FinalCTA` começar.
+1. **Imagem cortada / quase invisível em ~1000px**: o breakpoint desktop só ativa em `min-width: 1024px`. No viewport atual (1002px) entra o layout mobile/tablet, que mostra a imagem só nos `55%` superiores com `object-position: center top` — corta a cabeça do fundador e quase não aparece nada (o overlay escuro consome o resto).
+2. **Botão "Quero Entrar" usa um "N" desenhado em SVG** em vez do `logo-onn.png` real (já importado no topo do arquivo, linha 17).
 
-### Solução
+### Mudanças
 
-**Separar o CTA do efeito recede em dois blocos sequenciais distintos:**
+**`src/styles.css`** — ajustar breakpoint e enquadramento:
 
-1. **Mover o bloco eyebrow + parágrafo + botões + quote** para imediatamente após a `DuranteAnosHeadline` (preenche o vazio preto que aparece logo após a frase "Agora é a nossa vez").
-2. **Manter a `FinalCTA` apenas com a headline gigante** "Pronto para ser visto de verdade?" e seu efeito recede — sem nada por baixo para sobrepor.
+- **Baixar o breakpoint desktop de `1024px` para `900px`** (linha 1417: `@media (min-width: 1024px)` → `@media (min-width: 900px)`). Isso faz o layout full-bleed com gradient lateral começar antes, cobrindo viewports tablet/desktop pequenos como o do usuário (1002px).
+- **No bloco desktop (linha 1424–1428)**: ajustar `object-position` de `65% top` para `60% center` para mostrar o rosto/torso do fundador (não só o topo da cabeça). A imagem ocupa 100% da altura (já está `height: 100%`).
+- **No bloco mobile (linha 1467–1473)**: aumentar a área da foto de `height: 55%` para `height: 62%` e mudar `object-position` para `center 25%` — mostra mais do fundador antes do fade preto começar. Aplicar mesma altura no `__overlay` e ajustar o gradient para começar a escurecer só a partir de 50% (não 40%) para a imagem aparecer de verdade.
 
-### Mudanças em `src/routes/index.tsx`
+**`src/routes/index.tsx`** — substituir o SVG "N" pelo logo real (linhas 1122–1125):
 
-**Novo componente `CTABlock`** (extraído do conteúdo atual de `FinalCTA`, linhas 1383–1418):
-- Eyebrow "A Hora É Agora"
-- Parágrafo "Entre para o movimento exclusivo…"
-- Botões "Solicitar avaliação estratégica" + "Conhecer o manifesto"
-- Quote "Agora é a nossa vez de ocupar o lugar certo."
-- Renderizado dentro de uma `<section>` com `background: var(--bg)`, padding vertical generoso (~120px top/bottom) e `id="cta-block"`.
-- Mantém watermark `ONN` e SVG dos círculos como pano de fundo (movidos junto, são decorativos).
-
-**`FinalCTA` simplificado** (linhas 1303–1421):
-- Mantém `sectionRef` + `headlineRef` + todo o `useEffect` do efeito recede (sem mexer na lógica que já foi aprovada).
-- Renderiza apenas a `<section>` com a `<h2 className="final-cta-headline">Pronto para ser<br/><span class="accent-text">visto de verdade?</span></h2>` centralizada.
-- Remove eyebrow, parágrafo, botões e quote.
-- Padding vertical mantido em ~150px para dar espaço ao recede.
-- Sem watermark/SVG (vão para o `CTABlock`).
-
-**Reordenar em `App` (linhas 444–446):**
-```
-<DuranteAnosHeadline />
-<CTABlock />        ← novo, preenche o vazio
-<FinalCTA />        ← só a headline recede, isolada
-<Footer />
-```
-
-### CSS — `src/styles.css`
-
-- **Adicionar `.section-cta-block`** (~10 linhas no fim do arquivo): mesma base de `.section-cta` (position relative, `background: var(--bg)`, overflow hidden) + um `::before` opcional com radial âmbar suave para dar profundidade. Preserva visual do bloco original.
-- **Manter `.section-cta`** intacta (já está em `var(--bg)` sem border-top, perfeita para a headline recede isolada).
-- **Garantir continuidade de fundo preto** na sequência DuranteAnos → CTABlock → FinalCTA → Footer (todos `var(--bg)`), eliminando qualquer "vazio" visual.
+- Remover o `<svg className="founder-cta__icon">...</svg>` e substituir por `<img src={logoOnn} alt="" className="founder-cta__icon" />`.
+- Em `src/styles.css` no bloco `.founder-cta__icon` (linha 1374–1379): manter `width: 38px`, `height: 38px`, `margin-right: 14px`, `flex-shrink: 0`; adicionar `object-fit: contain` para garantir que o PNG não distorça.
 
 ### O que NÃO muda
 
-- Lógica do efeito recede (curva 1.9 → 0.55, opacity 1 → 0.2, todos os listeners robustos) — preservada.
-- Lógica do scroll-zoom de `DuranteAnosHeadline` — intacta.
-- Conteúdo textual (eyebrow, headline, parágrafo, labels dos botões, quote) — preservado palavra por palavra.
-- Watermark `ONN` e SVG dos círculos — apenas migram do `FinalCTA` para o `CTABlock`.
-- `Footer` — intacto.
-- Tokens CSS — intactos.
+- Texto do botão ("Quero Entrar / Para o Movimento") — preservado.
+- Cor laranja `#C8780A` do botão, hover, shine sweep — preservados.
+- Conteúdo do `FounderSection` (label "Quem Está Por Trás", headline "Muito Prazer / Os Novos / Nordestinos", subtítulo) — preservado.
+- Outras seções, ordem, e a lógica do scroll-zoom — intactas.
+- Asset `founder-armchair.jpg` continua o mesmo; só o enquadramento via `object-position` muda.
 
 ### Arquivos editados
 
-- `src/routes/index.tsx` —
-  - Criar componente `CTABlock` com o conteúdo extraído (eyebrow, parágrafo, botões, quote, watermark, SVG).
-  - Simplificar `FinalCTA` para conter apenas a headline gigante + efeito recede (lógica do `useEffect` preservada).
-  - Inserir `<CTABlock />` entre `<DuranteAnosHeadline />` e `<FinalCTA />` na lista de seções (linha 444–446).
-- `src/styles.css` — adicionar bloco `.section-cta-block` (~10 linhas) no final; nenhuma regra existente removida.
+- `src/styles.css`:
+  - Linha 1417: `@media (min-width: 1024px)` → `@media (min-width: 900px)`.
+  - Linha 1427: `object-position: 65% top` → `object-position: 60% center`.
+  - Linhas 1467–1473 (bloco mobile): `height: 55%` → `height: 62%` em `__bg` e `__overlay`; `object-position: center top` → `center 25%`.
+  - Linha 1374–1379 (`.founder-cta__icon`): adicionar `object-fit: contain`.
+- `src/routes/index.tsx` (linhas 1122–1125): substituir o `<svg>` inline por `<img src={logoOnn} alt="" className="founder-cta__icon" />`.
 
