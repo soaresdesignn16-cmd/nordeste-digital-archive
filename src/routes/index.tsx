@@ -83,7 +83,7 @@ function useScrollProgressReveal(
   selector: string,
   opts: { activeRatio?: number; deactivate?: boolean } = {},
 ) {
-  const { activeRatio = 0.75, deactivate = true } = opts;
+  const { activeRatio = 0.85, deactivate = true } = opts;
   useEffect(() => {
     if (typeof window === "undefined") return;
     const root = ref.current;
@@ -233,49 +233,45 @@ function CustomCursor() {
     const dot = dotRef.current;
     if (!outer || !dot) return;
 
-    const onMove = (e: MouseEvent) => {
-      dot.style.left = e.clientX + "px";
-      dot.style.top = e.clientY + "px";
-      window.setTimeout(() => {
-        outer.style.left = e.clientX + "px";
-        outer.style.top = e.clientY + "px";
-      }, 80);
+    let rafId = 0;
+    let lastX = 0;
+    let lastY = 0;
+
+    const apply = () => {
+      rafId = 0;
+      dot.style.left = lastX + "px";
+      dot.style.top = lastY + "px";
+      outer.style.left = lastX + "px";
+      outer.style.top = lastY + "px";
     };
 
-    const onEnter = () => outer.classList.add("hovered");
-    const onLeave = () => outer.classList.remove("hovered");
+    const onMove = (e: MouseEvent) => {
+      lastX = e.clientX;
+      lastY = e.clientY;
+      if (!rafId) rafId = requestAnimationFrame(apply);
+    };
 
-    document.addEventListener("mousemove", onMove);
+    const isInteractive = (target: EventTarget | null): boolean => {
+      if (!(target instanceof Element)) return false;
+      return !!target.closest("a, button, [role='button']");
+    };
 
-    const interactive = document.querySelectorAll<HTMLElement>(
-      "a, button, [role='button']",
-    );
-    interactive.forEach((el) => {
-      el.addEventListener("mouseenter", onEnter);
-      el.addEventListener("mouseleave", onLeave);
-    });
+    const onOver = (e: MouseEvent) => {
+      if (isInteractive(e.target)) outer.classList.add("hovered");
+    };
+    const onOut = (e: MouseEvent) => {
+      if (isInteractive(e.target)) outer.classList.remove("hovered");
+    };
 
-    // Re-bind quando novos elementos forem renderizados
-    const mo = new MutationObserver(() => {
-      const all = document.querySelectorAll<HTMLElement>(
-        "a, button, [role='button']",
-      );
-      all.forEach((el) => {
-        el.removeEventListener("mouseenter", onEnter);
-        el.removeEventListener("mouseleave", onLeave);
-        el.addEventListener("mouseenter", onEnter);
-        el.addEventListener("mouseleave", onLeave);
-      });
-    });
-    mo.observe(document.body, { childList: true, subtree: true });
+    document.addEventListener("mousemove", onMove, { passive: true });
+    document.addEventListener("mouseover", onOver, { passive: true });
+    document.addEventListener("mouseout", onOut, { passive: true });
 
     return () => {
       document.removeEventListener("mousemove", onMove);
-      mo.disconnect();
-      interactive.forEach((el) => {
-        el.removeEventListener("mouseenter", onEnter);
-        el.removeEventListener("mouseleave", onLeave);
-      });
+      document.removeEventListener("mouseover", onOver);
+      document.removeEventListener("mouseout", onOut);
+      if (rafId) cancelAnimationFrame(rafId);
     };
   }, []);
 
@@ -584,10 +580,23 @@ function Nav() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
+    let rafId = 0;
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      setScrolled(window.scrollY > 60);
+    };
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      rafId = requestAnimationFrame(update);
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
+    update();
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   return (
