@@ -1602,7 +1602,7 @@
   }
 }
 
-/* ─────────── Final CTA Sticky + Headline Recede ─────────── */
+/* ─────────── Final CTA Sticky + Headline Lock ─────────── */
 .final-cta-sticky {
   position: sticky;
   top: 0;
@@ -1610,10 +1610,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1;
+  z-index: 2;
+}
+.final-cta-inner {
+  position: relative;
+  z-index: 2;
 }
 .final-cta-headline {
   display: inline-block;
+  position: relative;
+  z-index: 2;
   transform: scale(var(--headline-scale, 1.9));
   opacity: 1;
   transform-origin: 50% 50%;
@@ -1630,7 +1636,7 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .final-cta-headline {
-    transform: none;
+    transform: scale(1);
     transition: none;
   }
 }
