@@ -1623,7 +1623,7 @@
   display: inline-block;
   position: relative;
   z-index: 2;
-  transform: scale(var(--headline-scale, 1.9));
+  transform: scale(var(--headline-scale, 3.2));
   opacity: 1;
   transform-origin: 50% 50%;
   transition: transform 0.08s linear;
@@ -1641,7 +1641,7 @@
 /* Mobile ≤ 768px — headline cabe na tela, gradient sutil */
 @media (max-width: 768px) {
   .final-cta-headline {
-    transform: scale(var(--headline-scale, 1.4));
+    transform: scale(var(--headline-scale, 2.2));
   }
   .section-cta::before {
     background: radial-gradient(ellipse at 50% 50%, rgba(224,140,50,0.04) 0%, transparent 55%);
@@ -1654,7 +1654,7 @@
 /* Tablet 769–1024px — headline intermediária */
 @media (min-width: 769px) and (max-width: 1024px) {
   .final-cta-headline {
-    transform: scale(var(--headline-scale, 1.6));
+    transform: scale(var(--headline-scale, 2.6));
   }
   .section-cta::before {
     background: radial-gradient(ellipse at 50% 50%, rgba(224,140,50,0.05) 0%, transparent 58%);
@@ -1664,8 +1664,12 @@
 /* Desktop 1025px+ — headline grande */
 @media (min-width: 1025px) {
   .final-cta-headline {
-    transform: scale(var(--headline-scale, 1.9));
+    transform: scale(var(--headline-scale, 3.2));
   }
+}
+
+.final-cta-headline .reveal-word.accent-text.is-active {
+  color: var(--accent);
 }
 
 @media (prefers-reduced-motion: reduce) {
