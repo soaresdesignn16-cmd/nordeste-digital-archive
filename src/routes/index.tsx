@@ -1373,7 +1373,7 @@ function FinalCTA() {
 
   return (
     <section ref={sectionRef} id="cta-final" className="section-cta px-6"
-      style={{ minHeight: "100vh", paddingTop: 0, paddingBottom: 0 }}>
+      style={{ minHeight: "70vh", paddingTop: 0, paddingBottom: 0 }}>
       <div className="final-cta-sticky">
         <div className="final-cta-inner relative max-w-[1100px] mx-auto text-center">
           <h2 ref={headlineRef} className="typo-display final-cta-headline">
