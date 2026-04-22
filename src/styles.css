@@ -647,6 +647,9 @@
   height: min(440px, 96vw);
   --fan: 0;
   --slide: 0;
+  --slide-1: 0;
+  --slide-2: 0;
+  --slide-3: 0;
 }
 .fan-card {
   position: absolute;
@@ -666,27 +669,33 @@
 .fan-card--bg-1 {
   z-index: 1;
   transform:
+    translateX(calc(var(--slide-1) * 160%))
     translateY(calc(12px - var(--fan) * 12px))
     scale(calc(0.94 + var(--fan) * 0.06))
-    rotate(calc(var(--fan) * -22deg));
+    rotate(calc(var(--fan) * 22deg + var(--slide-1) * 6deg));
+  opacity: calc(1 - var(--slide-1) * 0.1);
 }
 .fan-card--bg-2 {
   z-index: 2;
   transform:
+    translateX(calc(var(--slide-2) * 160%))
     translateY(calc(8px - var(--fan) * 8px))
     scale(calc(0.96 + var(--fan) * 0.04))
-    rotate(calc(var(--fan) * -14deg));
+    rotate(calc(var(--fan) * 14deg + var(--slide-2) * 5deg));
+  opacity: calc(1 - var(--slide-2) * 0.1);
 }
 .fan-card--bg-3 {
   z-index: 3;
   transform:
+    translateX(calc(var(--slide-3) * 160%))
     translateY(calc(4px - var(--fan) * 4px))
     scale(calc(0.98 + var(--fan) * 0.02))
-    rotate(calc(var(--fan) * -7deg));
+    rotate(calc(var(--fan) * 7deg + var(--slide-3) * 4deg));
+  opacity: calc(1 - var(--slide-3) * 0.1);
 }
 .fan-card--lead {
   z-index: 4;
-  transform: translateX(calc(var(--slide) * -135%)) rotate(calc(var(--slide) * -4deg));
+  transform: translateX(calc(var(--slide) * 160%)) rotate(calc(var(--slide) * 4deg));
   opacity: calc(1 - var(--slide) * 0.1);
 }
 .fan-card .icon-box {
@@ -719,35 +728,27 @@
 
 @media (max-width: 540px) {
   .audience-pin {
-    height: auto;
-  }
-  .audience-pin__sticky {
-    position: static;
-    height: auto;
-    overflow: visible;
+    height: 360vh;
   }
   .audience-pin__header {
-    padding-top: 80px;
+    padding-top: 60px;
     padding-bottom: 16px;
   }
   .fan-stack-wrap {
     padding: 20px 24px 60px;
   }
   .fan-stack {
-    width: 100%;
-    max-width: 360px;
-    height: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin: 0 auto;
+    width: min(320px, 82vw);
+    height: min(420px, 115vw);
   }
   .fan-card {
-    position: relative;
-    inset: auto;
-    transform: none !important;
-    opacity: 1 !important;
-    transform-origin: center;
+    padding: 28px 24px 32px;
+  }
+  .fan-card h3 {
+    font-size: 16px;
+  }
+  .fan-card p {
+    font-size: 13px;
   }
 }
 

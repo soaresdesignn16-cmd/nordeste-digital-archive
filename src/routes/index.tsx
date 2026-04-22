@@ -896,26 +896,28 @@ function AudienceSection() {
     const stack = stackRef.current;
     if (!wrapper || !stack) return;
 
-    const isMobile = () => window.matchMedia("(max-width: 540px)").matches;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) return;
 
     let ticking = false;
     const update = () => {
       ticking = false;
-      if (isMobile()) {
-        stack.style.setProperty("--fan", "0");
-        stack.style.setProperty("--slide", "0");
-        return;
-      }
       const rect = wrapper.getBoundingClientRect();
       const total = wrapper.offsetHeight - window.innerHeight;
       if (total <= 0) return;
       const progress = Math.max(0, Math.min(1, -rect.top / total));
-      const fanProgress = Math.min(1, progress / 0.55);
-      const slideProgress = Math.max(0, Math.min(1, (progress - 0.55) / 0.45));
+      const fanProgress = Math.min(1, progress / 0.4);
+      const seg = (start: number, end: number) =>
+        Math.max(0, Math.min(1, (progress - start) / (end - start)));
+      const slideLead = seg(0.4, 0.55);
+      const slide3 = seg(0.55, 0.7);
+      const slide2 = seg(0.7, 0.85);
+      const slide1 = seg(0.85, 1);
       stack.style.setProperty("--fan", fanProgress.toFixed(3));
-      stack.style.setProperty("--slide", slideProgress.toFixed(3));
+      stack.style.setProperty("--slide", slideLead.toFixed(3));
+      stack.style.setProperty("--slide-3", slide3.toFixed(3));
+      stack.style.setProperty("--slide-2", slide2.toFixed(3));
+      stack.style.setProperty("--slide-1", slide1.toFixed(3));
     };
     const onScroll = () => {
       if (!ticking) {
