@@ -74,7 +74,125 @@ function useRevealObserver(deps: unknown[] = []) {
   }, deps);
 }
 
-function Reveal({
+/* ─────────── SCROLL-PROGRESS REVEAL (word-by-word + block-by-block) ─────────── */
+function useScrollProgressReveal(
+  ref: React.RefObject<HTMLElement | null>,
+  selector: string,
+  opts: { activeRatio?: number; deactivate?: boolean } = {},
+) {
+  const { activeRatio = 0.75, deactivate = true } = opts;
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const root = ref.current;
+    if (!root) return;
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReduced) {
+      root.querySelectorAll<HTMLElement>(selector).forEach((el) => el.classList.add("is-active"));
+      return;
+    }
+
+    let raf = 0;
+    let ticking = false;
+    let visible = false;
+
+    const update = () => {
+      ticking = false;
+      const els = root.querySelectorAll<HTMLElement>(selector);
+      const line = window.innerHeight * activeRatio;
+      els.forEach((el) => {
+        const r = el.getBoundingClientRect();
+        const center = r.top + r.height / 2;
+        const isActive = center < line;
+        if (isActive) {
+          if (!el.classList.contains("is-active")) el.classList.add("is-active");
+        } else if (deactivate) {
+          if (el.classList.contains("is-active")) el.classList.remove("is-active");
+        }
+      });
+    };
+
+    const onScroll = () => {
+      if (!visible || ticking) return;
+      ticking = true;
+      raf = requestAnimationFrame(update);
+    };
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          visible = e.isIntersecting;
+          if (visible) {
+            ticking = true;
+            raf = requestAnimationFrame(update);
+          }
+        });
+      },
+      { rootMargin: "200px 0px 200px 0px" },
+    );
+    io.observe(root);
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    // initial
+    ticking = true;
+    raf = requestAnimationFrame(update);
+
+    return () => {
+      io.disconnect();
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, [ref, selector, activeRatio, deactivate]);
+}
+
+function splitNodeIntoWords(node: ReactNode, keyPrefix: string): ReactNode[] {
+  if (node == null || node === false || node === true) return [];
+  if (typeof node === "string" || typeof node === "number") {
+    const text = String(node);
+    const parts = text.split(/(\s+)/);
+    return parts.map((part, i) => {
+      if (part.length === 0) return null;
+      if (/^\s+$/.test(part)) return part;
+      return (
+        <span key={`${keyPrefix}-w-${i}`} className="reveal-word">
+          {part}
+        </span>
+      );
+    });
+  }
+  if (Array.isArray(node)) {
+    return node.flatMap((n, i) => splitNodeIntoWords(n, `${keyPrefix}-${i}`));
+  }
+  // React element: recurse into children, preserve element type and props
+  const el = node as React.ReactElement<{ children?: ReactNode }>;
+  if (el.props && "children" in el.props) {
+    const newChildren = splitNodeIntoWords(el.props.children, `${keyPrefix}-c`);
+    return [
+      // eslint-disable-next-line react/no-children-prop
+      <el.type key={`${keyPrefix}-el`} {...el.props} children={newChildren} />,
+    ];
+  }
+  return [node];
+}
+
+function RevealWords({
+  children,
+  className = "",
+  style,
+}: {
+  children: ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
+}) {
+  const ref = useRef<HTMLParagraphElement>(null);
+  useScrollProgressReveal(ref, ".reveal-word", { activeRatio: 0.75, deactivate: true });
+  return (
+    <p ref={ref} className={className} style={style}>
+      {splitNodeIntoWords(children, "rw")}
+    </p>
+  );
+}
   children,
   delay = 0,
   className = "",
