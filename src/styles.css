@@ -787,6 +787,35 @@
   }
 }
 
+/* Fallback para celulares fracos de GPU — desliga o pin/fan e mostra cards empilhados */
+.low-gpu .audience-pin {
+  height: auto;
+}
+.low-gpu .audience-pin__sticky {
+  position: static;
+  height: auto;
+  overflow: visible;
+}
+.low-gpu .fan-stack-wrap {
+  padding: 40px 6vw 80px;
+}
+.low-gpu .fan-stack {
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin: 0 auto;
+}
+.low-gpu .fan-card {
+  position: relative;
+  inset: auto;
+  transform: none !important;
+  opacity: 1 !important;
+  animation: fade-in 0.4s ease-out both;
+}
+
 /* ─────────── GANHOS ─────────── */
 .ganho-item {
   display: grid;
