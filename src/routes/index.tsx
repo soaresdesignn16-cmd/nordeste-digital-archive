@@ -1364,7 +1364,9 @@ function FinalCTA() {
       // posição dentro da seção: 0 quando topo entra, 1 quando o sticky sai
       const scrolled = clamp(-rect.top, 0, range);
       const t = smoothstep(scrolled / range);
-      const scale = startScale - (startScale - 1) * t;
+      // endScale > 1 = headline termina maior que o tamanho natural (mais presença)
+      const endScale = vw <= 768 ? 1.25 : vw <= 1024 ? 1.35 : 1.45;
+      const scale = startScale - (startScale - endScale) * t;
       // early-exit: pula DOM write se mudança for < 0.5%
       if (Math.abs(scale - lastScale) < 0.005) return;
       lastScale = scale;
@@ -1423,6 +1425,12 @@ function FinalCTA() {
             <span className="reveal-word accent-text">de</span>{" "}
             <span className="reveal-word accent-text">verdade?</span>
           </h2>
+          <div className="final-cta-actions">
+            <a href="#cta-block" className="btn-primary btn-primary--lg">
+              A Sua Chance
+              <ArrowRight size={14} />
+            </a>
+          </div>
         </div>
       </div>
     </section>

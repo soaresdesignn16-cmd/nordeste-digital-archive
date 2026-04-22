@@ -1634,7 +1634,8 @@
 }
 
 .final-cta-actions {
-  margin-top: 40px;
+  /* margem grande: botão fica bem abaixo da headline final (que termina ~1.45x maior) */
+  margin-top: clamp(120px, 18vh, 220px);
   display: flex;
   justify-content: center;
   position: relative;
@@ -1650,7 +1651,7 @@
     background: radial-gradient(ellipse at 50% 50%, rgba(224,140,50,0.04) 0%, transparent 55%);
   }
   .final-cta-actions {
-    margin-top: 28px;
+    margin-top: clamp(80px, 14vh, 140px);
   }
 }
 
