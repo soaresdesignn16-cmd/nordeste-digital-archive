@@ -990,7 +990,8 @@
   background: var(--bg);
   overflow: hidden;
   isolation: isolate;
-  min-height: 70dvh;
+  /* altura grande = mais espaço de scroll para o sticky animar a headline encolhendo */
+  min-height: 200dvh;
   padding-top: 0;
   padding-bottom: 0;
 }
@@ -1609,7 +1610,7 @@
 .final-cta-sticky {
   position: sticky;
   top: 0;
-  height: 70dvh;
+  height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1626,8 +1627,9 @@
   transform: scale(var(--headline-scale, 3.2));
   opacity: 1;
   transform-origin: 50% 50%;
-  transition: transform 0.08s linear;
+  /* sem transition: rAF cuida do smoothing — evita lag e jitter */
   will-change: transform;
+  backface-visibility: hidden;
 }
 
 .final-cta-actions {

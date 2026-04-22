@@ -1347,25 +1347,28 @@ function FinalCTA() {
 
     let rafId = 0;
     let ticking = false;
+    let lastScale = -1;
+    // cache de viewport — só atualiza no resize (evita reflow a cada scroll)
+    let vw = window.innerWidth;
+    let vh = window.innerHeight;
+    let startScale = vw <= 768 ? 2.2 : vw <= 1024 ? 2.6 : 3.2;
+
     const smoothstep = (t: number) => t * t * (3 - 2 * t);
-    const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
+    const clamp = (v: number, a: number, b: number) => v < a ? a : v > b ? b : v;
 
     const update = () => {
       ticking = false;
       const rect = section.getBoundingClientRect();
-      const vh = window.innerHeight;
-      // Progress 0 → 1 across the entry of the section (intro grow only).
-      // Once the section is fully pinned, headline locks at scale 1 and stays.
-      const total = Math.max(1, vh);
-      const scrolled = clamp(-rect.top + vh * 0.4, 0, total);
-      const t = smoothstep(scrolled / total);
-      const w = window.innerWidth;
-      const isMobile = w <= 768;
-      const isTablet = w > 768 && w <= 1024;
-      const startScale = isMobile ? 2.2 : isTablet ? 2.6 : 3.2;
-      const endScale = 1;
-      const scale = (startScale - (startScale - endScale) * t).toFixed(3);
-      headline.style.setProperty("--headline-scale", scale);
+      // range de scroll = altura da seção menos uma viewport (sticky window)
+      const range = Math.max(1, rect.height - vh);
+      // posição dentro da seção: 0 quando topo entra, 1 quando o sticky sai
+      const scrolled = clamp(-rect.top, 0, range);
+      const t = smoothstep(scrolled / range);
+      const scale = startScale - (startScale - 1) * t;
+      // early-exit: pula DOM write se mudança for < 0.5%
+      if (Math.abs(scale - lastScale) < 0.005) return;
+      lastScale = scale;
+      headline.style.setProperty("--headline-scale", scale.toFixed(3));
     };
 
     const onScroll = () => {
@@ -1374,30 +1377,34 @@ function FinalCTA() {
       rafId = requestAnimationFrame(update);
     };
 
-    update();
-    const raf1 = requestAnimationFrame(() => {
-      requestAnimationFrame(update);
-    });
-
-    const onVisibility = () => {
-      if (document.visibilityState === "visible") update();
+    const onResize = () => {
+      vw = window.innerWidth;
+      vh = window.innerHeight;
+      startScale = vw <= 768 ? 2.2 : vw <= 1024 ? 2.6 : 3.2;
+      lastScale = -1; // força recompute
+      onScroll();
     };
 
-    const ro = new ResizeObserver(() => onScroll());
-    ro.observe(section);
-    if (document.body) ro.observe(document.body);
+    update();
+    const raf1 = requestAnimationFrame(() => requestAnimationFrame(update));
+
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") {
+        lastScale = -1;
+        update();
+      }
+    };
 
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll, { passive: true });
+    window.addEventListener("resize", onResize, { passive: true });
     window.addEventListener("load", update);
     document.addEventListener("visibilitychange", onVisibility);
 
     return () => {
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("resize", onResize);
       window.removeEventListener("load", update);
       document.removeEventListener("visibilitychange", onVisibility);
-      ro.disconnect();
       cancelAnimationFrame(rafId);
       cancelAnimationFrame(raf1);
     };
