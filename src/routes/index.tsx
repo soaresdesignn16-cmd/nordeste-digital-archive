@@ -1192,23 +1192,106 @@ function ImpactSection() {
   );
 }
 
-/* ─────────── DURANTE ANOS HEADLINE ─────────── */
+/* ─────────── DURANTE ANOS HEADLINE — scroll-zoom ─────────── */
 function DuranteAnosHeadline() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const phraseRefs = [
+    useRef<HTMLHeadingElement>(null),
+    useRef<HTMLHeadingElement>(null),
+    useRef<HTMLHeadingElement>(null),
+  ];
+
+  useEffect(() => {
+    const reduce =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (reduce) {
+      phraseRefs.forEach((r) => {
+        if (r.current) {
+          r.current.style.setProperty("--s", "1");
+          r.current.style.setProperty("--o", "1");
+        }
+      });
+      return;
+    }
+
+    let raf = 0;
+    const smoothstep = (t: number) => {
+      const c = Math.max(0, Math.min(1, t));
+      return c * c * (3 - 2 * c);
+    };
+
+    const update = () => {
+      raf = 0;
+      const el = sectionRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const total = el.offsetHeight - vh;
+      const scrolled = -rect.top;
+      const progress = Math.max(0, Math.min(1, scrolled / Math.max(1, total)));
+
+      const N = 3;
+      const overlap = 0.05;
+      for (let i = 0; i < N; i++) {
+        const start = i / N - (i > 0 ? overlap : 0);
+        const end = (i + 1) / N + (i < N - 1 ? overlap : 0);
+        const local = (progress - start) / (end - start);
+        let s = 1;
+        let o = 0;
+        if (local <= 0) {
+          s = 1.6;
+          o = 0;
+        } else if (local >= 1) {
+          s = 0.5;
+          o = 0;
+        } else if (local < 0.4) {
+          const t = smoothstep(local / 0.4);
+          s = 1.6 - 0.6 * t;
+          o = t;
+        } else if (local < 0.6) {
+          s = 1;
+          o = 1;
+        } else {
+          const t = smoothstep((local - 0.6) / 0.4);
+          s = 1 - 0.5 * t;
+          o = 1 - t;
+        }
+        const node = phraseRefs[i].current;
+        if (node) {
+          node.style.setProperty("--s", s.toFixed(4));
+          node.style.setProperty("--o", o.toFixed(4));
+        }
+      }
+    };
+
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
   return (
-    <section className="relative px-6"
-      style={{ background: "var(--bg)", paddingTop: 100, paddingBottom: 100, borderTop: "1px solid var(--border-subtle)" }}>
-      <div className="max-w-[1100px] mx-auto text-center">
-        <Reveal>
-          <h2 className="typo-display" style={{ fontSize: "clamp(48px, 7vw, 88px)" }}>
-            Durante anos tentaram<br />
-            contar a <span className="highlight-word">nossa história.</span>
-          </h2>
-        </Reveal>
-        <Reveal delay={120}>
-          <p className="typo-label typo-label--accent" style={{ marginTop: 28 }}>
-            Agora é a nossa vez.
-          </p>
-        </Reveal>
+    <section ref={sectionRef} className="durante-anos-pin">
+      <div className="durante-anos-stage">
+        <h2 ref={phraseRefs[0]} className="durante-anos-phrase">
+          Durante anos tentaram
+        </h2>
+        <h2 ref={phraseRefs[1]} className="durante-anos-phrase">
+          contar a <span className="highlight-word">nossa história.</span>
+        </h2>
+        <h2 ref={phraseRefs[2]} className="durante-anos-phrase durante-anos-phrase--accent">
+          Agora é a nossa vez.
+        </h2>
       </div>
     </section>
   );
