@@ -17,7 +17,7 @@ import {
 import logoOnn from "@/assets/logo-onn.png";
 import vslBg from "@/assets/vsl-bg.png";
 import founderHeroGlow from "@/assets/founder-hero-new.png";
-import founderPortrait from "@/assets/founder-portrait.jpg";
+import founderArmchair from "@/assets/founder-armchair.jpg";
 import quemSomosBgMobile from "@/assets/quem-somos-bg-mobile.jpg";
 import quemSomosBgDesktop from "@/assets/quem-somos-bg-desktop.jpg";
 import { VSLPlayer } from "@/components/VSLPlayer";
@@ -45,6 +45,7 @@ export const Route = createFileRoute("/")({
     links: [
       { rel: "preload", as: "image", href: logoOnn, fetchpriority: "high" },
       { rel: "preload", as: "image", href: founderHeroGlow, fetchpriority: "high" },
+      { rel: "preload", as: "image", href: founderArmchair, fetchpriority: "high" },
     ],
   }),
   component: NovosNordestinos,
@@ -1079,51 +1080,40 @@ function AudienceSection() {
 /* ─────────── FOUNDER ─────────── */
 function FounderSection() {
   return (
-    <section className="relative px-6"
-      style={{ background: "var(--bg)", paddingTop: 120, paddingBottom: 120, borderTop: "1px solid var(--border-subtle)" }}>
-      <div className="max-w-[900px] mx-auto">
+    <section className="founder-bleed">
+      <img
+        src={founderArmchair}
+        alt="Fundador — Os Novos Nordestinos"
+        className="founder-bleed__bg"
+        loading="eager"
+        fetchPriority="high"
+      />
+      <div className="founder-bleed__overlay" aria-hidden="true" />
+      <div className="founder-bleed__content">
         <Reveal>
-          <span className="eyebrow">Quem Está Por Trás</span>
+          <div className="founder-bleed__label">
+            <span className="founder-bleed__dash" aria-hidden="true" />
+            Quem Está Por Trás
+          </div>
         </Reveal>
         <Reveal delay={80}>
-          <h2 className="typo-headline" style={{ marginTop: 10, lineHeight: 1.15 }}>
+          <h2 className="typo-headline typo-headline--display">
             Muito Prazer,<br />
-            <span className="accent-text">Os Novos Nordestinos</span>
+            <span className="accent-text">Os Novos<br />Nordestinos</span>
           </h2>
         </Reveal>
         <Reveal delay={160}>
-          <p className="typo-label typo-label--accent" style={{ marginTop: 28, lineHeight: 1.6 }}>
-            Movimento de Posicionamento Digital · Especialistas em Autoridade de Marca
+          <p className="founder-bleed__sub">
+            Movimento de Posicionamento Digital.<br />
+            Especialistas em Autoridade de Marca.
           </p>
         </Reveal>
-        <Reveal delay={220}>
-          <RevealWords className="typo-body" style={{ marginTop: 28, maxWidth: 720, lineHeight: 1.8 }}>
-            Nascemos com um propósito: mostrar pro Brasil que o Nordeste produz
-            empresários sofisticados, negócios milionários e marcas no nível
-            das maiores do país. Hoje, à frente do movimento, ajudamos
-            empresários nordestinos a implementar uma{" "}
-            <strong>Arquitetura de Posicionamento Digital</strong>{" "}
-            de ponta a ponta — transformando autoridade em ticket maior, mais
-            tempo e respeito de mercado.
-          </RevealWords>
-        </Reveal>
-        <Reveal delay={280}>
-          <div className="founder-stage">
-            <img
-              src={founderPortrait}
-              alt="Fundador — Os Novos Nordestinos"
-              className="founder-stage__photo"
-              loading="lazy"
-            />
-          </div>
-        </Reveal>
-        <Reveal delay={340}>
-          <div style={{ marginTop: 48 }}>
-            <a href="#cta-final" className="btn-primary">
-              Quero entrar para o movimento
-              <ArrowRight size={14} />
-            </a>
-          </div>
+        <Reveal delay={240}>
+          <a href="#cta-final" className="founder-cta">
+            <img src={logoOnn} alt="" className="founder-cta__icon" aria-hidden="true" />
+            <span>Quero Entrar Para o Movimento</span>
+            <ArrowRight size={16} />
+          </a>
         </Reveal>
       </div>
     </section>
