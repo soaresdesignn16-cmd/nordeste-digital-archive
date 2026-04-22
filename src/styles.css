@@ -1564,3 +1564,18 @@
     transition: none;
   }
 }
+
+/* ─────────── CTA BLOCK (eyebrow + paragraph + buttons + quote) ─────────── */
+.section-cta-block {
+  position: relative;
+  background: var(--bg);
+  overflow: hidden;
+}
+.section-cta-block::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(224,140,50,0.05), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
