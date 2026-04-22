@@ -1,56 +1,50 @@
 
 
-## Remover o "fade out" da headline final + padronizar desktop/mobile
+## Reorganizar FounderSection: foto à direita, conteúdo à esquerda + logo preta no botão
 
-Dois problemas no `FinalCTA`:
+Hoje a seção (em desktop ≥900px) usa layout full-bleed: a foto cobre 100% da largura com object-position 60% center, e o conteúdo fica sobreposto com overlay escuro à esquerda. Em viewports ~1000px isso ainda corta a foto (mostra só o ombro/braço) e a hierarquia "texto em cima da foto" fica confusa.
 
-1. **Texto "ofuscado"**: a headline usa `opacity: 1 → 0.15` durante o scroll (linha 1329 em `index.tsx`: `opacity = 1 - 0.85 * t`). Isso somado ao `radial-gradient` laranja do `.section-cta::before` faz a frase parecer apagada/ofuscada conforme rola.
-2. **Sticky não funciona**: a classe `.final-cta-sticky` é usada no JSX mas **não existe no CSS**. Sem `position: sticky`, a headline rola junto com a página em vez de "encolher fixa" no centro — desktop e mobile ficam fora do padrão.
+Solução: **layout split em duas colunas no desktop** (texto à esquerda, foto à direita, sem sobreposição), mantendo o full-bleed apenas no mobile.
 
 ### Mudanças
 
-**`src/routes/index.tsx`** (função `FinalCTA`, linhas 1320–1332):
-- Remover a linha de opacidade (`const opacity = ...` e `setProperty("--headline-opacity", opacity)`).
-- Manter apenas o `scale` (1.9 → 0.4) — a headline encolhe sem desaparecer.
-- Headline fica com opacidade fixa em `1` o tempo todo.
+**`src/styles.css`** — reescrever o bloco desktop `@media (min-width: 900px)` (linhas 1418–1462):
 
-**`src/styles.css`**:
-- **Adicionar regra `.final-cta-sticky`** (depois da linha 1574):
-  ```
-  .final-cta-sticky {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  ```
-- **`.final-cta-headline` (linhas 1560–1567)**: remover `opacity: var(--headline-opacity, 1)` (fica sempre 1). Manter `transform: scale(...)`, `transform-origin: 50% 50%`, transição suave.
-- **`.section-cta::before` (linhas 993–999)**: reduzir o gradient radial laranja de `rgba(224,140,50,0.12)` para `rgba(224,140,50,0.05)` e mudar a posição de `50% 0%` para `50% 50%` para parar de "lavar" o texto por cima e dar leve profundidade ao redor.
-- **Padding mobile**: adicionar dentro de `@media (max-width: 768px)` regra para `.final-cta-sticky { height: 100svh; }` (usa `svh` no mobile pra não ter glitch com a barra de endereço do Safari/Chrome).
-- **Headline mobile**: garantir que `.final-cta-headline` no mobile inicie em `scale(1.4)` em vez de `1.9` (telas pequenas não comportam 1.9x sem cortar). Usar media query `@media (max-width: 768px)` ajustando a curva via CSS variable default — ou mais simples, no `useEffect` detectar `window.innerWidth < 768` e usar `1.4 - 1.0 * t` em vez de `1.9 - 1.5 * t`.
+- `.founder-bleed`: vira `display: grid; grid-template-columns: 1fr 1fr; align-items: stretch; min-height: 100vh; padding: 0;` (duas colunas iguais, lado a lado).
+- `.founder-bleed__bg`: muda de `position: absolute` full-width para `position: relative; grid-column: 2; width: 100%; height: 100%; object-position: center center;` — a foto fica contida na coluna direita inteira, mostrando o fundador completo (cabeça + torso + poltrona) sem corte.
+- `.founder-bleed__overlay`: simplifica para um leve gradient vertical apenas dentro da coluna da foto (`grid-column: 2; background: linear-gradient(to bottom, transparent 0%, transparent 70%, rgba(0,0,0,0.4) 100%)`) — só para fundir a base com o footer, sem escurecer o rosto.
+- `.founder-bleed__content`: vira `grid-column: 1; padding: 0 60px; display: flex; flex-direction: column; justify-content: center; max-width: none;` — texto centralizado verticalmente na coluna esquerda, sobre fundo preto sólido.
+- Adicionar breakpoint intermediário `@media (min-width: 900px) and (max-width: 1199px)`: ajustar `padding: 0 40px` no content e reduzir headline para `clamp(34px, 4.5vw, 46px)` para caber bem em ~1000px.
+- Adicionar `@media (min-width: 1200px)`: padding `0 80px` no content e voltar à headline maior.
+
+**`src/styles.css`** — logo preta no botão (linha 1375–1381):
+
+- Em `.founder-cta__icon`, adicionar `filter: brightness(0);` — converte o PNG do logo (que é branco/laranja) em silhueta 100% preta, contrastando com o fundo laranja `#C8780A` do botão. Solução pura CSS, sem precisar de novo asset.
+
+**Mobile (max-width: 640px)** — não muda a estrutura, mas:
+- Reverter `.founder-bleed__bg` e `.founder-bleed__overlay` para `position: absolute` (resetar o grid-column do desktop) com `width: 100%; height: 62%`. Já está praticamente ok como está.
+
+**`src/routes/index.tsx`** — sem mudanças estruturais. A ordem do JSX (`<img>` → `<overlay>` → `<content>`) já funciona com grid: o CSS coloca a img na coluna 2 e o content na coluna 1 via `grid-column`.
 
 ### Resultado esperado
 
-- Desktop: headline aparece grande (1.9x), centralizada, fixa por 1 viewport, encolhe suavemente para 0.4x sem nunca perder opacidade — texto sempre 100% legível, sem "fade ofuscante".
-- Mobile: headline aparece em 1.4x (cabe na tela), mesmo comportamento sticky, encolhe para 0.4x, sem cortar nas laterais.
-- Gradient laranja fica como halo sutil ambiente, não mais como camada que apaga o texto.
+- **Desktop (≥900px)**: tela dividida 50/50 — esquerda preta com label "Quem Está Por Trás", headline "MUITO PRAZER / OS NOVOS / NORDESTINOS", subtítulo, e botão laranja com logo preta. Direita com a foto inteira do fundador na poltrona, sem cortes, sem overlay escuro lavando o rosto.
+- **Mobile (≤640px)**: layout vertical mantido (foto em cima, texto embaixo) — já funcional.
+- **Logo no botão**: silhueta preta nítida sobre o laranja `#C8780A`, batendo com o tema do botão.
 
 ### O que NÃO muda
 
-- Texto "Pronto para ser / visto de verdade?" — preservado.
-- Toda a lógica de listeners robustos do `useEffect` (scroll, resize, load, ResizeObserver, visibilitychange) — preservada.
-- `CTABlock` (eyebrow + parágrafo + botões + quote) acima da `FinalCTA` — intacto.
-- `DuranteAnosHeadline`, `Footer`, demais seções — intactos.
-- Tokens de cor e tipografia — intactos.
+- Conteúdo textual (label, headline, subtítulo, texto do botão) — preservado.
+- Cor laranja `#C8780A` do botão, hover shine, transições — preservados.
+- Lógica do `Reveal` e demais seções — intacta.
+- Asset `founder-armchair.jpg` continua o mesmo, só o enquadramento muda (cabe inteiro na coluna direita).
+- Asset `logo-onn.png` continua o mesmo (apenas filtro CSS aplicado para virar preto no contexto do botão).
 
 ### Arquivos editados
 
-- `src/routes/index.tsx` (linhas 1320–1332): remover lógica de opacidade; adicionar branch mobile na curva de scale.
 - `src/styles.css`:
-  - Linhas 993–999: suavizar gradient do `.section-cta::before`.
-  - Linhas 1560–1567: remover `opacity` variável da `.final-cta-headline`.
-  - Após linha 1574: adicionar `.final-cta-sticky` com `position: sticky; top: 0; height: 100vh; display: flex; align/justify center`.
-  - Adicionar media query mobile (`max-width: 768px`) ajustando `.final-cta-sticky { height: 100svh }`.
+  - Linhas 1375–1381 (`.founder-cta__icon`): adicionar `filter: brightness(0);`.
+  - Linhas 1418–1462 (bloco desktop): reescrever para grid 2 colunas (texto esquerda, foto direita).
+  - Adicionar media query intermediária `(min-width: 900px) and (max-width: 1199px)` para ajustar padding/headline em viewports tablet-desktop.
+  - Linhas 1464–1483 (mobile): garantir reset do grid (foto volta a `position: absolute` no mobile).
 
