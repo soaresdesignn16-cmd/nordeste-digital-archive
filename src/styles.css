@@ -1626,13 +1626,20 @@
 .final-cta-headline {
   display: inline-block;
   position: relative;
-  z-index: 2;
-  transform: scale(var(--headline-scale, 3.2));
-  opacity: 1;
-  transform-origin: 50% 50%;
-  /* sem transition: rAF cuida do smoothing — evita lag e jitter */
-  will-change: transform;
-  backface-visibility: hidden;
+}
+/* Variante estática: sem animação, sem scale, cores fixas */
+.final-cta-headline--static,
+.final-cta-headline--static * {
+  transform: none !important;
+  opacity: 1 !important;
+  transition: none !important;
+  animation: none !important;
+}
+.final-cta-headline--static {
+  color: var(--text-primary);
+}
+.final-cta-headline--static .accent-text {
+  color: var(--accent);
 }
 
 .final-cta-actions {
