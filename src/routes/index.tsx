@@ -1328,102 +1328,14 @@ function DuranteAnosHeadline() {
 
 /* ─────────── FINAL CTA ─────────── */
 function FinalCTA() {
-  const sectionRef = useRef<HTMLElement | null>(null);
-  const headlineRef = useRef<HTMLHeadingElement | null>(null);
-
-  useScrollProgressReveal(headlineRef, ".reveal-word", { activeRatio: 0.6, deactivate: false });
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const section = sectionRef.current;
-    const headline = headlineRef.current;
-    if (!section || !headline) return;
-
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) {
-      headline.style.setProperty("--headline-scale", "1");
-      return;
-    }
-
-    let rafId = 0;
-    let ticking = false;
-    let lastScale = -1;
-    // cache de viewport — só atualiza no resize (evita reflow a cada scroll)
-    let vw = window.innerWidth;
-    let vh = window.innerHeight;
-    let startScale = vw <= 768 ? 2.2 : vw <= 1024 ? 2.6 : 3.2;
-
-    const smoothstep = (t: number) => t * t * (3 - 2 * t);
-    const clamp = (v: number, a: number, b: number) => v < a ? a : v > b ? b : v;
-
-    const update = () => {
-      ticking = false;
-      const rect = section.getBoundingClientRect();
-      // range de scroll = altura da seção menos uma viewport (sticky window)
-      const range = Math.max(1, rect.height - vh);
-      // posição dentro da seção: 0 quando topo entra, 1 quando o sticky sai
-      const scrolled = clamp(-rect.top, 0, range);
-      const t = smoothstep(scrolled / range);
-      // endScale > 1 = headline termina maior que o tamanho natural (mais presença)
-      const endScale = vw <= 768 ? 1.25 : vw <= 1024 ? 1.35 : 1.45;
-      const scale = startScale - (startScale - endScale) * t;
-      // early-exit: pula DOM write se mudança for < 0.5%
-      if (Math.abs(scale - lastScale) < 0.005) return;
-      lastScale = scale;
-      headline.style.setProperty("--headline-scale", scale.toFixed(3));
-    };
-
-    const onScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      rafId = requestAnimationFrame(update);
-    };
-
-    const onResize = () => {
-      vw = window.innerWidth;
-      vh = window.innerHeight;
-      startScale = vw <= 768 ? 2.2 : vw <= 1024 ? 2.6 : 3.2;
-      lastScale = -1; // força recompute
-      onScroll();
-    };
-
-    update();
-    const raf1 = requestAnimationFrame(() => requestAnimationFrame(update));
-
-    const onVisibility = () => {
-      if (document.visibilityState === "visible") {
-        lastScale = -1;
-        update();
-      }
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onResize, { passive: true });
-    window.addEventListener("load", update);
-    document.addEventListener("visibilitychange", onVisibility);
-
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onResize);
-      window.removeEventListener("load", update);
-      document.removeEventListener("visibilitychange", onVisibility);
-      cancelAnimationFrame(rafId);
-      cancelAnimationFrame(raf1);
-    };
-  }, []);
-
   return (
-    <section ref={sectionRef} id="cta-final" className="section-cta px-6">
+    <section id="cta-final" className="section-cta px-6">
       <div className="final-cta-sticky">
         <div className="final-cta-inner relative max-w-[1100px] mx-auto text-center">
-          <h2 ref={headlineRef} className="typo-display final-cta-headline">
-            <span className="reveal-word">Pronto</span>{" "}
-            <span className="reveal-word">para</span>{" "}
-            <span className="reveal-word">ser</span>
+          <h2 className="typo-display final-cta-headline final-cta-headline--static">
+            Pronto para ser
             <br />
-            <span className="reveal-word accent-text">visto</span>{" "}
-            <span className="reveal-word accent-text">de</span>{" "}
-            <span className="reveal-word accent-text">verdade?</span>
+            <span className="accent-text">visto de verdade?</span>
           </h2>
           <div className="final-cta-actions">
             <a href="#cta-block" className="btn-primary btn-primary--lg">
