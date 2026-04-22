@@ -1329,8 +1329,10 @@ function FinalCTA() {
       const total = Math.max(1, vh);
       const scrolled = clamp(-rect.top + vh * 0.4, 0, total);
       const t = smoothstep(scrolled / total);
-      const isMobile = window.innerWidth < 768;
-      const startScale = isMobile ? 1.4 : 1.9;
+      const w = window.innerWidth;
+      const isMobile = w <= 768;
+      const isTablet = w > 768 && w <= 1024;
+      const startScale = isMobile ? 1.4 : isTablet ? 1.6 : 1.9;
       const endScale = 1;
       const scale = (startScale - (startScale - endScale) * t).toFixed(3);
       headline.style.setProperty("--headline-scale", scale);
@@ -1373,7 +1375,7 @@ function FinalCTA() {
 
   return (
     <section ref={sectionRef} id="cta-final" className="section-cta px-6"
-      style={{ minHeight: "100vh", paddingTop: 0, paddingBottom: 0 }}>
+      style={{ minHeight: "70vh", paddingTop: 0, paddingBottom: 0 }}>
       <div className="final-cta-sticky">
         <div className="final-cta-inner relative max-w-[1100px] mx-auto text-center">
           <h2 ref={headlineRef} className="typo-display final-cta-headline">
