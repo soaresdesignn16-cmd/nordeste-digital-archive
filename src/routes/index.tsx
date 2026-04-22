@@ -1310,7 +1310,10 @@ function FinalCTA() {
     if (!section || !headline) return;
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) return;
+    if (reduce) {
+      headline.style.setProperty("--headline-scale", "1");
+      return;
+    }
 
     let rafId = 0;
     let ticking = false;
@@ -1321,14 +1324,15 @@ function FinalCTA() {
       ticking = false;
       const rect = section.getBoundingClientRect();
       const vh = window.innerHeight;
-      // Progress: 0 when section top hits viewport top, 1 when section bottom approaches viewport bottom
-      const total = Math.max(1, rect.height - vh);
-      const scrolled = clamp(-rect.top, 0, total);
+      // Progress 0 → 1 across the entry of the section (intro grow only).
+      // Once the section is fully pinned, headline locks at scale 1 and stays.
+      const total = Math.max(1, vh);
+      const scrolled = clamp(-rect.top + vh * 0.4, 0, total);
       const t = smoothstep(scrolled / total);
       const isMobile = window.innerWidth < 768;
       const startScale = isMobile ? 1.4 : 1.9;
-      const delta = isMobile ? 1.0 : 1.5;
-      const scale = (startScale - delta * t).toFixed(3);
+      const endScale = 1;
+      const scale = (startScale - (startScale - endScale) * t).toFixed(3);
       headline.style.setProperty("--headline-scale", scale);
     };
 
@@ -1339,7 +1343,6 @@ function FinalCTA() {
     };
 
     update();
-    // Recalculate after layout settles (fonts/images above shifting offsets)
     const raf1 = requestAnimationFrame(() => {
       requestAnimationFrame(update);
     });
@@ -1370,9 +1373,9 @@ function FinalCTA() {
 
   return (
     <section ref={sectionRef} id="cta-final" className="section-cta px-6"
-      style={{ minHeight: "200vh", paddingTop: 0, paddingBottom: 0 }}>
+      style={{ minHeight: "100vh", paddingTop: 0, paddingBottom: 0 }}>
       <div className="final-cta-sticky">
-        <div className="relative z-10 max-w-[1100px] mx-auto text-center">
+        <div className="final-cta-inner relative max-w-[1100px] mx-auto text-center">
           <h2 ref={headlineRef} className="typo-display final-cta-headline">
             Pronto para ser<br />
             <span className="accent-text">visto de verdade?</span>
