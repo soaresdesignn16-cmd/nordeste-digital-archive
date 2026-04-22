@@ -1370,12 +1370,14 @@ function FinalCTA() {
 
   return (
     <section ref={sectionRef} id="cta-final" className="section-cta px-6"
-      style={{ paddingTop: 150, paddingBottom: 150 }}>
-      <div className="relative z-10 max-w-[900px] mx-auto text-center">
-        <h2 ref={headlineRef} className="typo-display final-cta-headline">
-          Pronto para ser<br />
-          <span className="accent-text">visto de verdade?</span>
-        </h2>
+      style={{ minHeight: "200vh", paddingTop: 0, paddingBottom: 0 }}>
+      <div className="final-cta-sticky">
+        <div className="relative z-10 max-w-[1100px] mx-auto text-center">
+          <h2 ref={headlineRef} className="typo-display final-cta-headline">
+            Pronto para ser<br />
+            <span className="accent-text">visto de verdade?</span>
+          </h2>
+        </div>
       </div>
     </section>
   );
@@ -1386,7 +1388,7 @@ function CTABlock() {
   return (
     <section id="cta-block" className="section-cta-block px-6"
       style={{ paddingTop: 120, paddingBottom: 120 }}>
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ zIndex: 0 }}>
         <span className="watermark-onn">ONN</span>
       </div>
       <svg className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
