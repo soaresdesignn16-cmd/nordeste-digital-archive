@@ -1,35 +1,17 @@
 
 
-## Trocar fundo da seção "Quem Somos" — 2 imagens diferentes (mobile vs desktop)
+## Ajustar fundo "Quem Somos" no mobile — escada à esquerda, igual à referência
 
-A seção `.quem-somos` já existe e tem o layout/texto/cards conforme a referência. Só falta **substituir a imagem de fundo** por **duas imagens distintas**: uma vertical (mobile, escadaria centralizada) e outra horizontal (desktop, escadaria à direita), trocadas via media query.
+A nova foto enviada (`IMG-20260422-WA0012-2.jpg`) é a versão correta da escadaria pro mobile. Na referência (`IMG-20260422-WA0010-3.jpg`), a **escada e o homem aparecem do lado direito**, com texto/cards à esquerda. Vou substituir o asset mobile e ajustar o `::before` pra reproduzir exatamente essa composição.
 
-### 1. Assets — copiar as 2 novas imagens
+### 1. Asset — substituir imagem mobile
 
-- `user-uploads://IMG-20260422-WA0012.jpg` → `src/assets/quem-somos-bg-mobile.jpg` (vertical, usada em telas até 767px)
-- `user-uploads://IMG-20260422-WA0011_1.jpg` → `src/assets/quem-somos-bg-desktop.jpg` (horizontal, usada em telas ≥768px)
-- O asset antigo `src/assets/quem-somos-bg.jpg` será removido do import (substituído pelos dois novos).
+- `user-uploads://IMG-20260422-WA0012-2.jpg` → `src/assets/quem-somos-bg-mobile.jpg` (sobrescreve a atual).
+- Imagem desktop permanece intacta.
 
-### 2. JSX — `src/routes/index.tsx` (linhas 19–22 e 807–814)
+### 2. CSS — `src/styles.css`, bloco `.quem-somos::before` (mobile)
 
-- Remover `import quemSomosBg from "@/assets/quem-somos-bg.jpg"`.
-- Adicionar:
-  ```ts
-  import quemSomosBgMobile from "@/assets/quem-somos-bg-mobile.jpg";
-  import quemSomosBgDesktop from "@/assets/quem-somos-bg-desktop.jpg";
-  ```
-- Substituir o style inline da `<section>` por **duas custom properties** (uma para cada breakpoint), em vez de uma só:
-  ```tsx
-  style={{
-    borderTop: "1px solid var(--border-subtle)",
-    ["--qs-bg-image-mobile" as string]: `url(${quemSomosBgMobile})`,
-    ["--qs-bg-image-desktop" as string]: `url(${quemSomosBgDesktop})`,
-  } as React.CSSProperties}
-  ```
-
-### 3. CSS — `src/styles.css` (bloco `.quem-somos::before`, linhas 1046–1059 + media query 1162)
-
-Reescrever o `::before` pra usar a variável mobile por padrão, com diferentes posicionamentos pra cada formato:
+Reescrever os parâmetros pra: escada encostada na borda direita, fade da esquerda pra direita protegendo texto e cards.
 
 ```css
 .quem-somos::before {
@@ -37,43 +19,31 @@ Reescrever o `::before` pra usar a variável mobile por padrão, com diferentes 
   position: absolute;
   inset: 0;
   background-image: var(--qs-bg-image-mobile);
-  background-position: center center;   /* mobile: imagem vertical centralizada */
-  background-size: cover;
+  background-position: right center;     /* escada/homem ancorados à direita */
+  background-size: cover;                /* preenche altura sem deixar gap */
   background-repeat: no-repeat;
-  opacity: 0.35;                         /* sutil mas visível */
-  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 25%, #000 75%, transparent 100%);
-          mask-image: linear-gradient(180deg, transparent 0%, #000 25%, #000 75%, transparent 100%);
+  opacity: 0.5;                          /* visível mas subordinado ao texto */
+  -webkit-mask-image: linear-gradient(to right, #000 0%, #000 35%, transparent 95%);
+          mask-image: linear-gradient(to right, #000 0%, #000 35%, transparent 95%);
   pointer-events: none;
   z-index: 0;
 }
-
-@media (min-width: 768px) {
-  .quem-somos::before {
-    background-image: var(--qs-bg-image-desktop);
-    background-position: right center;   /* desktop: imagem horizontal à direita */
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 60%);
-            mask-image: linear-gradient(to right, transparent 0%, #000 60%);
-  }
-  .quem-somos { padding: 96px 48px; }
-  .quem-somos__content { margin-inline: auto; }
-}
 ```
 
-**Mudanças-chave:**
-- **Mobile (<768px)**: usa a imagem vertical, centralizada, com mask vertical (fade no topo e base) — texto fica legível por cima do fundo escuro.
-- **Desktop (≥768px)**: usa a imagem horizontal, posicionada à direita, com mask horizontal (texto à esquerda totalmente preto, imagem aparece à direita) — igual à composição da referência.
-- Opacidade subiu de `0.25` → `0.35` pra a foto aparecer um pouco mais sem competir com o texto.
+**Por que cada parâmetro:**
+- `background-position: right center` — encosta a foto na borda direita, mantendo a escadaria e a figura humana visíveis no lado direito da seção (igual referência).
+- `background-size: cover` — garante que a foto ocupe toda a altura sem faixas pretas; a parte mais à esquerda da imagem (que é totalmente preta) cobre o lado esquerdo naturalmente.
+- `opacity: 0.5` — escada visível mas sem competir com texto branco e cards laranja.
+- `mask-image` `to right, #000 0%, #000 35%, transparent 95%` — primeiros 35% da largura à esquerda ficam **100% pretos puros** (sem nenhuma foto por baixo do texto e cards), foto fica clara entre 35% e 95% da largura (ali aparece a escada e o homem), fade suave nos últimos 5%.
 
-### 4. Sem mudanças
+### 3. Sem mudanças
 
-- Texto, blocos editoriais, cards laranja, headline, eyebrow, divider, manifesto cards — **todos preservados intactos**.
-- Cor accent `#D4861A`, fonte Poppins, padding, max-width — preservados.
-- Resto da página (`HeroSection`, `AudienceSection`, `FounderSection`, `ImpactSection`) — intocados.
+- Bloco desktop (`@media min-width: 768px`) — preservado intacto.
+- JSX, imports, custom properties, texto, cards, headline, cor accent — todos preservados.
+- Asset desktop (`quem-somos-bg-desktop.jpg`) — não tocado.
 
 ### Arquivos editados
 
-- `src/assets/quem-somos-bg-mobile.jpg` — novo (cópia de `IMG-20260422-WA0012.jpg`).
-- `src/assets/quem-somos-bg-desktop.jpg` — novo (cópia de `IMG-20260422-WA0011_1.jpg`).
-- `src/routes/index.tsx` — trocar imports e style inline da `ManifestoSection`.
-- `src/styles.css` — reescrever `.quem-somos::before` e ajustar media query `@media (min-width: 768px)`.
+- `src/assets/quem-somos-bg-mobile.jpg` — sobrescrito com `IMG-20260422-WA0012-2.jpg`.
+- `src/styles.css` — ajustar 4 propriedades do `.quem-somos::before` base (mobile): `background-position`, `background-size`, `opacity`, `mask-image`.
 
