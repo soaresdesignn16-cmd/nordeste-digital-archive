@@ -1,146 +1,61 @@
 
 
-## Marquee infinito + foto do fundador na seção "Muito Prazer"
+## Remover marquees + foto maior + efeito reveal de palavras em todo o site
 
-### 1. Adicionar a foto enviada
+### 1. Remover o efeito marquee (faixas correndo)
 
-- Copiar `user-uploads://IMG-20260422-WA0000.jpg` para `src/assets/founder-portrait.jpg`.
-- Importar como `founderPortrait` em `src/routes/index.tsx`.
-- Substituir o atual `div.founder-photo-placeholder` (linhas 946-964) por um wrapper real contendo `<img src={founderPortrait} />` com `aspect-ratio: 4/5`, `object-fit: cover`, `border-radius: 12px`, e `box-shadow` sutil.
+Na seção "Muito Prazer" (`FounderSection` em `src/routes/index.tsx`, linhas 946-983):
 
-### 2. Marquee infinito horizontal sobreposto à foto
+- Remover os dois `<div className="marquee marquee--back">` e `<div className="marquee marquee--front">` (faixas de texto correndo na frente e atrás).
+- Manter apenas o wrapper `.founder-stage` com a `<img>` da foto do fundador.
+- A foto passa a ocupar **todo o espaço** do `.founder-stage` (atualmente limitada a `max-width: 380px`).
 
-Estilo "The Branding People" (referência do vídeo): tipografia gigante em outline/sólido cruzando horizontalmente, passando **na frente E atrás** da foto.
+**CSS (`src/styles.css`, linhas 874-956):**
 
-**Estrutura visual** (no wrapper da foto):
+- Apagar todas as classes `.marquee`, `.marquee--back`, `.marquee--front`, `.marquee__track`, e os `@keyframes marquee-rtl` / `marquee-ltr`.
+- Atualizar `.founder-stage__photo`:
+  - `max-width: 100%` (em vez de 380px) — ocupa o stage inteiro.
+  - `aspect-ratio: 4 / 5` mantido para proporção retrato.
+  - Mantém `border-radius: 12px`, `box-shadow`, `object-fit: cover`.
+- `.founder-stage`: remover altura fixa (`height: 560px`); deixar a altura ser ditada pela foto via `aspect-ratio`. `max-width: 560px` para enquadramento elegante centralizado.
+- Mobile: `.founder-stage { max-width: 420px }`.
 
-```text
-┌─────────────────────────────────────────┐
-│ POSICIONAMENTO • AUTORIDADE • ... ──►   │  ← marquee atrás (z-0, opacity baixa, outline)
-│        ┌──────────────┐                 │
-│        │              │                 │
-│        │    FOTO      │                 │  ← foto (z-10)
-│        │              │                 │
-│        └──────────────┘                 │
-│   ◄── NORDESTE • PREMIUM • LEGADO ...   │  ← marquee na frente (z-20, accent laranja, sólido)
-└─────────────────────────────────────────┘
-```
+### 2. Aplicar o efeito "Scroll Reveal" (palavra-por-palavra) em **todos os textos corridos** do site
 
-- Container `.founder-stage`: `position: relative`, altura ≈ 560px desktop / 480px mobile, overflow visível horizontal mas controlado pelas faixas.
-- Foto centralizada com `max-width: 380px`, `z-index: 10`.
-- **Faixa 1 (atrás)**: `position: absolute; top: 18%; left: 0; right: 0; z-index: 1;` — texto outline (`-webkit-text-stroke: 1px var(--text-ghost)`, `color: transparent`), tamanho `clamp(72px, 12vw, 140px)`, anima da esquerda → direita.
-- **Faixa 2 (frente)**: `position: absolute; bottom: 14%; left: 0; right: 0; z-index: 20;` — texto sólido `var(--accent)` com leve `mix-blend-mode: screen` ou opacity 0.85, tamanho igual, anima direita → esquerda (sentido inverso).
+Atualmente o efeito está só no parágrafo da seção "Muito Prazer" (via componente `RevealWords`). Vou estender para todos os parágrafos longos / subjacentes (descrições) das demais seções, usando o mesmo componente já existente — sem mudar cor nem paleta (cinza ghost → branco primário, igual ao atual).
 
-**Conteúdo das faixas** (combinando com o site):
+**Locais que recebem `<RevealWords>`** (substituem `<p className="typo-body">`):
 
-- Faixa 1: `POSICIONAMENTO • AUTORIDADE • LEGADO • PRESENÇA • ESTRATÉGIA • MARCA •`
-- Faixa 2: `NORDESTE • PREMIUM • EMPRESÁRIO • TICKET ALTO • RESPEITO • MOVIMENTO •`
+- **Hero (mobile + desktop)** — linhas 704-708 e 744-748: parágrafo "Empresário e profissionais nordestinos…".
+- **VSL Section** — linha 489: parágrafo "…" (descrição abaixo do título).
+- **Manifesto** — linhas 821-825 e 826-831: dois parágrafos "Nascemos com um propósito…" e "Hoje, à frente do movimento…".
+- **Audience** — linha 891-894: "Você se encaixa em um desses perfis…".
+- **Audience cards** — linha 905 (`<p>{p.desc}</p>`): descrição de cada perfil → trocar por `<RevealWords>`.
+- **Manifesto cards** — linha 855 (`<p>{c.desc}</p>`): descrição de cada card.
+- **Impact (Ganhos)** — linhas 1037-1038: `ganho-titulo` e `ganho-desc` de cada bloco. *Observação: já tem `scroll-fade` no container — o `RevealWords` aplica nos textos por dentro, mantendo ambos os efeitos compatíveis.*
+- **Final CTA** — linha 1109: "Entre para o movimento exclusivo…".
 
-Cada faixa duplica a string 2× internamente (`<div class="marquee-track">` com `display: inline-flex` e `width: max-content`) para loop perfeito sem corte.
+**Não recebem o efeito** (mantêm-se como estão):
+- Headlines (`typo-headline`, `typo-display`, `pre-display`) — são títulos com animação própria (`hero-anim`, `Reveal`).
+- Eyebrows e labels (`eyebrow`, `typo-label`) — rótulos curtos.
+- Quotes (`quote-block`, `quote-author`) — já têm tratamento próprio.
+- Botões e números (`Stat`, `ganho-numero`).
+- Footer.
 
-### 3. CSS (em `src/styles.css`)
+### 3. Ajuste técnico no componente `RevealWords`
 
-```css
-.founder-stage { 
-  position: relative; 
-  margin: 64px auto 0; 
-  max-width: 720px; 
-  height: 560px;
-  display: flex; 
-  align-items: center; 
-  justify-content: center;
-}
-.founder-stage__photo {
-  position: relative; z-index: 10;
-  width: 100%; max-width: 380px;
-  aspect-ratio: 4 / 5; object-fit: cover;
-  border-radius: 12px;
-  box-shadow: 0 30px 80px rgba(0,0,0,0.5);
-}
-.marquee {
-  position: absolute; left: 0; right: 0;
-  overflow: hidden; pointer-events: none;
-  white-space: nowrap;
-}
-.marquee--back  { top: 14%;    z-index: 1;  }
-.marquee--front { bottom: 10%; z-index: 20; }
-.marquee__track { 
-  display: inline-flex; width: max-content;
-  font-family: var(--font-display);
-  font-weight: 800; letter-spacing: -0.02em;
-  font-size: clamp(64px, 11vw, 132px);
-  line-height: 1;
-}
-.marquee--back  .marquee__track { 
-  -webkit-text-stroke: 1px var(--text-ghost); 
-  color: transparent;
-  animation: marquee-ltr 38s linear infinite;
-}
-.marquee--front .marquee__track { 
-  color: var(--accent); opacity: 0.92;
-  animation: marquee-rtl 28s linear infinite;
-}
-.marquee__track > span { padding-right: 48px; }
+O componente atualmente renderiza sempre como `<p>`. Para suportar substituir parágrafos com classes específicas (ex.: `ganho-titulo`, `ganho-desc`) sem quebrar estilos, mantém-se renderizando como `<p>` e apenas se passa a `className` original. Isso já funciona — sem mudanças necessárias no componente.
 
-@keyframes marquee-rtl { 
-  0% { transform: translateX(0); } 
-  100% { transform: translateX(-50%); } 
-}
-@keyframes marquee-ltr { 
-  0% { transform: translateX(-50%); } 
-  100% { transform: translateX(0); } 
-}
+### 4. Comportamento e paleta (sem alteração de cores)
 
-@media (max-width: 640px) {
-  .founder-stage { height: 480px; }
-  .founder-stage__photo { max-width: 280px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .marquee__track { animation: none; }
-}
-```
-
-### 4. JSX (substituir o placeholder em `FounderSection`)
-
-```tsx
-<Reveal delay={280}>
-  <div className="founder-stage">
-    <div className="marquee marquee--back" aria-hidden="true">
-      <div className="marquee__track">
-        {[...Array(2)].map((_, i) => (
-          <React.Fragment key={i}>
-            <span>POSICIONAMENTO •</span><span>AUTORIDADE •</span>
-            <span>LEGADO •</span><span>PRESENÇA •</span>
-            <span>ESTRATÉGIA •</span><span>MARCA •</span>
-          </React.Fragment>
-        ))}
-      </div>
-    </div>
-    <img src={founderPortrait} alt="Fundador — Os Novos Nordestinos" className="founder-stage__photo" />
-    <div className="marquee marquee--front" aria-hidden="true">
-      <div className="marquee__track">
-        {[...Array(2)].map((_, i) => (
-          <React.Fragment key={i}>
-            <span>NORDESTE •</span><span>PREMIUM •</span>
-            <span>EMPRESÁRIO •</span><span>TICKET ALTO •</span>
-            <span>RESPEITO •</span><span>MOVIMENTO •</span>
-          </React.Fragment>
-        ))}
-      </div>
-    </div>
-  </div>
-</Reveal>
-```
+- Estado inicial: `var(--text-ghost)` opacity `0.25` (já definido).
+- Estado ativo conforme scroll passa pela linha (75% da viewport): `var(--text-primary)` opacity `1`.
+- `<strong>` e `.accent-text` internos preservam o destaque laranja existente (o `splitNodeIntoWords` já preserva nós filhos React).
+- Performance: hook `useScrollProgressReveal` já existe, throttled via `requestAnimationFrame` + `IntersectionObserver` — nenhum custo extra.
+- `prefers-reduced-motion`: já tratado (palavras viram totalmente visíveis sem transição).
 
 ### Arquivos editados
 
-- `src/assets/founder-portrait.jpg` — novo (cópia da imagem enviada).
-- `src/routes/index.tsx` — novo import + substituição do placeholder pelo `.founder-stage` com 2 marquees + foto.
-- `src/styles.css` — classes `.founder-stage`, `.marquee`, `.marquee__track` + keyframes `marquee-ltr` / `marquee-rtl`.
-
-### Paleta (sem mudanças)
-
-- Marquee de fundo: outline em `var(--text-ghost)` (cinza) — ar de profundidade.
-- Marquee da frente: `var(--accent)` (laranja já do site) — energia e destaque.
-- Foto: sombra escura natural no fundo preto existente.
+- `src/routes/index.tsx` — remover JSX dos 2 marquees na `FounderSection`; trocar `<p className="typo-body">` (e `<p>` de cards/ganhos) por `<RevealWords className="…">` nas seções listadas.
+- `src/styles.css` — remover blocos `.marquee*` + keyframes `marquee-ltr`/`marquee-rtl`; ajustar `.founder-stage` (sem altura fixa, max-width 560px) e `.founder-stage__photo` (max-width 100%).
 
