@@ -22,6 +22,8 @@ import quemSomosBgMobile from "@/assets/quem-somos-bg-mobile.jpg";
 import quemSomosBgDesktop from "@/assets/quem-somos-bg-desktop.jpg";
 import { VSLPlayer } from "@/components/VSLPlayer";
 
+const WHATSAPP_URL = "https://wa.me/5581996392616";
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -651,7 +653,7 @@ function Nav() {
           <a href="#manifesto" className="typo-label" style={{ color: "var(--text-secondary)", letterSpacing: "0.1em" }}>Manifesto</a>
           <a href="#para-quem" className="typo-label" style={{ color: "var(--text-secondary)", letterSpacing: "0.1em" }}>Para Quem</a>
           <a href="#ganhos" className="typo-label" style={{ color: "var(--text-secondary)", letterSpacing: "0.1em" }}>Ganhos</a>
-          <a href="#cta-final" className="btn-primary btn-primary--sm">Solicitar Avaliação</a>
+          <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="btn-primary btn-primary--sm">Solicitar Avaliação</a>
         </div>
 
         <button onClick={() => setMenuOpen(true)} className="md:hidden p-2" aria-label="Abrir menu" style={{ color: "var(--text-primary)", background: "transparent", border: "none" }}>
@@ -687,7 +689,7 @@ function Nav() {
                   {l.label}
                 </a>
               ))}
-              <a href="#cta-final" onClick={() => setMenuOpen(false)} className="btn-primary mt-6 self-start">
+              <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" onClick={() => setMenuOpen(false)} className="btn-primary mt-6 self-start">
                 Solicitar Avaliação
               </a>
             </div>
@@ -748,7 +750,7 @@ function HeroIntro() {
               no nível que realmente são.
             </RevealWords>
             <div className="flex flex-wrap items-center gap-6 hero-anim hero-d-5" style={{ marginTop: 36 }}>
-              <a href="#cta-final" className="btn-primary">
+              <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="btn-primary">
                 Iniciar Avaliação
                 <Play size={13} fill="currentColor" />
               </a>
@@ -788,7 +790,7 @@ function HeroIntro() {
               no nível que realmente são.
             </RevealWords>
             <div className="flex flex-wrap items-center gap-6 hero-anim hero-d-5" style={{ marginTop: 36 }}>
-              <a href="#cta-final" className="btn-primary">
+              <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="btn-primary">
                 Iniciar Avaliação
                 <Play size={13} fill="currentColor" />
               </a>
@@ -1146,7 +1148,7 @@ function FounderSection() {
           </p>
         </Reveal>
         <Reveal delay={240}>
-          <a href="#cta-final" className="founder-cta">
+          <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="founder-cta">
             <img src={logoOnn} alt="" className="founder-cta__icon" />
             <span className="founder-cta__text">
               <span>Quero Entrar</span>
@@ -1188,7 +1190,7 @@ function ImpactSection() {
             </Reveal>
           </div>
           <Reveal delay={160}>
-            <a href="#cta-final" className="btn-secondary">
+            <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="btn-secondary">
               Quero ser selecionado
             </a>
           </Reveal>
@@ -1338,7 +1340,7 @@ function FinalCTA() {
             <span className="accent-text">visto de verdade?</span>
           </h2>
           <div className="final-cta-actions">
-            <a href="#cta-block" className="btn-primary btn-primary--lg">
+            <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="btn-primary btn-primary--lg">
               A Sua Chance
               <ArrowRight size={14} />
             </a>
@@ -1379,7 +1381,7 @@ function CTABlock() {
         </Reveal>
         <Reveal delay={240}>
           <div className="flex flex-wrap items-center justify-center gap-5" style={{ marginTop: 48 }}>
-            <a href="#" className="btn-primary btn-primary--lg">
+            <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="btn-primary btn-primary--lg">
               Solicitar avaliação estratégica
               <ArrowRight size={14} />
             </a>
