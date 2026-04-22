@@ -809,8 +809,8 @@ function ManifestoSection() {
       className="quem-somos"
       style={{
         borderTop: "1px solid var(--border-subtle)",
-        backgroundImage: `url(${quemSomosBg})`,
-      }}
+        ["--qs-bg-image" as string]: `url(${quemSomosBg})`,
+      } as React.CSSProperties}
     >
       <div className="quem-somos__content mx-auto">
         <Reveal>

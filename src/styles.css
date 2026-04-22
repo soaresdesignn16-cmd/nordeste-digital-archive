@@ -1040,9 +1040,6 @@
   --qs-bg: #0a0a0a;
   position: relative;
   background-color: var(--qs-bg);
-  background-position: right center;
-  background-size: cover;
-  background-repeat: no-repeat;
   padding: 60px 24px;
   overflow: hidden;
 }
@@ -1050,18 +1047,13 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: var(--qs-bg);
-  -webkit-mask-image: linear-gradient(to right, #000 40%, transparent 100%);
-          mask-image: linear-gradient(to right, #000 40%, transparent 100%);
-  pointer-events: none;
-  z-index: 0;
-}
-.quem-somos::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to right, var(--qs-bg) 40%, transparent 100%);
-  opacity: 0.75;
+  background-image: var(--qs-bg-image);
+  background-position: right center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0.25;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 100%);
+          mask-image: linear-gradient(to right, transparent 0%, #000 100%);
   pointer-events: none;
   z-index: 0;
 }
