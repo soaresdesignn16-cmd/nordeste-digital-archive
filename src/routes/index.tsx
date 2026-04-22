@@ -1329,8 +1329,10 @@ function FinalCTA() {
       const total = Math.max(1, vh);
       const scrolled = clamp(-rect.top + vh * 0.4, 0, total);
       const t = smoothstep(scrolled / total);
-      const isMobile = window.innerWidth < 768;
-      const startScale = isMobile ? 1.4 : 1.9;
+      const w = window.innerWidth;
+      const isMobile = w <= 768;
+      const isTablet = w > 768 && w <= 1024;
+      const startScale = isMobile ? 1.4 : isTablet ? 1.6 : 1.9;
       const endScale = 1;
       const scale = (startScale - (startScale - endScale) * t).toFixed(3);
       headline.style.setProperty("--headline-scale", scale);
