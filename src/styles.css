@@ -655,28 +655,39 @@
   border: 1px solid var(--border-subtle);
   border-radius: 18px;
   padding: 36px 32px 40px;
-  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.55), 0 6px 16px rgba(0, 0, 0, 0.35);
-  transform-origin: bottom left;
+  box-shadow:
+    0 calc(8px + var(--fan) * 14px) calc(20px + var(--fan) * 30px) rgba(0, 0, 0, 0.5),
+    0 4px 10px rgba(0, 0, 0, 0.35);
+  transform-origin: bottom center;
   display: flex;
   flex-direction: column;
   will-change: transform;
 }
 .fan-card--bg-1 {
   z-index: 1;
-  transform: rotate(calc(var(--fan) * -18deg));
+  transform:
+    translateY(calc(12px - var(--fan) * 12px))
+    scale(calc(0.94 + var(--fan) * 0.06))
+    rotate(calc(var(--fan) * -22deg));
 }
 .fan-card--bg-2 {
   z-index: 2;
-  transform: rotate(calc(var(--fan) * -12deg));
+  transform:
+    translateY(calc(8px - var(--fan) * 8px))
+    scale(calc(0.96 + var(--fan) * 0.04))
+    rotate(calc(var(--fan) * -14deg));
 }
 .fan-card--bg-3 {
   z-index: 3;
-  transform: rotate(calc(var(--fan) * -6deg));
+  transform:
+    translateY(calc(4px - var(--fan) * 4px))
+    scale(calc(0.98 + var(--fan) * 0.02))
+    rotate(calc(var(--fan) * -7deg));
 }
 .fan-card--lead {
   z-index: 4;
-  transform: translateX(calc(var(--slide) * -130%)) rotate(calc(var(--slide) * -3deg));
-  opacity: calc(1 - var(--slide) * 0.15);
+  transform: translateX(calc(var(--slide) * -135%)) rotate(calc(var(--slide) * -4deg));
+  opacity: calc(1 - var(--slide) * 0.1);
 }
 .fan-card .icon-box {
   width: 48px;
