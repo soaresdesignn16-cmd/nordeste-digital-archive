@@ -693,12 +693,14 @@
   position: absolute;
   inset: 0;
   background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
+  border: 1.5px solid var(--accent);
   border-radius: 18px;
   padding: 36px 32px 40px;
   box-shadow:
     0 calc(8px + var(--fan) * 14px) calc(20px + var(--fan) * 30px) rgba(0, 0, 0, 0.5),
-    0 4px 10px rgba(0, 0, 0, 0.35);
+    0 4px 10px rgba(0, 0, 0, 0.35),
+    0 0 0 1px color-mix(in oklab, var(--accent) 35%, transparent),
+    0 0 24px color-mix(in oklab, var(--accent) 25%, transparent);
   transform-origin: bottom center;
   display: flex;
   flex-direction: column;
