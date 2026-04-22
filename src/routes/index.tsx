@@ -442,8 +442,8 @@ function NovosNordestinos() {
           <FounderSection />
           <ImpactSection />
           <DuranteAnosHeadline />
-          <CTABlock />
           <FinalCTA />
+          <CTABlock />
           <Footer />
         </main>
       )}
@@ -1303,6 +1303,8 @@ function FinalCTA() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const headlineRef = useRef<HTMLHeadingElement | null>(null);
 
+  useScrollProgressReveal(headlineRef, ".reveal-word", { activeRatio: 0.6, deactivate: false });
+
   useEffect(() => {
     if (typeof window === "undefined") return;
     const section = sectionRef.current;
@@ -1332,7 +1334,7 @@ function FinalCTA() {
       const w = window.innerWidth;
       const isMobile = w <= 768;
       const isTablet = w > 768 && w <= 1024;
-      const startScale = isMobile ? 1.4 : isTablet ? 1.6 : 1.9;
+      const startScale = isMobile ? 2.2 : isTablet ? 2.6 : 3.2;
       const endScale = 1;
       const scale = (startScale - (startScale - endScale) * t).toFixed(3);
       headline.style.setProperty("--headline-scale", scale);
@@ -1378,8 +1380,13 @@ function FinalCTA() {
       <div className="final-cta-sticky">
         <div className="final-cta-inner relative max-w-[1100px] mx-auto text-center">
           <h2 ref={headlineRef} className="typo-display final-cta-headline">
-            Pronto para ser<br />
-            <span className="accent-text">visto de verdade?</span>
+            <span className="reveal-word">Pronto</span>{" "}
+            <span className="reveal-word">para</span>{" "}
+            <span className="reveal-word">ser</span>
+            <br />
+            <span className="reveal-word accent-text">visto</span>{" "}
+            <span className="reveal-word accent-text">de</span>{" "}
+            <span className="reveal-word accent-text">verdade?</span>
           </h2>
           <div className="final-cta-actions">
             <a href="#cta-block" className="btn-primary btn-primary--lg">
