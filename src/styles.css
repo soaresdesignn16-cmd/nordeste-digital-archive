@@ -1034,6 +1034,136 @@
   }
 }
 
+/* ─────────── Quem Somos (editorial) ─────────── */
+.quem-somos {
+  --qs-accent: #D4861A;
+  --qs-bg: #0a0a0a;
+  position: relative;
+  background-color: var(--qs-bg);
+  padding: 60px 24px;
+  overflow: hidden;
+}
+.quem-somos::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--qs-bg-image);
+  background-position: right center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0.25;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 100%);
+          mask-image: linear-gradient(to right, transparent 0%, #000 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+.quem-somos__content {
+  position: relative;
+  z-index: 1;
+  max-width: 640px;
+}
+
+/* eyebrow */
+.qs-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  color: var(--qs-accent);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 28px;
+}
+.qs-eyebrow::before {
+  content: "";
+  width: 28px;
+  height: 2px;
+  background: var(--qs-accent);
+}
+
+/* headline */
+.qs-headline {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(42px, 8vw, 56px);
+  line-height: 1.05;
+  color: #fff;
+  margin: 0;
+}
+.qs-headline .l1 { font-style: italic; font-weight: 800; display: block; }
+.qs-headline .l2,
+.qs-headline .l3 { font-style: normal; font-weight: 900; display: block; }
+.qs-headline .l4 { font-style: normal; font-weight: 900; color: var(--qs-accent); display: block; }
+.qs-divider {
+  height: 2px;
+  background: var(--qs-accent);
+  border: 0;
+  margin: 16px 0 24px;
+  width: 100%;
+}
+
+/* orange highlight */
+.qs-highlight {
+  display: inline-block;
+  background: var(--qs-accent);
+  color: var(--qs-bg);
+  border-radius: 4px;
+  padding: 10px 14px;
+  font-family: 'Poppins', sans-serif;
+  font-style: italic;
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+.qs-highlight--upper {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* body paragraphs */
+.qs-body {
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0 0 20px;
+}
+.qs-body--close { line-height: 1.7; margin-bottom: 0; }
+.qs-body em { font-style: italic; font-weight: 500; }
+.qs-body strong { font-weight: 700; }
+.qs-block-6 { margin-bottom: 8px; }
+
+/* outlined cards */
+.qs-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 8px 0 28px;
+}
+.qs-card {
+  border: 1.5px solid var(--qs-accent);
+  border-radius: 6px;
+  padding: 14px 18px;
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1.4;
+  background: transparent;
+}
+
+/* manifesto cards spacing */
+.quem-somos__manifesto-cards { margin-top: 80px; }
+
+@media (min-width: 768px) {
+  .quem-somos { padding: 96px 48px; }
+  .quem-somos__content { margin-inline: auto; }
+}
+
 /* ─────────── Founder Stage ─────────── */
 .founder-stage {
   position: relative;
