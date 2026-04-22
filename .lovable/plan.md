@@ -1,61 +1,43 @@
 
 
-## Remover marquees + foto maior + efeito reveal de palavras em todo o site
+## Otimizar foto da seção "Muito Prazer" para telas pequenas
 
-### 1. Remover o efeito marquee (faixas correndo)
+Hoje em telas pequenas a foto fica com `aspect-ratio: 4/5` + `object-fit: cover` + `object-position: center top`, o que **corta as laterais** (mãos/ombros) para encaixar na proporção retrato. No mobile real (≤543px) o stage também fica capado em `420px` desnecessariamente, deixando margem lateral grande e a foto pequena no meio do espaço.
 
-Na seção "Muito Prazer" (`FounderSection` em `src/routes/index.tsx`, linhas 946-983):
+### Ajustes em `src/styles.css` (bloco `.founder-stage*`, linhas 874–900)
 
-- Remover os dois `<div className="marquee marquee--back">` e `<div className="marquee marquee--front">` (faixas de texto correndo na frente e atrás).
-- Manter apenas o wrapper `.founder-stage` com a `<img>` da foto do fundador.
-- A foto passa a ocupar **todo o espaço** do `.founder-stage` (atualmente limitada a `max-width: 380px`).
+**1. Stage — usar todo o espaço disponível no mobile**
 
-**CSS (`src/styles.css`, linhas 874-956):**
+- Remover o cap `max-width: 420px` em ≤640px → passar a usar `100%` da coluna (já há `padding` lateral da seção que dá respiro natural).
+- Manter `max-width: 560px` apenas em desktop (centralizado).
+- Adicionar `padding-inline: 0` para garantir que ocupe a largura total da coluna.
 
-- Apagar todas as classes `.marquee`, `.marquee--back`, `.marquee--front`, `.marquee__track`, e os `@keyframes marquee-rtl` / `marquee-ltr`.
-- Atualizar `.founder-stage__photo`:
-  - `max-width: 100%` (em vez de 380px) — ocupa o stage inteiro.
-  - `aspect-ratio: 4 / 5` mantido para proporção retrato.
-  - Mantém `border-radius: 12px`, `box-shadow`, `object-fit: cover`.
-- `.founder-stage`: remover altura fixa (`height: 560px`); deixar a altura ser ditada pela foto via `aspect-ratio`. `max-width: 560px` para enquadramento elegante centralizado.
-- Mobile: `.founder-stage { max-width: 420px }`.
+**2. Foto — preservar detalhes (mãos, enquadramento) no mobile**
 
-### 2. Aplicar o efeito "Scroll Reveal" (palavra-por-palavra) em **todos os textos corridos** do site
+- Trocar `object-fit: cover` por `object-fit: contain` **apenas em mobile (≤640px)** — a imagem inteira aparece, sem corte; fundo preto da seção complementa naturalmente as laterais.
+- Em desktop manter `cover` com `object-position: center top` (enquadramento mais editorial, já funciona bem).
+- Ajustar `aspect-ratio` no mobile para `3 / 4` (em vez de `4 / 5`) — proporção um pouco mais larga, melhor uso do espaço horizontal disponível em telas estreitas e evita altura excessiva.
+- Adicionar `background-color: #000` na imagem para que, com `contain`, qualquer faixa lateral case com o fundo preto da seção (sem visível "letterbox").
+- Reduzir intensidade da `box-shadow` no mobile (`0 18px 48px rgba(0,0,0,0.45)`) — sombra grande demais em tela pequena fica artificial.
+- Manter `border-radius: 12px` (em mobile, considerar `14px` para acompanhar a leve mudança de proporção).
 
-Atualmente o efeito está só no parágrafo da seção "Muito Prazer" (via componente `RevealWords`). Vou estender para todos os parágrafos longos / subjacentes (descrições) das demais seções, usando o mesmo componente já existente — sem mudar cor nem paleta (cinza ghost → branco primário, igual ao atual).
+**3. Espaçamento vertical no mobile**
 
-**Locais que recebem `<RevealWords>`** (substituem `<p className="typo-body">`):
+- Reduzir `margin-top` do stage de `64px` para `40px` em ≤640px — encurta a distância entre o parágrafo e a foto, mantém o ritmo da leitura.
+- Garantir `margin-inline: auto` para alinhamento central perfeito.
 
-- **Hero (mobile + desktop)** — linhas 704-708 e 744-748: parágrafo "Empresário e profissionais nordestinos…".
-- **VSL Section** — linha 489: parágrafo "…" (descrição abaixo do título).
-- **Manifesto** — linhas 821-825 e 826-831: dois parágrafos "Nascemos com um propósito…" e "Hoje, à frente do movimento…".
-- **Audience** — linha 891-894: "Você se encaixa em um desses perfis…".
-- **Audience cards** — linha 905 (`<p>{p.desc}</p>`): descrição de cada perfil → trocar por `<RevealWords>`.
-- **Manifesto cards** — linha 855 (`<p>{c.desc}</p>`): descrição de cada card.
-- **Impact (Ganhos)** — linhas 1037-1038: `ganho-titulo` e `ganho-desc` de cada bloco. *Observação: já tem `scroll-fade` no container — o `RevealWords` aplica nos textos por dentro, mantendo ambos os efeitos compatíveis.*
-- **Final CTA** — linha 1109: "Entre para o movimento exclusivo…".
+### Resultado esperado
 
-**Não recebem o efeito** (mantêm-se como estão):
-- Headlines (`typo-headline`, `typo-display`, `pre-display`) — são títulos com animação própria (`hero-anim`, `Reveal`).
-- Eyebrows e labels (`eyebrow`, `typo-label`) — rótulos curtos.
-- Quotes (`quote-block`, `quote-author`) — já têm tratamento próprio.
-- Botões e números (`Stat`, `ganho-numero`).
-- Footer.
+- **Desktop (>640px):** sem mudanças visuais — foto editorial recortada de cima, max 560px centralizada.
+- **Mobile (≤640px):** foto **inteira visível** (sem corte de mãos/ombros), ocupando toda a largura útil da coluna, com proporção 3:4 mais natural para retratos completos em tela estreita, alinhada ao centro, com sombra mais sutil e respiro vertical otimizado.
 
-### 3. Ajuste técnico no componente `RevealWords`
+### Sem mudanças
 
-O componente atualmente renderiza sempre como `<p>`. Para suportar substituir parágrafos com classes específicas (ex.: `ganho-titulo`, `ganho-desc`) sem quebrar estilos, mantém-se renderizando como `<p>` e apenas se passa a `className` original. Isso já funciona — sem mudanças necessárias no componente.
-
-### 4. Comportamento e paleta (sem alteração de cores)
-
-- Estado inicial: `var(--text-ghost)` opacity `0.25` (já definido).
-- Estado ativo conforme scroll passa pela linha (75% da viewport): `var(--text-primary)` opacity `1`.
-- `<strong>` e `.accent-text` internos preservam o destaque laranja existente (o `splitNodeIntoWords` já preserva nós filhos React).
-- Performance: hook `useScrollProgressReveal` já existe, throttled via `requestAnimationFrame` + `IntersectionObserver` — nenhum custo extra.
-- `prefers-reduced-motion`: já tratado (palavras viram totalmente visíveis sem transição).
+- JSX em `src/routes/index.tsx` — nenhuma alteração necessária.
+- Paleta, tipografia, animações de reveal, o botão CTA logo abaixo — preservados.
+- Imagem-fonte (`founderPortrait`) — a mesma; muda só o enquadramento responsivo.
 
 ### Arquivos editados
 
-- `src/routes/index.tsx` — remover JSX dos 2 marquees na `FounderSection`; trocar `<p className="typo-body">` (e `<p>` de cards/ganhos) por `<RevealWords className="…">` nas seções listadas.
-- `src/styles.css` — remover blocos `.marquee*` + keyframes `marquee-ltr`/`marquee-rtl`; ajustar `.founder-stage` (sem altura fixa, max-width 560px) e `.founder-stage__photo` (max-width 100%).
+- `src/styles.css` — bloco `.founder-stage` / `.founder-stage__photo` + media query `(max-width: 640px)`.
 
