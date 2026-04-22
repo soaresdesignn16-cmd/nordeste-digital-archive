@@ -961,26 +961,30 @@ function AudienceSection() {
       if (Math.abs(progress - lastProgress) < 0.003) return;
       lastProgress = progress;
 
+      // Smoothstep: easing suave (ease-in-out) em cada transição entre cards,
+      // mata os "cortes" lineares que pareciam jumps duros.
       const seg = (start: number, end: number) => {
-        const v = (progress - start) / (end - start);
-        return v <= 0 ? 0 : v >= 1 ? 1 : v;
+        const t = (progress - start) / (end - start);
+        if (t <= 0) return 0;
+        if (t >= 1) return 1;
+        return t * t * (3 - 2 * t);
       };
 
       let fanRaw = progress * INV_FAN_END;
       if (fanRaw > 1) fanRaw = 1;
-      // No mobile mantém ease-out, mas sem Math.pow (mais barato).
-      const fanProgress = isMobile
-        ? 1 - (1 - fanRaw) * (1 - fanRaw) * (1 - fanRaw) * 0.7 - (1 - fanRaw) * (1 - fanRaw) * 0.3
-        : fanRaw;
+      // Ease-out cubic em todos os devices: o leque desacelera no final
+      // (movimento natural, sem "estalar" ao chegar aberto).
+      const inv = 1 - fanRaw;
+      const fanProgress = 1 - inv * inv * inv;
 
       setVar("--fan", fanProgress);
-      setVar("--focus", seg(0.25, 0.34));
-      setVar("--slide", seg(0.34, 0.43));
-      setVar("--focus-3", seg(0.43, 0.52));
-      setVar("--slide-3", seg(0.52, 0.61));
-      setVar("--focus-2", seg(0.61, 0.7));
-      setVar("--slide-2", seg(0.7, 0.79));
-      setVar("--focus-1", seg(0.79, 0.88));
+      setVar("--focus", seg(0.25, 0.36));
+      setVar("--slide", seg(0.34, 0.45));
+      setVar("--focus-3", seg(0.43, 0.54));
+      setVar("--slide-3", seg(0.52, 0.63));
+      setVar("--focus-2", seg(0.61, 0.72));
+      setVar("--slide-2", seg(0.7, 0.81));
+      setVar("--focus-1", seg(0.79, 0.9));
       setVar("--slide-1", seg(0.88, 1));
     };
 
