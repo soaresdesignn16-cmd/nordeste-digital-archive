@@ -673,19 +673,19 @@
 .fan-card--bg-1 {
   z-index: calc(1 + var(--focus-1) * 10 + var(--slide-1) * 20);
   transform:
-    translateX(calc(var(--slide-1) * -180% + (1 - var(--slide-1)) * var(--fan) * -8%))
+    translateX(calc(var(--slide-1) * 180% + (1 - var(--slide-1)) * var(--fan) * -8%))
     translateY(calc(12px - var(--fan) * 12px - var(--focus-1) * 12px))
     scale(calc(0.94 + var(--fan) * 0.06 + var(--focus-1) * 0.06))
-    rotate(calc((1 - var(--slide-1)) * (var(--fan) * -22deg + var(--fan) * var(--focus-1) * 22deg) + var(--slide-1) * -4deg));
+    rotate(calc((1 - var(--slide-1)) * (var(--fan) * -22deg + var(--fan) * var(--focus-1) * 22deg) + var(--slide-1) * 4deg));
   opacity: calc(1 - var(--slide-1) * 0.15);
 }
 .fan-card--bg-2 {
   z-index: calc(2 + var(--focus-2) * 10 + var(--slide-2) * 20);
   transform:
-    translateX(calc(var(--slide-2) * -180% + (1 - var(--slide-2)) * var(--fan) * -4%))
+    translateX(calc(var(--slide-2) * 180% + (1 - var(--slide-2)) * var(--fan) * -4%))
     translateY(calc(8px - var(--fan) * 8px - var(--focus-2) * 8px))
     scale(calc(0.96 + var(--fan) * 0.04 + var(--focus-2) * 0.06))
-    rotate(calc((1 - var(--slide-2)) * (var(--fan) * -14deg + var(--fan) * var(--focus-2) * 14deg) + var(--slide-2) * -4deg));
+    rotate(calc((1 - var(--slide-2)) * (var(--fan) * -14deg + var(--fan) * var(--focus-2) * 14deg) + var(--slide-2) * 4deg));
   opacity: calc(1 - var(--slide-2) * 0.15);
 }
 .fan-card--bg-3 {
