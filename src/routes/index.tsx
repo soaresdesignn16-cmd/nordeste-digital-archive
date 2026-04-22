@@ -1299,8 +1299,53 @@ function DuranteAnosHeadline() {
 
 /* ─────────── FINAL CTA ─────────── */
 function FinalCTA() {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const headlineRef = useRef<HTMLHeadingElement | null>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const section = sectionRef.current;
+    const headline = headlineRef.current;
+    if (!section || !headline) return;
+
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) return;
+
+    let rafId = 0;
+    let ticking = false;
+    const smoothstep = (t: number) => t * t * (3 - 2 * t);
+    const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
+
+    const update = () => {
+      ticking = false;
+      const rect = section.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const raw = (vh - rect.top) / (vh + rect.height);
+      const t = smoothstep(clamp(raw, 0, 1));
+      const scale = (1.15 - 0.55 * t).toFixed(3);
+      const opacity = (1 - 0.75 * t).toFixed(3);
+      headline.style.setProperty("--headline-scale", scale);
+      headline.style.setProperty("--headline-opacity", opacity);
+    };
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      rafId = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      cancelAnimationFrame(rafId);
+    };
+  }, []);
+
   return (
-    <section id="cta-final" className="section-cta px-6"
+    <section ref={sectionRef} id="cta-final" className="section-cta px-6"
       style={{ paddingTop: 150, paddingBottom: 150 }}>
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <span className="watermark-onn">ONN</span>
@@ -1319,7 +1364,7 @@ function FinalCTA() {
           </div>
         </Reveal>
         <Reveal delay={80}>
-          <h2 className="typo-display" style={{ marginTop: 22 }}>
+          <h2 ref={headlineRef} className="typo-display final-cta-headline" style={{ marginTop: 22 }}>
             Pronto para ser<br />
             <span className="accent-text">visto de verdade?</span>
           </h2>
