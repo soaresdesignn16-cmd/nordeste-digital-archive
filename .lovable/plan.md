@@ -1,49 +1,71 @@
 
 
-## Replace FounderSection CSS
+## Efeito Recede — Apenas na Headline "Pronto para ser visto de verdade?"
 
-Substituir integralmente o bloco CSS da `FounderSection` em `src/styles.css` (linhas ~1213–1439) pelo CSS fornecido pelo usuário. JSX/React fica intacto.
+Ajuste do plano anterior: o efeito de scroll-zoom (recede/profundidade) é aplicado **somente na frase grande** "Pronto para ser visto de verdade?" — o restante da seção `FinalCTA` continua **intacto** (eyebrow "A Hora É Agora", parágrafo, CTA principal, CTA secundário, quote final, watermark, SVG).
 
-### Escopo
+### Comportamento
 
-- **Arquivo**: `src/styles.css`
-- **Classes substituídas** (todas as regras existentes destas classes, incluindo as variantes em media queries):
-  - `.founder-bleed`
-  - `.founder-bleed__bg`
-  - `.founder-bleed__overlay`
-  - `.founder-bleed__content`
-  - `.founder-bleed__label`
-  - `.founder-bleed__dash`
-  - `.founder-bleed__line`, `.founder-bleed__line--white`, `.founder-bleed__line--gold`
-  - `.founder-bleed__sub`
-  - `.founder-cta`, `.founder-cta::before`, `.founder-cta__icon`, `.founder-cta__text`
-  - Hover rules dentro de `@media (hover: hover) and (pointer: fine)` referentes a `.founder-cta`
-  - Overrides dentro de `@media (min-width: 1024px)` e `@media (max-width: 640px)` referentes a `.founder-bleed*` / `.founder-cta`
+- A headline `Pronto para ser visto de verdade?` vira o elemento animado.
+- Começa em `scale: 1.15` com `opacity: 1` quando entra na viewport.
+- Conforme o scroll desce, encolhe até `scale: 0.6` e opacidade cai para `0.25` — sensação de "ir para o fundo".
+- Tudo ao redor (eyebrow acima, parágrafo abaixo, botões, quote) **não se move e não muda**.
 
-### Mudanças de comportamento que o novo CSS introduz
+```text
+scroll progress  0 ─────────────── 1
+headline scale   1.15 ─────────── 0.6
+headline opacity 1.0 ──────────── 0.25
+resto da seção   sem mudança
+```
 
-- Foto agora ocupa **55%** do topo (mobile), não mais 50%.
-- Overlay mobile reescrito (transparente até 40%, escurece progressivamente).
-- Padding bottom mobile = **56px**; conteúdo ancorado ao fundo via `margin-top: auto` em flex-column.
-- Botão CTA: largura **88% / max 520px**, altura **68px**, alinhamento `flex-start`, ícone 38×38, texto em coluna.
-- Shine sweep mais largo (55%) e mais brilhante (0.38 alpha), curva 115°, transição 0.45s.
-- Desktop: overlay duplo (gradient horizontal + vertical), `object-position: 65% top` (homem mais à direita), `max-width: 580px`, CTA `max-width: 460px`.
-- Texto sub: cor `#7a6e58`, font-size 10.5px, letter-spacing 0.13em.
-- Label: cor `#C8780A` (já estava), font-weight 400 (antes podia ser maior), gap 10px.
+### Mudanças no `FinalCTA` (`src/routes/index.tsx`, linhas 1300–1353)
+
+- Adicionar `useRef` no elemento `<h2>` da headline `Pronto para ser visto de verdade?` e `useRef` na `<section>`.
+- Adicionar `useEffect` com listener `scroll` passivo + `requestAnimationFrame` throttle.
+- Cálculo do progresso: `progress = clamp((vh - rect.top) / (vh + rect.height), 0, 1)` com easing smoothstep `t*t*(3-2t)`.
+- Aplicar via CSS variables no ref da headline:
+  - `--headline-scale: ${(1.15 - 0.55 * t).toFixed(3)}` (1.15 → 0.6)
+  - `--headline-opacity: ${(1 - 0.75 * t).toFixed(3)}` (1.0 → 0.25)
+- Cleanup do listener no unmount.
+- Respeitar `prefers-reduced-motion`: pula o listener, headline fica estática.
+- Adicionar `className="final-cta-headline"` no `<h2>` existente.
+
+**Nada mais é removido ou alterado** — eyebrow, parágrafo, watermark `ONN`, SVG dos círculos, botão primário, botão secundário "Conhecer o manifesto" e quote final permanecem como estão.
+
+### CSS novo em `src/styles.css`
+
+Adicionar bloco no final do arquivo (não substitui nada):
+
+```css
+.final-cta-headline {
+  display: inline-block;
+  transform: scale(var(--headline-scale, 1.15));
+  opacity: var(--headline-opacity, 1);
+  transform-origin: 50% 50%;
+  transition: transform 0.1s linear, opacity 0.1s linear;
+  will-change: transform, opacity;
+}
+@media (prefers-reduced-motion: reduce) {
+  .final-cta-headline {
+    transform: none;
+    opacity: 1;
+    transition: none;
+  }
+}
+```
+
+A seção `.section-cta` precisa de `overflow: hidden` para evitar scrollbar horizontal quando a headline estiver em `scale: 1.15` — adicionar essa propriedade caso ainda não exista.
 
 ### O que NÃO muda
 
-- JSX/estrutura de `FounderSection` em `src/routes/index.tsx`.
-- Nenhuma outra seção, classe, ou variável global em `src/styles.css`.
-- Tokens (`--border-subtle`, `--accent`) — o novo CSS continua usando `var(--border-subtle)`.
-
-### Implementação
-
-1. Localizar o bloco `/* ─────────── Founder Bleed ─────────── */` em `src/styles.css` e identificar o final exato do bloco (última regra `.founder-cta` em `@media (max-width: 640px)` ou similar, atualmente terminando ~linha 1439).
-2. Usar `code--line_replace` para substituir todo o intervalo pelo novo CSS exatamente como fornecido.
-3. Verificar com `code--view` que regras vizinhas (próxima seção CSS depois do bloco substituído) permanecem intactas.
+- Estrutura visual da seção (eyebrow, parágrafo, watermark, SVG, ambos os CTAs, quote).
+- `DuranteAnosHeadline` antes — intacto.
+- `Footer` depois — intacto.
+- Tokens (`--accent`, `--bg-surface`, `--font`).
+- Nenhum bloco CSS existente é removido.
 
 ### Arquivos editados
 
-- `src/styles.css` — substituir bloco da FounderSection (~226 linhas → ~200 linhas).
+- `src/routes/index.tsx` — adicionar `useRef` + `useEffect` em `FinalCTA`; aplicar `className="final-cta-headline"` no `<h2>` da frase "Pronto para ser visto de verdade?".
+- `src/styles.css` — adicionar bloco `.final-cta-headline` (~15 linhas) e garantir `overflow: hidden` em `.section-cta`.
 
