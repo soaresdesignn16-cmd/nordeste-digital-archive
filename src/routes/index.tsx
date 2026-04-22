@@ -753,10 +753,6 @@ function HeroIntro() {
                 Iniciar Avaliação
                 <Play size={13} fill="currentColor" />
               </a>
-              <a href="#manifesto" className="btn-ghost">
-                Ver o manifesto
-                <ArrowRight size={14} />
-              </a>
             </div>
             <div className="hero-anim hero-d-6" style={{ marginTop: 56 }}>
               <div style={{ borderTop: "1px solid var(--border-subtle)" }} />
