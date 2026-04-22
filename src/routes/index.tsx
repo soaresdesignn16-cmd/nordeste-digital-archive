@@ -1047,7 +1047,7 @@ function FounderSection() {
             empresários nordestinos a implementar uma{" "}
             <strong>Arquitetura de Posicionamento Digital</strong>{" "}
             de ponta a ponta — transformando autoridade em ticket maior, mais
-            tempo livre e respeito de mercado.
+            tempo e respeito de mercado.
           </RevealWords>
         </Reveal>
         <Reveal delay={280}>
