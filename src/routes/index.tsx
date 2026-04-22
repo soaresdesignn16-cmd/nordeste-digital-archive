@@ -862,23 +862,26 @@ function ManifestoSection() {
   );
 }
 
-/* ─────────── AUDIENCE (Polaroid pin scroll) ─────────── */
+/* ─────────── AUDIENCE (Fan-out cards pin scroll) ─────────── */
 function AudienceSection() {
   const profiles = [
-    { icon: <Store size={22} />, title: "Donos de negócios do mundo físico", desc: "Lojas, clínicas, escritórios, prestadores de serviço presencial. Você sente que está preso na operação e que o digital não traduz o tamanho real da sua empresa.", rotation: -3, offset: 0 },
-    { icon: <TrendingUp size={22} />, title: "Empresários em escala", desc: "Sua empresa já fatura bem, mas ainda faz 80% dos processos na mão. Está na hora de profissionalizar a percepção e escalar com margem — não com volume.", rotation: 4, offset: 140 },
-    { icon: <Scale size={22} />, title: "Profissionais liberais", desc: "Advogados, médicos, contadores, consultores. Você vende seu tempo e sabe que tem um teto. Posicionamento te ajuda a cobrar mais, atender melhor e parar de ser refém da própria agenda.", rotation: -2, offset: 0 },
-    { icon: <Briefcase size={22} />, title: "Especialistas e autoridades", desc: "Você já tem conhecimento, resultado e bagagem. Falta apenas a estrutura digital pra que o mercado pare de te tratar como mais um e comece a te tratar como referência.", rotation: 3, offset: 140 },
+    { icon: <Store size={22} />, title: "Donos de negócios do mundo físico", desc: "Lojas, clínicas, escritórios, prestadores de serviço presencial. Você sente que está preso na operação e que o digital não traduz o tamanho real da sua empresa." },
+    { icon: <TrendingUp size={22} />, title: "Empresários em escala", desc: "Sua empresa já fatura bem, mas ainda faz 80% dos processos na mão. Está na hora de profissionalizar a percepção e escalar com margem — não com volume." },
+    { icon: <Scale size={22} />, title: "Profissionais liberais", desc: "Advogados, médicos, contadores, consultores. Você vende seu tempo e sabe que tem um teto. Posicionamento te ajuda a cobrar mais, atender melhor e parar de ser refém da própria agenda." },
+    { icon: <Briefcase size={22} />, title: "Especialistas e autoridades", desc: "Você já tem conhecimento, resultado e bagagem. Falta apenas a estrutura digital pra que o mercado pare de te tratar como mais um e comece a te tratar como referência." },
   ];
 
+  const leadProfile = profiles[0];
+  const backProfiles = [profiles[1], profiles[2], profiles[3]];
+
   const wrapperRef = useRef<HTMLDivElement | null>(null);
-  const trackRef = useRef<HTMLDivElement | null>(null);
+  const stackRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     const wrapper = wrapperRef.current;
-    const track = trackRef.current;
-    if (!wrapper || !track) return;
+    const stack = stackRef.current;
+    if (!wrapper || !stack) return;
 
     const isMobile = () => window.matchMedia("(max-width: 768px)").matches;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -888,16 +891,18 @@ function AudienceSection() {
     const update = () => {
       ticking = false;
       if (isMobile()) {
-        track.style.transform = "";
+        stack.style.setProperty("--fan", "0");
+        stack.style.setProperty("--slide", "0");
         return;
       }
       const rect = wrapper.getBoundingClientRect();
       const total = wrapper.offsetHeight - window.innerHeight;
       if (total <= 0) return;
       const progress = Math.max(0, Math.min(1, -rect.top / total));
-      const maxX = track.scrollWidth - window.innerWidth;
-      if (maxX <= 0) return;
-      track.style.transform = `translate3d(${-progress * maxX}px, 0, 0)`;
+      const fanProgress = Math.min(1, progress / 0.55);
+      const slideProgress = Math.max(0, Math.min(1, (progress - 0.55) / 0.45));
+      stack.style.setProperty("--fan", fanProgress.toFixed(3));
+      stack.style.setProperty("--slide", slideProgress.toFixed(3));
     };
     const onScroll = () => {
       if (!ticking) {
@@ -943,21 +948,21 @@ function AudienceSection() {
           </div>
         </div>
 
-        <div className="polaroid-track" ref={trackRef}>
-          {profiles.map((p, i) => (
-            <div
-              key={i}
-              className="polaroid-card"
-              style={{
-                ["--rotation" as string]: `${p.rotation}deg`,
-                marginTop: p.offset,
-              }}
-            >
-              <div className="icon-box">{p.icon}</div>
-              <h3>{p.title}</h3>
-              <p>{p.desc}</p>
+        <div className="fan-stack-wrap">
+          <div className="fan-stack" ref={stackRef}>
+            {backProfiles.map((p, i) => (
+              <div key={`bg-${i}`} className={`fan-card fan-card--bg-${i + 1}`}>
+                <div className="icon-box">{p.icon}</div>
+                <h3>{p.title}</h3>
+                <p>{p.desc}</p>
+              </div>
+            ))}
+            <div className="fan-card fan-card--lead">
+              <div className="icon-box">{leadProfile.icon}</div>
+              <h3>{leadProfile.title}</h3>
+              <p>{leadProfile.desc}</p>
             </div>
-          ))}
+          </div>
         </div>
       </div>
     </section>
