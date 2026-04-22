@@ -1,39 +1,56 @@
 
 
-## Ajustar a sessão "Muito Prazer" para desktop/tablet + colocar logo real no botão
+## Remover o "fade out" da headline final + padronizar desktop/mobile
 
-Dois problemas na seção `FounderSection`:
+Dois problemas no `FinalCTA`:
 
-1. **Imagem cortada / quase invisível em ~1000px**: o breakpoint desktop só ativa em `min-width: 1024px`. No viewport atual (1002px) entra o layout mobile/tablet, que mostra a imagem só nos `55%` superiores com `object-position: center top` — corta a cabeça do fundador e quase não aparece nada (o overlay escuro consome o resto).
-2. **Botão "Quero Entrar" usa um "N" desenhado em SVG** em vez do `logo-onn.png` real (já importado no topo do arquivo, linha 17).
+1. **Texto "ofuscado"**: a headline usa `opacity: 1 → 0.15` durante o scroll (linha 1329 em `index.tsx`: `opacity = 1 - 0.85 * t`). Isso somado ao `radial-gradient` laranja do `.section-cta::before` faz a frase parecer apagada/ofuscada conforme rola.
+2. **Sticky não funciona**: a classe `.final-cta-sticky` é usada no JSX mas **não existe no CSS**. Sem `position: sticky`, a headline rola junto com a página em vez de "encolher fixa" no centro — desktop e mobile ficam fora do padrão.
 
 ### Mudanças
 
-**`src/styles.css`** — ajustar breakpoint e enquadramento:
+**`src/routes/index.tsx`** (função `FinalCTA`, linhas 1320–1332):
+- Remover a linha de opacidade (`const opacity = ...` e `setProperty("--headline-opacity", opacity)`).
+- Manter apenas o `scale` (1.9 → 0.4) — a headline encolhe sem desaparecer.
+- Headline fica com opacidade fixa em `1` o tempo todo.
 
-- **Baixar o breakpoint desktop de `1024px` para `900px`** (linha 1417: `@media (min-width: 1024px)` → `@media (min-width: 900px)`). Isso faz o layout full-bleed com gradient lateral começar antes, cobrindo viewports tablet/desktop pequenos como o do usuário (1002px).
-- **No bloco desktop (linha 1424–1428)**: ajustar `object-position` de `65% top` para `60% center` para mostrar o rosto/torso do fundador (não só o topo da cabeça). A imagem ocupa 100% da altura (já está `height: 100%`).
-- **No bloco mobile (linha 1467–1473)**: aumentar a área da foto de `height: 55%` para `height: 62%` e mudar `object-position` para `center 25%` — mostra mais do fundador antes do fade preto começar. Aplicar mesma altura no `__overlay` e ajustar o gradient para começar a escurecer só a partir de 50% (não 40%) para a imagem aparecer de verdade.
+**`src/styles.css`**:
+- **Adicionar regra `.final-cta-sticky`** (depois da linha 1574):
+  ```
+  .final-cta-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  ```
+- **`.final-cta-headline` (linhas 1560–1567)**: remover `opacity: var(--headline-opacity, 1)` (fica sempre 1). Manter `transform: scale(...)`, `transform-origin: 50% 50%`, transição suave.
+- **`.section-cta::before` (linhas 993–999)**: reduzir o gradient radial laranja de `rgba(224,140,50,0.12)` para `rgba(224,140,50,0.05)` e mudar a posição de `50% 0%` para `50% 50%` para parar de "lavar" o texto por cima e dar leve profundidade ao redor.
+- **Padding mobile**: adicionar dentro de `@media (max-width: 768px)` regra para `.final-cta-sticky { height: 100svh; }` (usa `svh` no mobile pra não ter glitch com a barra de endereço do Safari/Chrome).
+- **Headline mobile**: garantir que `.final-cta-headline` no mobile inicie em `scale(1.4)` em vez de `1.9` (telas pequenas não comportam 1.9x sem cortar). Usar media query `@media (max-width: 768px)` ajustando a curva via CSS variable default — ou mais simples, no `useEffect` detectar `window.innerWidth < 768` e usar `1.4 - 1.0 * t` em vez de `1.9 - 1.5 * t`.
 
-**`src/routes/index.tsx`** — substituir o SVG "N" pelo logo real (linhas 1122–1125):
+### Resultado esperado
 
-- Remover o `<svg className="founder-cta__icon">...</svg>` e substituir por `<img src={logoOnn} alt="" className="founder-cta__icon" />`.
-- Em `src/styles.css` no bloco `.founder-cta__icon` (linha 1374–1379): manter `width: 38px`, `height: 38px`, `margin-right: 14px`, `flex-shrink: 0`; adicionar `object-fit: contain` para garantir que o PNG não distorça.
+- Desktop: headline aparece grande (1.9x), centralizada, fixa por 1 viewport, encolhe suavemente para 0.4x sem nunca perder opacidade — texto sempre 100% legível, sem "fade ofuscante".
+- Mobile: headline aparece em 1.4x (cabe na tela), mesmo comportamento sticky, encolhe para 0.4x, sem cortar nas laterais.
+- Gradient laranja fica como halo sutil ambiente, não mais como camada que apaga o texto.
 
 ### O que NÃO muda
 
-- Texto do botão ("Quero Entrar / Para o Movimento") — preservado.
-- Cor laranja `#C8780A` do botão, hover, shine sweep — preservados.
-- Conteúdo do `FounderSection` (label "Quem Está Por Trás", headline "Muito Prazer / Os Novos / Nordestinos", subtítulo) — preservado.
-- Outras seções, ordem, e a lógica do scroll-zoom — intactas.
-- Asset `founder-armchair.jpg` continua o mesmo; só o enquadramento via `object-position` muda.
+- Texto "Pronto para ser / visto de verdade?" — preservado.
+- Toda a lógica de listeners robustos do `useEffect` (scroll, resize, load, ResizeObserver, visibilitychange) — preservada.
+- `CTABlock` (eyebrow + parágrafo + botões + quote) acima da `FinalCTA` — intacto.
+- `DuranteAnosHeadline`, `Footer`, demais seções — intactos.
+- Tokens de cor e tipografia — intactos.
 
 ### Arquivos editados
 
+- `src/routes/index.tsx` (linhas 1320–1332): remover lógica de opacidade; adicionar branch mobile na curva de scale.
 - `src/styles.css`:
-  - Linha 1417: `@media (min-width: 1024px)` → `@media (min-width: 900px)`.
-  - Linha 1427: `object-position: 65% top` → `object-position: 60% center`.
-  - Linhas 1467–1473 (bloco mobile): `height: 55%` → `height: 62%` em `__bg` e `__overlay`; `object-position: center top` → `center 25%`.
-  - Linha 1374–1379 (`.founder-cta__icon`): adicionar `object-fit: contain`.
-- `src/routes/index.tsx` (linhas 1122–1125): substituir o `<svg>` inline por `<img src={logoOnn} alt="" className="founder-cta__icon" />`.
+  - Linhas 993–999: suavizar gradient do `.section-cta::before`.
+  - Linhas 1560–1567: remover `opacity` variável da `.final-cta-headline`.
+  - Após linha 1574: adicionar `.final-cta-sticky` com `position: sticky; top: 0; height: 100vh; display: flex; align/justify center`.
+  - Adicionar media query mobile (`max-width: 768px`) ajustando `.final-cta-sticky { height: 100svh }`.
 
