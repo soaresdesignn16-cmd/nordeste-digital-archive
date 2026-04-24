@@ -1155,26 +1155,90 @@
 /* ─────────── CTA FINAL ─────────── */
 .section-cta {
   position: relative;
-  background: var(--bg);
-  /* overflow: clip preserva sticky (overflow: hidden quebra sticky em alguns ancestrais) */
-  overflow: clip;
+  background:
+    radial-gradient(ellipse 65% 55% at 50% 50%, rgba(212,134,26,0.09) 0%, transparent 68%),
+    radial-gradient(ellipse 30% 40% at 0% 100%, rgba(212,134,26,0.04), transparent 60%),
+    radial-gradient(ellipse 30% 40% at 100% 0%, rgba(212,134,26,0.04), transparent 60%),
+    var(--onn-black);
+  overflow: hidden;
   isolation: isolate;
-  /* headline estática — sem scroll runway */
-  min-height: 100dvh;
-  padding-top: 0;
-  padding-bottom: 0;
+  text-align: center;
+  padding: 80px 0;
 }
-.section-cta::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at 50% 50%, rgba(224,140,50,0.05) 0%, transparent 60%);
-  pointer-events: none;
-  z-index: 0;
+@media (min-width: 768px) {
+  .section-cta { padding: 120px 0; }
 }
+.section-cta::before { content: none; }
 .section-cta > * {
   position: relative;
   z-index: 1;
+}
+
+/* Eyebrow do CTA Final */
+.final-cta-eyebrow {
+  display: block;
+  font-family: var(--font);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--onn-dim);
+  margin-bottom: 28px;
+}
+
+/* Descrição do CTA Final */
+.final-cta-desc {
+  font-family: var(--font);
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.9;
+  color: var(--onn-muted);
+  max-width: 500px;
+  margin: 0 auto 52px;
+}
+
+/* Nota abaixo do botão */
+.final-cta-note {
+  margin-top: 24px;
+  font-family: var(--font);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--onn-dim);
+}
+
+/* Citação final */
+.final-cta-quote {
+  margin: 80px auto 0;
+  padding-top: 56px;
+  border-top: 1px solid var(--onn-border);
+  font-family: var(--font);
+  font-size: clamp(16px, 2.2vw, 22px);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.7;
+  color: var(--onn-muted);
+  max-width: 660px;
+}
+.final-cta-quote .accent-text {
+  color: var(--onn-orange);
+  font-style: normal;
+}
+
+/* CTA primário do FinalCTA: padding 22 64, sombra de hover ampliada */
+.section-cta .btn-primary {
+  padding: 22px 64px;
+  font-size: 13px;
+  letter-spacing: 0.18em;
+}
+.section-cta .btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 16px 48px rgba(212, 134, 26, 0.35),
+    0 0 0 1px rgba(212, 134, 26, 0.5);
+}
+@media (max-width: 767px) {
+  .section-cta { padding: 72px 20px; }
+  .section-cta .btn-primary { width: 100%; padding: 20px 24px; }
 }
 
 /* ─────────── LOADER ─────────── */
@@ -1792,7 +1856,18 @@
 .final-cta-headline {
   display: inline-block;
   position: relative;
+  font-family: var(--font);
+  font-weight: 800;
+  font-size: clamp(36px, 6.5vw, 72px);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--onn-white);
+  margin: 0 0 20px 0;
 }
+@media (max-width: 767px) {
+  .final-cta-headline { font-size: clamp(32px, 9vw, 48px); }
+}
+.final-cta-headline .accent-text { color: var(--onn-orange); }
 /* Variante estática: sem animação, sem scale, cores fixas */
 .final-cta-headline--static,
 .final-cta-headline--static * {

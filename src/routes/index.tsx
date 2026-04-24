@@ -1567,17 +1567,26 @@ function FinalCTA() {
     <section id="cta-final" className="section-cta px-6">
       <div className="final-cta-sticky">
         <div className="final-cta-inner relative max-w-[1100px] mx-auto text-center">
-          <h2 className="typo-display final-cta-headline final-cta-headline--static">
+          <span className="final-cta-eyebrow">A hora é agora</span>
+          <h2 className="final-cta-headline final-cta-headline--static">
             Pronto para ser
             <br />
             <span className="accent-text">visto de verdade?</span>
           </h2>
+          <p className="final-cta-desc">
+            Entre para o movimento exclusivo de empresários nordestinos que estão sendo vistos, valorizados e respeitados no nível que realmente são.
+          </p>
           <div className="final-cta-actions">
             <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="btn-primary btn-primary--lg">
               A Sua Chance
               <ArrowRight size={14} />
             </a>
           </div>
+          <p className="final-cta-note">Resposta em até 24 horas · Vagas limitadas por mês</p>
+
+          <p className="final-cta-quote">
+            "Agora é a nossa vez de ocupar o <span className="accent-text">lugar certo.</span>"
+          </p>
         </div>
       </div>
     </section>
