@@ -1444,24 +1444,28 @@ function DuranteAnosHeadline() {
       const section = sectionRef.current;
       const nextSection = section?.nextElementSibling;
       const sectionTop = getSectionTop();
+      const escapeOffset = Math.max(Math.round(viewportHeight * 0.05), 24);
 
       requestAnimationFrame(() => {
         if (direction > 0) {
           const nextTop = nextSection instanceof HTMLElement
             ? nextSection.getBoundingClientRect().top + getPageY()
             : sectionTop + viewportHeight;
-          window.scrollTo({ top: nextTop + 2, behavior: "auto" });
-          lastScrollY = nextTop + 2;
+          window.scrollTo({ top: nextTop + escapeOffset, behavior: "auto" });
+          lastScrollY = nextTop + escapeOffset;
         } else {
-          const prevTop = Math.max(sectionTop - 2, 0);
+          const prevTop = Math.max(sectionTop - escapeOffset, 0);
           window.scrollTo({ top: prevTop, behavior: "auto" });
           lastScrollY = prevTop;
         }
+        // Cooldown: evita re-travamento imediato após sair
+        unlockedUntilRef.current = performance.now() + 400;
       });
     };
 
     const shouldLock = (delta: number) => {
       if (lockedRef.current) return true;
+      if (performance.now() < unlockedUntilRef.current) return false;
       const section = sectionRef.current;
       if (!section || delta === 0) return false;
       const rect = section.getBoundingClientRect();
