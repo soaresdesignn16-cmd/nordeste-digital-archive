@@ -1427,6 +1427,7 @@ function DuranteAnosHeadline() {
       if (lockedRef.current) return;
       lockedRef.current = true;
       touchYRef.current = null;
+      targetProgressRef.current = progressRef.current;
       setLockedClass(true);
       const targetTop = getSectionTop();
       window.scrollTo({ top: targetTop, behavior: "auto" });
