@@ -1525,15 +1525,15 @@ function DuranteAnosHeadline() {
         const end = (i + 1) / N + (i < N - 1 ? overlap : 0);
         const local = (progress - start) / (end - start);
         const inEnd = isLast ? 0.34 : 0.4;
-        const outStart = isLast ? 0.9 : 0.6;
+        const outStart = isLast ? 1.01 : 0.6;
         let s = 1;
         let o = 0;
         if (local <= 0) {
           s = 1.6;
           o = 0;
         } else if (local >= 1) {
-          s = 0.5;
-          o = 0;
+          s = isLast ? 1 : 0.5;
+          o = isLast ? 1 : 0;
         } else if (local < inEnd) {
           const t = smoothstep(local / inEnd);
           s = 1.6 - 0.6 * t;
