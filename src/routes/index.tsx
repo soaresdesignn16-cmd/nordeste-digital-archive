@@ -632,31 +632,25 @@ function Nav() {
   }, []);
 
   return (
-    <nav
-      className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-      style={{
-        background: scrolled ? "rgba(10,10,10,0.96)" : "linear-gradient(to bottom, rgba(10,10,10,0.85), transparent)",
-        backdropFilter: scrolled ? "blur(20px)" : "none",
-        borderBottom: scrolled ? "1px solid var(--border-subtle)" : "1px solid transparent",
-      }}
-    >
-      <div className="max-w-[1400px] mx-auto flex items-center justify-between"
-        style={{ padding: scrolled ? "14px 24px" : "22px 24px", transition: "padding 0.3s ease" }}>
-        <a href="#hero-intro" className="flex items-center gap-2.5">
+    <nav className={`onn-nav ${scrolled ? "is-scrolled" : ""}`}>
+      <div className="onn-nav__inner">
+        <a href="#hero-intro" className="onn-nav__logo">
           <img src={logoOnn} alt="Os Novos Nordestinos" className="w-7 h-7 object-contain" />
-          <span style={{ fontFamily: "var(--font)", fontWeight: 800, fontSize: 14, letterSpacing: "0.18em", color: "var(--text-primary)" }}>
-            ONN
-          </span>
+          <span className="onn-nav__logo-text">ONN</span>
         </a>
 
         <div className="hidden md:flex items-center gap-8">
           <a href="#manifesto" className="typo-label" style={{ color: "var(--text-secondary)", letterSpacing: "0.1em" }}>Manifesto</a>
           <a href="#para-quem" className="typo-label" style={{ color: "var(--text-secondary)", letterSpacing: "0.1em" }}>Para Quem</a>
           <a href="#ganhos" className="typo-label" style={{ color: "var(--text-secondary)", letterSpacing: "0.1em" }}>Ganhos</a>
-          <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="btn-primary btn-primary--sm">Solicitar Avaliação</a>
+          <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="onn-nav__cta">Solicitar Avaliação</a>
         </div>
 
-        <button onClick={() => setMenuOpen(true)} className="md:hidden p-2" aria-label="Abrir menu" style={{ color: "var(--text-primary)", background: "transparent", border: "none" }}>
+        <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="onn-nav__cta onn-nav__cta--mobile md:hidden">
+          Solicitar Avaliação
+        </a>
+
+        <button onClick={() => setMenuOpen(true)} className="onn-nav__burger md:hidden" aria-label="Abrir menu">
           <Menu size={22} />
         </button>
       </div>

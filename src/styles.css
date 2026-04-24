@@ -1749,3 +1749,91 @@ html:not(.reveal-ready) .final-cta-headline .reveal-word.accent-text {
   pointer-events: none;
   z-index: 0;
 }
+
+/* ─────────── ONN NAVBAR ─────────── */
+.onn-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 100;
+  background: rgba(8, 8, 8, 0.80);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  backdrop-filter: blur(16px) saturate(180%);
+  border-bottom: 1px solid var(--onn-border);
+  transition: background 0.4s ease, border-color 0.4s ease;
+}
+.onn-nav.is-scrolled {
+  background: rgba(8, 8, 8, 0.95);
+}
+.onn-nav__inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+@media (min-width: 768px) {
+  .onn-nav__inner { padding: 18px 48px; }
+}
+.onn-nav__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--onn-orange);
+  font-weight: 700;
+}
+.onn-nav__logo-text {
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.18em;
+  color: var(--onn-orange);
+  text-transform: uppercase;
+}
+/* CTA da navbar — text link com underline laranja animado */
+.onn-nav__cta {
+  position: relative;
+  display: inline-block;
+  font-family: var(--font);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--onn-orange);
+  text-decoration: none;
+  padding: 4px 0;
+  transition: opacity 0.25s ease;
+}
+.onn-nav__cta::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--onn-orange);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.onn-nav__cta:hover { opacity: 0.65; }
+.onn-nav__cta:hover::after { transform: scaleX(1); }
+/* Esconder CTA mobile abaixo de 400px */
+@media (max-width: 399px) {
+  .onn-nav__cta--mobile { display: none !important; }
+}
+.onn-nav__burger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  padding: 8px;
+  color: var(--onn-white);
+  cursor: pointer;
+}
