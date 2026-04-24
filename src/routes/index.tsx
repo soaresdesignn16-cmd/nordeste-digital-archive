@@ -1389,6 +1389,7 @@ function DuranteAnosHeadline() {
     const applyProgress = (value: number) => {
       const progress = clamp01(value);
       progressRef.current = progress;
+      if (!lockedRef.current) targetProgressRef.current = progress;
 
       for (let i = 0; i < phases.length; i++) {
         const { enterStart, enterEnd, holdEnd, exitEnd } = phases[i];
