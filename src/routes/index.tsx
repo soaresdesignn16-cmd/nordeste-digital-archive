@@ -1320,6 +1320,9 @@ function ImpactSection() {
 function DuranteAnosHeadline() {
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
+  const progressRef = useRef(0);
+  const lockedRef = useRef(false);
+  const touchYRef = useRef<number | null>(null);
   const phraseRefs = [
     useRef<HTMLHeadingElement>(null),
     useRef<HTMLHeadingElement>(null),
@@ -1343,10 +1346,28 @@ function DuranteAnosHeadline() {
 
     let raf = 0;
     let viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+    let lastScrollY = window.scrollY || window.pageYOffset;
     const getPageY = () => window.scrollY || window.pageYOffset;
+    const clamp01 = (value: number) => Math.max(0, Math.min(1, value));
     const smoothstep = (t: number) => {
-      const c = Math.max(0, Math.min(1, t));
+      const c = clamp01(t);
       return c * c * (3 - 2 * c);
+    };
+    const phases = [
+      { enterStart: 0.0, enterEnd: 0.14, holdEnd: 0.30, exitEnd: 0.40 },
+      { enterStart: 0.34, enterEnd: 0.48, holdEnd: 0.64, exitEnd: 0.74 },
+      { enterStart: 0.68, enterEnd: 0.80, holdEnd: 0.94, exitEnd: 0.985 },
+    ];
+
+    const setLockedClass = (locked: boolean) => {
+      document.documentElement.classList.toggle("durante-anos-scroll-locked", locked);
+      document.body.classList.toggle("durante-anos-scroll-locked", locked);
+      sectionRef.current?.classList.toggle("is-scroll-locked", locked);
+    };
+
+    const getSectionTop = () => {
+      const section = sectionRef.current;
+      return section ? section.getBoundingClientRect().top + getPageY() : 0;
     };
 
     const syncMetrics = () => {
@@ -1358,28 +1379,14 @@ function DuranteAnosHeadline() {
       viewportHeight = Math.max(1, Math.round(visualHeight));
 
       const stageHeight = Math.max(viewportHeight, Math.round(stage.getBoundingClientRect().height || viewportHeight));
-      const track = Math.max(Math.round(viewportHeight * 2.4), stageHeight + Math.round(viewportHeight * 1.55));
-
       section.style.setProperty("--durante-anos-stage-height", `${stageHeight}px`);
-      section.style.setProperty("--durante-anos-pin-height", `${stageHeight + track}px`);
-      section.style.setProperty("--durante-anos-track", `${track}px`);
+      section.style.setProperty("--durante-anos-pin-height", `${stageHeight}px`);
+      section.style.setProperty("--durante-anos-lock-distance", `${Math.max(Math.round(viewportHeight * 1.75), 960)}px`);
     };
 
-    const update = () => {
-      raf = 0;
-      const el = sectionRef.current;
-      if (!el) return;
-
-      const sectionTop = el.getBoundingClientRect().top + getPageY();
-      const total = Math.max(1, el.offsetHeight - viewportHeight);
-      const scrolled = getPageY() - sectionTop;
-      const progress = Math.max(0, Math.min(1, scrolled / total));
-
-      const phases = [
-        { enterStart: 0.0, enterEnd: 0.14, holdEnd: 0.30, exitEnd: 0.40 },
-        { enterStart: 0.34, enterEnd: 0.48, holdEnd: 0.64, exitEnd: 0.74 },
-        { enterStart: 0.68, enterEnd: 0.80, holdEnd: 0.94, exitEnd: 0.985 },
-      ];
+    const applyProgress = (value: number) => {
+      const progress = clamp01(value);
+      progressRef.current = progress;
 
       for (let i = 0; i < phases.length; i++) {
         const { enterStart, enterEnd, holdEnd, exitEnd } = phases[i];
@@ -1413,23 +1420,167 @@ function DuranteAnosHeadline() {
       }
     };
 
-    const onScroll = () => {
+    const lockScroll = () => {
+      if (lockedRef.current) return;
+      lockedRef.current = true;
+      touchYRef.current = null;
+      setLockedClass(true);
+      const targetTop = getSectionTop();
+      window.scrollTo({ top: targetTop, behavior: "auto" });
+      lastScrollY = targetTop;
+    };
+
+    const unlockScroll = (direction: 1 | -1) => {
+      if (!lockedRef.current) return;
+      lockedRef.current = false;
+      touchYRef.current = null;
+      setLockedClass(false);
+
+      const section = sectionRef.current;
+      const nextSection = section?.nextElementSibling;
+      const sectionTop = getSectionTop();
+
+      requestAnimationFrame(() => {
+        if (direction > 0) {
+          const nextTop = nextSection instanceof HTMLElement
+            ? nextSection.getBoundingClientRect().top + getPageY()
+            : sectionTop + viewportHeight;
+          window.scrollTo({ top: nextTop + 2, behavior: "auto" });
+          lastScrollY = nextTop + 2;
+        } else {
+          const prevTop = Math.max(sectionTop - 2, 0);
+          window.scrollTo({ top: prevTop, behavior: "auto" });
+          lastScrollY = prevTop;
+        }
+      });
+    };
+
+    const shouldLock = (delta: number) => {
+      if (lockedRef.current) return true;
+      const section = sectionRef.current;
+      if (!section || delta === 0) return false;
+      const rect = section.getBoundingClientRect();
+
+      if (delta > 0) {
+        return rect.top <= viewportHeight * 0.12 && rect.bottom >= viewportHeight * 0.88;
+      }
+
+      return rect.top <= viewportHeight * 0.12 && rect.bottom >= viewportHeight * 0.42;
+    };
+
+    const driveProgress = (delta: number) => {
+      if (!lockedRef.current) return;
+      const distance = Math.max(viewportHeight * 1.75, 960);
+      const next = clamp01(progressRef.current + delta / distance);
+
+      applyProgress(next);
+
+      if (next >= 0.999 && delta > 0) {
+        applyProgress(1);
+        unlockScroll(1);
+      } else if (next <= 0.001 && delta < 0) {
+        applyProgress(0);
+        unlockScroll(-1);
+      }
+    };
+
+    const update = () => {
+      raf = 0;
+
+      if (lockedRef.current) {
+        const targetTop = getSectionTop();
+        if (Math.abs(getPageY() - targetTop) > 1) {
+          window.scrollTo({ top: targetTop, behavior: "auto" });
+          lastScrollY = targetTop;
+        }
+        return;
+      }
+
+      const currentScrollY = getPageY();
+      const delta = currentScrollY - lastScrollY;
+      lastScrollY = currentScrollY;
+
+      if (shouldLock(delta)) {
+        lockScroll();
+      }
+    };
+
+    const requestUpdate = () => {
       if (!raf) raf = requestAnimationFrame(update);
+    };
+
+    const onWheel = (event: WheelEvent) => {
+      if (!shouldLock(event.deltaY)) return;
+      event.preventDefault();
+      if (!lockedRef.current) lockScroll();
+      driveProgress(event.deltaY);
+    };
+
+    const onTouchStart = (event: TouchEvent) => {
+      touchYRef.current = event.touches[0]?.clientY ?? null;
+    };
+
+    const onTouchMove = (event: TouchEvent) => {
+      const currentY = event.touches[0]?.clientY;
+      if (currentY == null) return;
+
+      const previousY = touchYRef.current;
+      touchYRef.current = currentY;
+      if (previousY == null) return;
+
+      const delta = previousY - currentY;
+      if (!shouldLock(delta)) return;
+
+      event.preventDefault();
+      if (!lockedRef.current) lockScroll();
+      driveProgress(delta);
+    };
+
+    const onTouchEnd = () => {
+      touchYRef.current = null;
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      const deltas: Record<string, number> = {
+        ArrowDown: 120,
+        PageDown: 240,
+        " ": 240,
+        ArrowUp: -120,
+        PageUp: -240,
+      };
+      const delta = deltas[event.key];
+      if (!delta || !shouldLock(delta)) return;
+
+      event.preventDefault();
+      if (!lockedRef.current) lockScroll();
+      driveProgress(delta);
     };
 
     const onResize = () => {
       syncMetrics();
-      onScroll();
+      requestUpdate();
     };
 
     syncMetrics();
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true });
+    applyProgress(progressRef.current);
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("wheel", onWheel, { passive: false });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: false });
+    window.addEventListener("touchend", onTouchEnd, { passive: true });
+    window.addEventListener("keydown", onKeyDown);
     window.addEventListener("resize", onResize, { passive: true });
     window.addEventListener("orientationchange", onResize, { passive: true });
     window.visualViewport?.addEventListener("resize", onResize, { passive: true });
+
     return () => {
-      window.removeEventListener("scroll", onScroll);
+      setLockedClass(false);
+      window.removeEventListener("scroll", requestUpdate);
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("resize", onResize);
       window.removeEventListener("orientationchange", onResize);
       window.visualViewport?.removeEventListener("resize", onResize);
