@@ -1,57 +1,86 @@
 
 
-## Problema
+# Ajustes — Hero, Audience desktop, Durante Anos e Final CTA
 
-Na seção **"Para Quem É"**, no mobile, só aparece **1 card** ("Donos de negócios do mundo físico") e parece que ao deslizar (swipe lateral) nada acontece. Os outros 3 perfis (Empresários em escala, Profissionais liberais, Especialistas e autoridades) ficam invisíveis.
+## 1. Hero (foto do fundador colada no topo no mobile)
 
-### Por que acontece
+**Problema:** Há uma faixa preta visível acima da foto antes do conteúdo (entre a status bar do celular e o início da foto), porque o `<section className="hero">` herda o `padding-top: 90px` global do mobile.
 
-A seção foi construída como um **stack animado por scroll vertical**: os 4 cards estão sobrepostos (`position: absolute; inset: 0`) e a animação só dispara conforme o usuário **rola a página verticalmente** dentro de uma área "pinada" de 280vh de altura. Isso causa dois problemas no mobile:
+**Solução em `src/styles.css`:**
+- No `@media (max-width: 767px)` global, **excluir** `.hero` (e `#hero-intro > section`) do padding-top de 90px, já mantendo `.hero { padding-top: 0 }` que existe na linha 573–575.
+- Garantir `margin-top: 0` no container interno mobile do hero (`#hero-intro` e `.hero` no mobile recebem `padding-top: 0 !important`).
+- Aumentar a altura da foto mobile de `70vh` para `100svh` (com fade pro preto começando em ~60%) — assim a foto preenche a tela inteira até o topo, sem espaço escuro sobrando, exatamente como no screenshot enviado.
 
-1. **Expectativa quebrada**: o usuário tenta deslizar para o lado (gesto natural mobile para "ver mais cards") e nada acontece — o efeito só responde ao scroll vertical.
-2. **Sensação de travamento**: a área pinada de 280vh segura a tela e a animação fan-out é sutil em telas pequenas, dando impressão de bug.
+**Solução em `src/routes/index.tsx` (HeroIntro mobile):**
+- Trocar `style={{ height: "70vh" }}` por `style={{ height: "100svh" }}` no wrapper da imagem.
+- Ajustar o gradiente bottom para começar mais embaixo (height 35% em vez de 45%), para o rosto não ficar coberto.
 
-## Solução
+---
 
-**Substituir o comportamento no mobile (≤ 767px) por um carrossel horizontal nativo com snap-scroll**, mantendo os 4 cards visíveis e deslizáveis. No desktop/tablet, **manter a animação fan-out** que já funciona bem.
+## 2. Audience desktop ("Esse movimento é pra você") — scroll travando
 
-### Mudanças
+**Problema:** No desktop, a seção tem `height: 300vh` com pin, e a animação fan-out exige rolar 3 viewports só pra ver os 4 cards. O usuário sente como se a página "travasse".
 
-**1. `src/routes/index.tsx` — `AudienceSection`**
-- Detectar mobile (`max-width: 767px`) e renderizar em paralelo:
-  - **Desktop/tablet**: estrutura atual (`.fan-stack` com cards absolutos + scroll pin).
-  - **Mobile**: novo container `.audience-carousel` com os **4 cards** lado a lado, usando scroll horizontal nativo + `scroll-snap`.
-- No mobile, **desativar o pin** (`audience-pin` vira altura automática) e o `useEffect` do scroll-driven animation faz early-return.
+**Solução em `src/styles.css` (linhas 747–784):**
+- Reduzir `.audience-pin { height: 300vh }` → **`height: 200vh`** (1 viewport extra é suficiente para mostrar o leque + o destaque dos 4 cards).
+- Manter o `audience-pin__sticky` em 100vh.
 
-**2. `src/styles.css` — bloco `@media (max-width: 767px)` da audience**
-- `.audience-pin { height: auto; }` e `.audience-pin__sticky { position: static; height: auto; overflow: visible; }`
-- Esconder `.fan-stack-wrap` no mobile.
-- Novo `.audience-carousel`:
-  - `display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory;`
-  - `scroll-padding: 24px; padding: 8px 24px 32px;`
-  - `-webkit-overflow-scrolling: touch;`
-  - Esconder scrollbar (`::-webkit-scrollbar { display: none }`).
-- `.audience-carousel__card`:
-  - `flex: 0 0 82%; max-width: 320px; scroll-snap-align: center;`
-  - Mesmo visual do `.fan-card` (borda laranja, padding, ícone, tipografia) para manter consistência visual com o screenshot.
-- **Indicador de swipe**: pequena linha de texto abaixo do carrossel ("← deslize para ver mais →") com `font-size: 11px; color: var(--onn-dim); letter-spacing: 0.18em; text-align: center;`. Some após o usuário rolar.
+**Solução em `src/routes/index.tsx` (useEffect do AudienceSection, linhas 1252–1260):**
+- Comprimir o timeline dos `seg(...)` para acabar perto de `progress = 1` mais rápido, mantendo as transições suaves:
+  - `--focus`: `seg(0.18, 0.30)`
+  - `--slide`: `seg(0.28, 0.40)`
+  - `--focus-3`: `seg(0.38, 0.50)`
+  - `--slide-3`: `seg(0.48, 0.60)`
+  - `--focus-2`: `seg(0.58, 0.70)`
+  - `--slide-2`: `seg(0.68, 0.80)`
+  - `--focus-1`: `seg(0.78, 0.90)`
+  - `--slide-1`: `seg(0.88, 1)`
+- `FAN_END` desktop continua `0.25` (leque abre cedo, depois cards individuais fluem rápido).
 
-**3. Ajuste no `useEffect`**
-- Logo no início, adicionar:
-  ```ts
-  const isMobileCarousel = window.matchMedia("(max-width: 767px)").matches;
-  if (isMobileCarousel) return;
-  ```
-- Assim, no mobile o JS de scroll-pin nem roda — performance melhor e zero conflito com o carrossel.
+Resultado: o pin some 33% mais rápido, sem perder a animação.
 
-### Resultado esperado
+---
 
-- **Mobile**: usuário vê o primeiro card e desliza horizontalmente para ver os outros 3 — gesto natural, com snap em cada card.
-- **Tablet/Desktop**: comportamento atual (fan-out animado por scroll) intacto.
-- Nenhum texto, ícone ou cor é alterado.
+## 3. "Durante anos tentaram…" — terceira frase passa direto
 
-### Arquivos editados
+**Problema:** O componente `DuranteAnosHeadline` divide o scroll em 3 segmentos (cada um = 33% do progresso), e a frase 3 (`Agora é a nossa vez`) tem o pico em `local = 0.5` do segmento, mas o segmento 3 termina exatamente quando o pin acaba — então no momento em que ela atinge `opacity: 1` o sticky já está soltando, e ela some imediatamente.
 
-- `src/routes/index.tsx` (componente `AudienceSection`)
-- `src/styles.css` (bloco mobile da audience + novas classes do carrossel)
+**Solução em `src/routes/index.tsx` (linhas 1518–1549):**
+- Aumentar o tempo de leitura da frase final adicionando uma **fase de "hold"** no último segmento:
+  - Para `i === N - 1` (última frase), expandir o platô central de `0.4–0.6` para `0.35–0.85` (frase fica visível por 50% do segmento, em vez de 20%).
+  - A saída (`local > 0.85`) usa o restante 0.15 do segmento.
+
+**Solução em `src/styles.css` (linhas 1823–1875):**
+- Aumentar `.durante-anos-pin { height: 280vh }` → **`height: 320vh`** desktop e `220vh` → `260vh` mobile, dando margem extra de scroll para a frase final ficar fixa antes de soltar.
+
+Resultado: a frase "Agora é a nossa vez" fica congelada no centro da tela por ~1 viewport antes de o pin liberar.
+
+---
+
+## 4. Final CTA — espaço vazio no desktop
+
+**Problema:** `.final-cta-sticky { height: 100dvh }` força a seção a ocupar a viewport inteira, e como o conteúdo (eyebrow + headline + descrição + botão + nota + citação) ocupa só ~70% da altura no desktop, sobra muito preto. Além disso `.final-cta-actions { margin-top: clamp(120px, 18vh, 220px) }` empurra o botão pra muito longe da headline.
+
+**Solução em `src/styles.css`:**
+- `.final-cta-sticky`:
+  - Desktop (≥ 768px): trocar `height: 100dvh` por `min-height: auto; height: auto;` — o sticky deixa de ser sticky de viewport cheia e vira fluxo normal.
+  - Mobile mantém o comportamento atual.
+- `.section-cta` (linhas 1211–1224):
+  - Desktop: trocar `padding: 120px 0` por **`padding: 96px 0`**.
+- `.final-cta-actions` (linha 1941–1948):
+  - Reduzir `margin-top: clamp(120px, 18vh, 220px)` → **`margin-top: clamp(40px, 6vh, 80px)`**.
+  - Mobile (linha 1958–1960): `margin-top: clamp(32px, 5vh, 56px)`.
+- `.final-cta-quote` (linha 1265–1276):
+  - Reduzir `margin: 80px auto 0; padding-top: 56px;` → **`margin: 56px auto 0; padding-top: 40px;`**.
+
+Resultado: a seção fica proporcional ao conteúdo, sem 30% de preto vazio embaixo do botão.
+
+---
+
+## Arquivos editados
+
+- `src/routes/index.tsx` — hero mobile (height 100svh), useEffect AudienceSection (timeline comprimido), useEffect DuranteAnosHeadline (hold da última frase).
+- `src/styles.css` — `.hero` mobile padding override, `.audience-pin` height, `.durante-anos-pin` height, `.section-cta` / `.final-cta-sticky` / `.final-cta-actions` / `.final-cta-quote` espaçamentos desktop.
+
+Nenhum texto, imagem, cor ou logomarca é alterado.
 
