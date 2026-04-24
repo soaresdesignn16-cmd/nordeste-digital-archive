@@ -1174,6 +1174,10 @@ function AudienceSection() {
     const stack = stackRef.current;
     if (!wrapper || !stack) return;
 
+    // Mobile usa carrossel horizontal nativo — não precisa do scroll-pin/fan-out.
+    const isMobileCarousel = window.matchMedia("(max-width: 767px)").matches;
+    if (isMobileCarousel) return;
+
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     // Detecta dispositivo fraco (GPU/CPU/RAM limitada): celulares antigos.
     // Critérios: pouca RAM (<= 2GB) OU poucos núcleos (<= 4) em conexão lenta,
