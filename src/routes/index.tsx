@@ -1358,36 +1358,36 @@ function DuranteAnosHeadline() {
       const scrolled = getPageY() - sectionTop;
       const progress = Math.max(0, Math.min(1, scrolled / total));
 
-      const N = 3;
-      const tail = 0.15; // últimos 15% do progresso: pin segura, frase já saiu
-      const usable = 1 - tail;
-      const overlap = 0.04;
-      for (let i = 0; i < N; i++) {
-        const start = (i / N) * usable - (i > 0 ? overlap : 0);
-        const end = ((i + 1) / N) * usable + (i < N - 1 ? overlap : 0);
-        const local = (progress - start) / (end - start);
-        const inEnd = 0.3;
-        const outStart = 0.7;
+      const phases = [
+        { enterStart: 0.02, enterEnd: 0.14, holdEnd: 0.26, exitEnd: 0.36 },
+        { enterStart: 0.32, enterEnd: 0.44, holdEnd: 0.58, exitEnd: 0.70 },
+        { enterStart: 0.64, enterEnd: 0.76, holdEnd: 0.88, exitEnd: 0.94 },
+      ];
+
+      for (let i = 0; i < phases.length; i++) {
+        const { enterStart, enterEnd, holdEnd, exitEnd } = phases[i];
         let s = 1;
         let o = 0;
-        if (local <= 0) {
+
+        if (progress <= enterStart) {
           s = 1.6;
           o = 0;
-        } else if (local >= 1) {
-          s = 0.5;
-          o = 0;
-        } else if (local < inEnd) {
-          const t = smoothstep(local / inEnd);
+        } else if (progress < enterEnd) {
+          const t = smoothstep((progress - enterStart) / (enterEnd - enterStart));
           s = 1.6 - 0.6 * t;
           o = t;
-        } else if (local < outStart) {
+        } else if (progress < holdEnd) {
           s = 1;
           o = 1;
-        } else {
-          const t = smoothstep((local - outStart) / (1 - outStart));
+        } else if (progress < exitEnd) {
+          const t = smoothstep((progress - holdEnd) / (exitEnd - holdEnd));
           s = 1 - 0.5 * t;
           o = 1 - t;
+        } else {
+          s = 0.5;
+          o = 0;
         }
+
         const node = phraseRefs[i].current;
         if (node) {
           node.style.setProperty("--s", s.toFixed(4));
