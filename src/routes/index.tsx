@@ -1500,6 +1500,8 @@ function DuranteAnosHeadline() {
     }
 
     let raf = 0;
+    let viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+    const getPageY = () => window.scrollY || window.pageYOffset;
     const smoothstep = (t: number) => {
       const c = Math.max(0, Math.min(1, t));
       return c * c * (3 - 2 * c);
@@ -1509,11 +1511,11 @@ function DuranteAnosHeadline() {
       raf = 0;
       const el = sectionRef.current;
       if (!el) return;
-      const rect = el.getBoundingClientRect();
-      const vh = window.innerHeight;
-      const total = el.offsetHeight - vh;
-      const scrolled = -rect.top;
-      const progress = Math.max(0, Math.min(1, scrolled / Math.max(1, total)));
+
+      const sectionTop = el.getBoundingClientRect().top + getPageY();
+      const total = Math.max(1, el.offsetHeight - viewportHeight);
+      const scrolled = getPageY() - sectionTop;
+      const progress = Math.max(0, Math.min(1, scrolled / total));
 
       const N = 3;
       const overlap = 0.05;
@@ -1522,9 +1524,8 @@ function DuranteAnosHeadline() {
         const start = i / N - (i > 0 ? overlap : 0);
         const end = (i + 1) / N + (i < N - 1 ? overlap : 0);
         const local = (progress - start) / (end - start);
-        // Última frase tem um "hold" mais longo no centro pra dar tempo de leitura
-        const inEnd = isLast ? 0.35 : 0.4;
-        const outStart = isLast ? 0.85 : 0.6;
+        const inEnd = isLast ? 0.34 : 0.4;
+        const outStart = isLast ? 0.9 : 0.6;
         let s = 1;
         let o = 0;
         if (local <= 0) {
@@ -1557,12 +1558,19 @@ function DuranteAnosHeadline() {
       if (!raf) raf = requestAnimationFrame(update);
     };
 
+    const onResize = () => {
+      viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+      onScroll();
+    };
+
     update();
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll, { passive: true });
+    window.addEventListener("resize", onResize, { passive: true });
+    window.visualViewport?.addEventListener("resize", onResize, { passive: true });
     return () => {
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("resize", onResize);
+      window.visualViewport?.removeEventListener("resize", onResize);
       if (raf) cancelAnimationFrame(raf);
     };
   }, []);
