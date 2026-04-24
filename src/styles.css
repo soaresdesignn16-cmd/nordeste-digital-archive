@@ -1856,7 +1856,18 @@
 .final-cta-headline {
   display: inline-block;
   position: relative;
+  font-family: var(--font);
+  font-weight: 800;
+  font-size: clamp(36px, 6.5vw, 72px);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--onn-white);
+  margin: 0 0 20px 0;
 }
+@media (max-width: 767px) {
+  .final-cta-headline { font-size: clamp(32px, 9vw, 48px); }
+}
+.final-cta-headline .accent-text { color: var(--onn-orange); }
 /* Variante estática: sem animação, sem scale, cores fixas */
 .final-cta-headline--static,
 .final-cta-headline--static * {
