@@ -1348,6 +1348,20 @@ function AudienceSection() {
             </div>
           </div>
         </div>
+
+        {/* Mobile carousel — substitui o fan-stack em telas ≤ 767px */}
+        <div className="audience-carousel" aria-label="Perfis para quem o movimento é">
+          {profiles.map((p, i) => (
+            <div key={`mc-${i}`} className="audience-carousel__card fan-card fan-card--lead">
+              <div className="icon-box">{p.icon}</div>
+              <h3>{p.title}</h3>
+              <p>{p.desc}</p>
+            </div>
+          ))}
+        </div>
+        <div className="audience-carousel__hint" aria-hidden="true">
+          ← deslize para ver mais →
+        </div>
       </div>
     </section>
   );
