@@ -1,64 +1,82 @@
+# Corrigir scroll reverso na seção "Durante anos"
 
+## Problema (verificado no código)
 
-# Corrigir seção "Durante anos" — pin firme, sem deixar texto subir
+Quando o usuário desce pela seção, a animação completa, `unlockScroll(1)` é chamado e a página avança para a próxima seção (CTA). Porém, ao tentar **subir** de volta, a trava reaparece e o scroll fica preso porque:
 
-## Diagnóstico (verificado no código)
-
-`.durante-anos-pin` tem `height: 380svh` e `.durante-anos-stage` é `position: sticky; top: 0; height: 100svh`. Isso significa:
-
-- Área total de scroll dentro da seção: `380svh − 100svh = 280svh` de "trilho" para a animação.
-- A animação JS divide o progresso em 3 frases (N=3), cada uma ocupa ~33% do progresso.
-- A última frase (`Agora é a nossa vez`) tem `outStart: 1.01` — ou seja, **nunca sai**: fica em `opacity: 1` até `local === 1`, que coincide exatamente com `progress === 1` (fim absoluto do pin).
-- **No instante em que `progress` chega a 1, o sticky solta e o `.durante-anos-stage` começa a subir junto com o scroll** — a última frase ainda está visível em opacity 1, então o usuário vê o texto deslizando pra cima e em seguida só o fundo escuro até a próxima seção entrar.
-
-Esse é exatamente o bug descrito: "as palavras sobem e fica só o escuro".
+1. `progressRef.current` permanece em `1` após a conclusão. Quando o usuário rola para cima e a seção entra em vista de novo, `shouldLock(delta < 0)` retorna `true` (rect.top ≤ 12% e rect.bottom ≥ 42%), e `lockScroll()` é chamado — mas como o progresso já está em `1`, a animação fica no estado final ("Agora é a nossa vez" desaparecido) e o usuário precisa rolar pra cima a animação inteira de novo só para conseguir sair.
+2. Pior: na linha 1386 `--durante-anos-lock-distance` é setado, mas em `driveProgress` (linha 1509) ainda se usa `Math.max(viewportHeight * 1.05, 620)` em pixels, e como `unlockScroll(1)` move a página para `nextSection.top + 2`, ao subir 2px a trava engata novamente sem dar espaço para escapar.
+3. `shouldLock` para `delta < 0` exige `rect.bottom >= viewportHeight * 0.42`. Quando vindo de baixo (CTA), a seção entra com `rect.bottom` crescendo a partir de 0 → assim que passa de 42% da viewport, trava — o que é correto, mas ao travar o progresso deveria ser **1** (estado final visível) e ao rolar pra cima deveria reverter a animação até `0` e liberar para cima. Hoje a reversão funciona em teoria (`driveProgress` aceita delta negativo), mas o problema é que o usuário rolou só um pouquinho e já fica preso na animação inversa inteira antes de poder ir para Seletividade.
 
 ## Solução
 
-Reservar uma **fase de saída pinada** ANTES de o sticky soltar. A última frase fade-out termina enquanto o sticky ainda está grudado, e quando o pin libera, a tela já está limpa (escura) por **um instante curto** antes da próxima seção entrar — sem o efeito de "texto fugindo pra cima".
+**Permitir desbloqueio também na direção reversa, simétrico ao que já existe pra frente**, e evitar re-travamento imediato logo após desbloquear.
 
-### 1. `src/routes/index.tsx` — `DuranteAnosHeadline` (useEffect)
+### 1. Re-travamento ao subir após sair pra frente (causa #1 e #2)
 
-Reorganizar o timeline para reservar os últimos 15% do progresso só para o fade-out da frase final:
-
-- Dividir os 3 segmentos em **0 → 0.85** do progresso (cada frase ocupa ~28%), deixando **0.85 → 1.0** como "tail" onde a última frase já saiu (opacity 0) mas o pin ainda segura.
-- Para a última frase: `inEnd: 0.30`, `outStart: 0.70` (mapeado dentro do segmento). Assim ela entra, fica visível ~40% do segmento dela, e sai suavemente — terminando o fade ANTES do pin soltar.
-- Remover a lógica especial `isLast ? 1.01 : 0.6` que causa o "trava em opacity 1 até o fim".
-
-Pseudo-código do novo cálculo:
+Adicionar um "cooldown" curto após `unlockScroll`: durante ~400ms ignora `shouldLock`, dando tempo do scroll natural sair da zona de detecção. Sem isso, o `scrollTo(nextTop + 2)` deixa a seção a apenas 2px de distância, e qualquer wheel pra cima re-trava.
 
 ```ts
-const N = 3;
-const tail = 0.15;            // últimos 15% só pin segurando, frase já saiu
-const usable = 1 - tail;       // 0.85 do progresso para as 3 frases
-const overlap = 0.04;
-for (let i = 0; i < N; i++) {
-  const start = (i / N) * usable - (i > 0 ? overlap : 0);
-  const end = ((i + 1) / N) * usable + (i < N - 1 ? overlap : 0);
-  const local = (progress - start) / (end - start);
-  // mesmo smoothstep, sem caso especial para isLast:
-  // inEnd = 0.30, outStart = 0.70
-  ...
+const unlockedUntilRef = useRef(0);
+
+const unlockScroll = (direction) => {
+  // ...código atual...
+  unlockedUntilRef.current = performance.now() + 400;
+};
+
+const shouldLock = (delta) => {
+  if (lockedRef.current) return true;
+  if (performance.now() < unlockedUntilRef.current) return false;
+  // ...resto igual...
+};
+```
+
+E aumentar o offset de saída de `+2` para `+ viewportHeight * 0.05` (≈ 5% da tela), para o usuário ter espaço real de scroll antes de re-entrar na zona de detecção.
+
+### 2. Desbloqueio simétrico ao subir (causa #3)
+
+No `driveProgress` já existe a lógica para `next <= 0.001 && delta < 0` → chama `unlockScroll(-1)`. Está correta. Mas falta o caso espelhado em `tickSmoothing`: hoje só desbloqueia para frente (`target >= 0.999`), nunca para trás após o lerp suavizar. Adicionar:
+
+```ts
+if (target <= 0.001 && lockedRef.current) {
+  applyProgress(0);
+  unlockScroll(-1);
+  return;
 }
 ```
 
-### 2. `src/styles.css`
+### 3. Resetar progresso quando a seção sai completamente da viewport
 
-- Reduzir `.durante-anos-pin` de `380svh` → **`260svh`** (desktop) e `320svh` → **`230svh`** (mobile). Trilho de scroll fica `160svh` desktop / `130svh` mobile — suficiente para 3 frases respirarem sem cansar.
-- Adicionar `background: var(--bg)` em `.durante-anos-stage` para evitar qualquer translucidez visual quando soltar.
-- Adicionar `contain: paint` em `.durante-anos-pin` para isolar o stacking context e evitar que o sticky vaze visualmente.
-- Garantir que a próxima seção (`#sobre` ou o que vier depois) não tenha `margin-top` negativo nem sobreposição.
+Quando a seção fica totalmente acima ou abaixo do viewport, resetar `progressRef` e `targetProgressRef` para o estado correspondente (0 se seção está abaixo, 1 se está acima). Isso evita o "estado fantasma" onde o usuário voltou para uma seção anterior, depois desce de novo, e a animação começa do meio.
 
-### 3. Resultado esperado
+Na função `update` (atualmente só ativa quando não está locked), adicionar:
 
-- Usuário rola → frase 1 entra/sai, frase 2 entra/sai, frase 3 entra → **sai com fade enquanto ainda está pinada** → pin libera com a tela já vazia → próxima seção entra normalmente.
-- Nada de texto "subindo junto com o scroll".
-- Trilho de scroll ~38% mais curto, então a sensação de "travou" some.
+```ts
+const rect = section.getBoundingClientRect();
+if (rect.bottom < 0) {
+  // Seção totalmente acima — usuário está abaixo dela
+  if (progressRef.current !== 1) {
+    progressRef.current = 1;
+    targetProgressRef.current = 1;
+    applyProgress(1);
+  }
+} else if (rect.top > viewportHeight) {
+  // Seção totalmente abaixo — usuário está acima dela
+  if (progressRef.current !== 0) {
+    progressRef.current = 0;
+    targetProgressRef.current = 0;
+    applyProgress(0);
+  }
+}
+```
+
+## Comportamento resultante
+
+- Descendo: trava na seção, animação roda, ao concluir libera e avança para CTA.
+- **Subindo a partir do CTA**: trava na seção (animação no estado final), ao continuar rolando pra cima a animação reverte, e ao chegar em 0 libera para Seletividade. Hoje isso já existia parcialmente — ficará confiável.
+- **Subindo logo após ter descido pela primeira vez**: o cooldown de 400ms permite voltar para a seção anterior sem ficar preso de novo na "Durante anos".
+- Trava no descer continua firme, conforme pedido.
 
 ## Arquivos editados
 
-- `src/routes/index.tsx` — reescrever o cálculo do `useEffect` de `DuranteAnosHeadline` (linhas 1487–1576) com `tail` e remoção do caso especial `isLast`.
-- `src/styles.css` — `.durante-anos-pin` height (linhas 1823–1829 e 1870–1878) + `background` em `.durante-anos-stage` (linhas 1831–1841).
-
-Nenhum texto, cor ou ícone é alterado.
-
+- `src/routes/index.tsx` — apenas dentro do `useEffect` de `DuranteAnosHeadline` (linhas ~1320–1633): adiciona `unlockedUntilRef`, ajusta `unlockScroll`, `shouldLock`, `tickSmoothing` e `update`. Nenhuma mudança em CSS, JSX ou em outras seções.

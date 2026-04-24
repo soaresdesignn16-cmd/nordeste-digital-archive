@@ -1325,6 +1325,7 @@ function DuranteAnosHeadline() {
   const lockedRef = useRef(false);
   const touchYRef = useRef<number | null>(null);
   const smoothRafRef = useRef<number | null>(null);
+  const unlockedUntilRef = useRef(0);
   const phraseRefs = [
     useRef<HTMLHeadingElement>(null),
     useRef<HTMLHeadingElement>(null),
@@ -1443,24 +1444,28 @@ function DuranteAnosHeadline() {
       const section = sectionRef.current;
       const nextSection = section?.nextElementSibling;
       const sectionTop = getSectionTop();
+      const escapeOffset = Math.max(Math.round(viewportHeight * 0.05), 24);
 
       requestAnimationFrame(() => {
         if (direction > 0) {
           const nextTop = nextSection instanceof HTMLElement
             ? nextSection.getBoundingClientRect().top + getPageY()
             : sectionTop + viewportHeight;
-          window.scrollTo({ top: nextTop + 2, behavior: "auto" });
-          lastScrollY = nextTop + 2;
+          window.scrollTo({ top: nextTop + escapeOffset, behavior: "auto" });
+          lastScrollY = nextTop + escapeOffset;
         } else {
-          const prevTop = Math.max(sectionTop - 2, 0);
+          const prevTop = Math.max(sectionTop - escapeOffset, 0);
           window.scrollTo({ top: prevTop, behavior: "auto" });
           lastScrollY = prevTop;
         }
+        // Cooldown: evita re-travamento imediato após sair
+        unlockedUntilRef.current = performance.now() + 400;
       });
     };
 
     const shouldLock = (delta: number) => {
       if (lockedRef.current) return true;
+      if (performance.now() < unlockedUntilRef.current) return false;
       const section = sectionRef.current;
       if (!section || delta === 0) return false;
       const rect = section.getBoundingClientRect();
@@ -1491,8 +1496,9 @@ function DuranteAnosHeadline() {
         if (target >= 0.999) {
           applyProgress(1);
           unlockScroll(1);
-        } else if (target <= 0.001 && !lockedRef.current) {
+        } else if (target <= 0.001 && lockedRef.current) {
           applyProgress(0);
+          unlockScroll(-1);
         }
         return;
       }
@@ -1539,6 +1545,23 @@ function DuranteAnosHeadline() {
       const currentScrollY = getPageY();
       const delta = currentScrollY - lastScrollY;
       lastScrollY = currentScrollY;
+
+      // Reset de "estado fantasma" quando a seção está totalmente fora da viewport
+      const section = sectionRef.current;
+      if (section) {
+        const rect = section.getBoundingClientRect();
+        if (rect.bottom < 0) {
+          if (progressRef.current !== 1) {
+            targetProgressRef.current = 1;
+            applyProgress(1);
+          }
+        } else if (rect.top > viewportHeight) {
+          if (progressRef.current !== 0) {
+            targetProgressRef.current = 0;
+            applyProgress(0);
+          }
+        }
+      }
 
       if (shouldLock(delta)) {
         lockScroll();
