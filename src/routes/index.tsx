@@ -1174,6 +1174,10 @@ function AudienceSection() {
     const stack = stackRef.current;
     if (!wrapper || !stack) return;
 
+    // Mobile usa carrossel horizontal nativo — não precisa do scroll-pin/fan-out.
+    const isMobileCarousel = window.matchMedia("(max-width: 767px)").matches;
+    if (isMobileCarousel) return;
+
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     // Detecta dispositivo fraco (GPU/CPU/RAM limitada): celulares antigos.
     // Critérios: pouca RAM (<= 2GB) OU poucos núcleos (<= 4) em conexão lenta,
@@ -1343,6 +1347,20 @@ function AudienceSection() {
               <p>{leadProfile.desc}</p>
             </div>
           </div>
+        </div>
+
+        {/* Mobile carousel — substitui o fan-stack em telas ≤ 767px */}
+        <div className="audience-carousel" aria-label="Perfis para quem o movimento é">
+          {profiles.map((p, i) => (
+            <div key={`mc-${i}`} className="audience-carousel__card fan-card fan-card--lead">
+              <div className="icon-box">{p.icon}</div>
+              <h3>{p.title}</h3>
+              <p>{p.desc}</p>
+            </div>
+          ))}
+        </div>
+        <div className="audience-carousel__hint" aria-hidden="true">
+          ← deslize para ver mais →
         </div>
       </div>
     </section>
