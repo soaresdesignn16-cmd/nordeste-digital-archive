@@ -813,6 +813,12 @@ function HeroIntro() {
           </div>
         </div>
       </div>
+
+      {/* Scroll indicator (desktop) */}
+      <div className="hero-scroll hidden md:flex" aria-hidden="true">
+        <span className="hero-scroll__line" />
+        <span className="hero-scroll__label">scroll</span>
+      </div>
     </section>
   );
 }
