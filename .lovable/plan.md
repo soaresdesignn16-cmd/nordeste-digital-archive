@@ -1,114 +1,57 @@
 
 
-## Reverter ordem do FinalCTA + fallback de cor para o reveal
+## Problema
 
-### 1. Reverter ordem (FinalCTA volta a ser o último)
+Na seção **"Para Quem É"**, no mobile, só aparece **1 card** ("Donos de negócios do mundo físico") e parece que ao deslizar (swipe lateral) nada acontece. Os outros 3 perfis (Empresários em escala, Profissionais liberais, Especialistas e autoridades) ficam invisíveis.
 
-**`src/routes/index.tsx`** linhas 444–446 — voltar para a ordem anterior:
+### Por que acontece
 
-```
-<DuranteAnosHeadline />
-<CTABlock />
-<FinalCTA />
-<Footer />
-```
+A seção foi construída como um **stack animado por scroll vertical**: os 4 cards estão sobrepostos (`position: absolute; inset: 0`) e a animação só dispara conforme o usuário **rola a página verticalmente** dentro de uma área "pinada" de 280vh de altura. Isso causa dois problemas no mobile:
 
-Agora "Pronto para ser visto de verdade?" volta a ser o fechamento da página, logo antes do footer.
+1. **Expectativa quebrada**: o usuário tenta deslizar para o lado (gesto natural mobile para "ver mais cards") e nada acontece — o efeito só responde ao scroll vertical.
+2. **Sensação de travamento**: a área pinada de 280vh segura a tela e a animação fan-out é sutil em telas pequenas, dando impressão de bug.
 
-### 2. Remover/ajustar o botão para não ficar "em cima do CTA"
+## Solução
 
-Como o `FinalCTA` agora vem **depois** do `CTABlock`, manter um botão "A Sua Chance" linkando para `#cta-block` faria scroll **para cima** — confuso e redundante (o usuário acabou de passar por lá).
+**Substituir o comportamento no mobile (≤ 767px) por um carrossel horizontal nativo com snap-scroll**, mantendo os 4 cards visíveis e deslizáveis. No desktop/tablet, **manter a animação fan-out** que já funciona bem.
 
-**`src/routes/index.tsx`** linhas 1391–1396 — remover o `<div className="final-cta-actions">` por completo. A headline final fica sozinha como fechamento visual da página (mesmo padrão de antes da última iteração).
+### Mudanças
 
-**`src/styles.css`** — manter as regras `.final-cta-actions` (não atrapalham), mas podem ser deixadas; opcionalmente removidas para limpeza. Vou deixar inertes (sem uso) para não mexer em mais nada.
+**1. `src/routes/index.tsx` — `AudienceSection`**
+- Detectar mobile (`max-width: 767px`) e renderizar em paralelo:
+  - **Desktop/tablet**: estrutura atual (`.fan-stack` com cards absolutos + scroll pin).
+  - **Mobile**: novo container `.audience-carousel` com os **4 cards** lado a lado, usando scroll horizontal nativo + `scroll-snap`.
+- No mobile, **desativar o pin** (`audience-pin` vira altura automática) e o `useEffect` do scroll-driven animation faz early-return.
 
-### 3. Fallback para o efeito de reveal palavra-por-palavra
+**2. `src/styles.css` — bloco `@media (max-width: 767px)` da audience**
+- `.audience-pin { height: auto; }` e `.audience-pin__sticky { position: static; height: auto; overflow: visible; }`
+- Esconder `.fan-stack-wrap` no mobile.
+- Novo `.audience-carousel`:
+  - `display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory;`
+  - `scroll-padding: 24px; padding: 8px 24px 32px;`
+  - `-webkit-overflow-scrolling: touch;`
+  - Esconder scrollbar (`::-webkit-scrollbar { display: none }`).
+- `.audience-carousel__card`:
+  - `flex: 0 0 82%; max-width: 320px; scroll-snap-align: center;`
+  - Mesmo visual do `.fan-card` (borda laranja, padding, ícone, tipografia) para manter consistência visual com o screenshot.
+- **Indicador de swipe**: pequena linha de texto abaixo do carrossel ("← deslize para ver mais →") com `font-size: 11px; color: var(--onn-dim); letter-spacing: 0.18em; text-align: center;`. Some após o usuário rolar.
 
-**Problema**: hoje as palavras começam com `color: var(--text-ghost)` + `opacity: 0.25` e só ganham cor quando o JS adiciona `.is-active`. Se algo falhar (IntersectionObserver indisponível em browser legado, erro no `requestAnimationFrame`, JS desabilitado, navegador que ignora `passive: true`), as palavras ficam **permanentemente transparentes** — texto invisível.
-
-**Solução em 3 camadas de defesa:**
-
-#### a) CSS-first fallback (`src/styles.css`)
-
-Adicionar regra que ativa as palavras automaticamente quando o JS **não** marcou o root com `data-reveal-ready="true"`. Combinada com uma `@supports`/feature detection:
-
-```css
-/* Fallback: se IO não disponível OU JS não rodou, mostra todas as palavras com cor */
-.no-js .reveal-word,
-.no-io .reveal-word,
-html:not(.reveal-ready) .final-cta-headline .reveal-word {
-  color: var(--text-primary);
-  opacity: 1;
-}
-html:not(.reveal-ready) .final-cta-headline .reveal-word.accent-text {
-  color: var(--accent);
-}
-```
-
-E garantir que após a hidratação, se o JS rodou OK, o `<html>` ganha a classe `reveal-ready` (que devolve o controle ao hook).
-
-#### b) Feature detection no hook (`src/routes/index.tsx`, linhas 82–151)
-
-No início do `useScrollProgressReveal`, antes de criar o IntersectionObserver:
-
-```ts
-// Fallback se IntersectionObserver não existir
-if (typeof IntersectionObserver === "undefined") {
-  root.querySelectorAll<HTMLElement>(selector).forEach((el) => el.classList.add("is-active"));
-  return;
-}
-```
-
-E envolver o setup do IO em `try/catch` — se algo lançar, ativar todas as palavras como fallback:
-
-```ts
-try {
-  const io = new IntersectionObserver(...);
-  io.observe(root);
-  ...
-} catch {
-  root.querySelectorAll<HTMLElement>(selector).forEach((el) => el.classList.add("is-active"));
-  return;
-}
-```
-
-#### c) Watchdog timer (segurança extra)
-
-Após 1.5s do mount, se nenhuma palavra dentro do root tiver `.is-active`, ativar todas — garante que mesmo em condições estranhas (scroll preso, viewport bizarro, headline acima do trigger), o texto sempre aparece:
-
-```ts
-const watchdog = setTimeout(() => {
-  const els = root.querySelectorAll<HTMLElement>(selector);
-  const anyActive = Array.from(els).some((el) => el.classList.contains("is-active"));
-  if (!anyActive) els.forEach((el) => el.classList.add("is-active"));
-}, 1500);
-// limpar no cleanup
-```
-
-#### d) Marcar `<html>` como reveal-ready
-
-No mount do hook (uma vez), adicionar `document.documentElement.classList.add("reveal-ready")` — sinaliza ao CSS que o JS está vivo e o hook assumiu controle. Sem isso, o CSS fallback mantém as palavras visíveis.
+**3. Ajuste no `useEffect`**
+- Logo no início, adicionar:
+  ```ts
+  const isMobileCarousel = window.matchMedia("(max-width: 767px)").matches;
+  if (isMobileCarousel) return;
+  ```
+- Assim, no mobile o JS de scroll-pin nem roda — performance melhor e zero conflito com o carrossel.
 
 ### Resultado esperado
 
-- Ordem volta a ser: DuranteAnos → CTABlock ("Solicitar avaliação estratégica") → FinalCTA ("Pronto para ser visto de verdade?") → Footer.
-- `FinalCTA` fecha a página apenas com a headline (sem botão duplicado em cima do CTA).
-- Efeito de scale gigante → encolhendo + word-reveal continuam funcionando normalmente.
-- **Se o JS / IntersectionObserver falhar por qualquer motivo**, as palavras aparecem com cor automaticamente — texto nunca fica invisível.
+- **Mobile**: usuário vê o primeiro card e desliza horizontalmente para ver os outros 3 — gesto natural, com snap em cada card.
+- **Tablet/Desktop**: comportamento atual (fan-out animado por scroll) intacto.
+- Nenhum texto, ícone ou cor é alterado.
 
 ### Arquivos editados
 
-- `src/routes/index.tsx`:
-  - Linhas 444–446: trocar para `<CTABlock /> <FinalCTA />`.
-  - Linhas 1391–1396: remover o `<div className="final-cta-actions">…</div>`.
-  - Linhas 82–151: adicionar feature detection (IO disponível?), `try/catch` no setup, watchdog de 1.5s, e `document.documentElement.classList.add("reveal-ready")` no mount.
-- `src/styles.css`:
-  - Após linha 1673: adicionar bloco de fallback `html:not(.reveal-ready) .final-cta-headline .reveal-word { color/opacity }` para garantir cor quando JS não rodou.
-
-### O que NÃO muda
-
-- Heights `70dvh`, scale (2.2/2.6/3.2), classes `accent-text`, lógica de scroll-zoom — preservados.
-- `CTABlock`, `Footer`, `DuranteAnosHeadline` — intactos.
-- Hook `useScrollProgressReveal` continua sendo usado nos outros lugares (RevealWords, ganhos) — fallback beneficia todos.
+- `src/routes/index.tsx` (componente `AudienceSection`)
+- `src/styles.css` (bloco mobile da audience + novas classes do carrossel)
 
