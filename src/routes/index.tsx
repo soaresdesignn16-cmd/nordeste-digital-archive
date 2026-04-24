@@ -1496,8 +1496,9 @@ function DuranteAnosHeadline() {
         if (target >= 0.999) {
           applyProgress(1);
           unlockScroll(1);
-        } else if (target <= 0.001 && !lockedRef.current) {
+        } else if (target <= 0.001 && lockedRef.current) {
           applyProgress(0);
+          unlockScroll(-1);
         }
         return;
       }
