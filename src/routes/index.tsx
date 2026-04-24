@@ -473,6 +473,7 @@ function NovosNordestinos() {
           <MetodoAPD />
           <ExecucaoCloneDigital />
           <ImpactSection />
+          <Depoimentos />
           <DuranteAnosHeadline />
           <CTABlock />
           <FinalCTA />
