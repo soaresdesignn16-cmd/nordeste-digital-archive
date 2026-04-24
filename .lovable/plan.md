@@ -1,86 +1,64 @@
 
 
-# Ajustes — Hero, Audience desktop, Durante Anos e Final CTA
+# Corrigir seção "Durante anos" — pin firme, sem deixar texto subir
 
-## 1. Hero (foto do fundador colada no topo no mobile)
+## Diagnóstico (verificado no código)
 
-**Problema:** Há uma faixa preta visível acima da foto antes do conteúdo (entre a status bar do celular e o início da foto), porque o `<section className="hero">` herda o `padding-top: 90px` global do mobile.
+`.durante-anos-pin` tem `height: 380svh` e `.durante-anos-stage` é `position: sticky; top: 0; height: 100svh`. Isso significa:
 
-**Solução em `src/styles.css`:**
-- No `@media (max-width: 767px)` global, **excluir** `.hero` (e `#hero-intro > section`) do padding-top de 90px, já mantendo `.hero { padding-top: 0 }` que existe na linha 573–575.
-- Garantir `margin-top: 0` no container interno mobile do hero (`#hero-intro` e `.hero` no mobile recebem `padding-top: 0 !important`).
-- Aumentar a altura da foto mobile de `70vh` para `100svh` (com fade pro preto começando em ~60%) — assim a foto preenche a tela inteira até o topo, sem espaço escuro sobrando, exatamente como no screenshot enviado.
+- Área total de scroll dentro da seção: `380svh − 100svh = 280svh` de "trilho" para a animação.
+- A animação JS divide o progresso em 3 frases (N=3), cada uma ocupa ~33% do progresso.
+- A última frase (`Agora é a nossa vez`) tem `outStart: 1.01` — ou seja, **nunca sai**: fica em `opacity: 1` até `local === 1`, que coincide exatamente com `progress === 1` (fim absoluto do pin).
+- **No instante em que `progress` chega a 1, o sticky solta e o `.durante-anos-stage` começa a subir junto com o scroll** — a última frase ainda está visível em opacity 1, então o usuário vê o texto deslizando pra cima e em seguida só o fundo escuro até a próxima seção entrar.
 
-**Solução em `src/routes/index.tsx` (HeroIntro mobile):**
-- Trocar `style={{ height: "70vh" }}` por `style={{ height: "100svh" }}` no wrapper da imagem.
-- Ajustar o gradiente bottom para começar mais embaixo (height 35% em vez de 45%), para o rosto não ficar coberto.
+Esse é exatamente o bug descrito: "as palavras sobem e fica só o escuro".
 
----
+## Solução
 
-## 2. Audience desktop ("Esse movimento é pra você") — scroll travando
+Reservar uma **fase de saída pinada** ANTES de o sticky soltar. A última frase fade-out termina enquanto o sticky ainda está grudado, e quando o pin libera, a tela já está limpa (escura) por **um instante curto** antes da próxima seção entrar — sem o efeito de "texto fugindo pra cima".
 
-**Problema:** No desktop, a seção tem `height: 300vh` com pin, e a animação fan-out exige rolar 3 viewports só pra ver os 4 cards. O usuário sente como se a página "travasse".
+### 1. `src/routes/index.tsx` — `DuranteAnosHeadline` (useEffect)
 
-**Solução em `src/styles.css` (linhas 747–784):**
-- Reduzir `.audience-pin { height: 300vh }` → **`height: 200vh`** (1 viewport extra é suficiente para mostrar o leque + o destaque dos 4 cards).
-- Manter o `audience-pin__sticky` em 100vh.
+Reorganizar o timeline para reservar os últimos 15% do progresso só para o fade-out da frase final:
 
-**Solução em `src/routes/index.tsx` (useEffect do AudienceSection, linhas 1252–1260):**
-- Comprimir o timeline dos `seg(...)` para acabar perto de `progress = 1` mais rápido, mantendo as transições suaves:
-  - `--focus`: `seg(0.18, 0.30)`
-  - `--slide`: `seg(0.28, 0.40)`
-  - `--focus-3`: `seg(0.38, 0.50)`
-  - `--slide-3`: `seg(0.48, 0.60)`
-  - `--focus-2`: `seg(0.58, 0.70)`
-  - `--slide-2`: `seg(0.68, 0.80)`
-  - `--focus-1`: `seg(0.78, 0.90)`
-  - `--slide-1`: `seg(0.88, 1)`
-- `FAN_END` desktop continua `0.25` (leque abre cedo, depois cards individuais fluem rápido).
+- Dividir os 3 segmentos em **0 → 0.85** do progresso (cada frase ocupa ~28%), deixando **0.85 → 1.0** como "tail" onde a última frase já saiu (opacity 0) mas o pin ainda segura.
+- Para a última frase: `inEnd: 0.30`, `outStart: 0.70` (mapeado dentro do segmento). Assim ela entra, fica visível ~40% do segmento dela, e sai suavemente — terminando o fade ANTES do pin soltar.
+- Remover a lógica especial `isLast ? 1.01 : 0.6` que causa o "trava em opacity 1 até o fim".
 
-Resultado: o pin some 33% mais rápido, sem perder a animação.
+Pseudo-código do novo cálculo:
 
----
+```ts
+const N = 3;
+const tail = 0.15;            // últimos 15% só pin segurando, frase já saiu
+const usable = 1 - tail;       // 0.85 do progresso para as 3 frases
+const overlap = 0.04;
+for (let i = 0; i < N; i++) {
+  const start = (i / N) * usable - (i > 0 ? overlap : 0);
+  const end = ((i + 1) / N) * usable + (i < N - 1 ? overlap : 0);
+  const local = (progress - start) / (end - start);
+  // mesmo smoothstep, sem caso especial para isLast:
+  // inEnd = 0.30, outStart = 0.70
+  ...
+}
+```
 
-## 3. "Durante anos tentaram…" — terceira frase passa direto
+### 2. `src/styles.css`
 
-**Problema:** O componente `DuranteAnosHeadline` divide o scroll em 3 segmentos (cada um = 33% do progresso), e a frase 3 (`Agora é a nossa vez`) tem o pico em `local = 0.5` do segmento, mas o segmento 3 termina exatamente quando o pin acaba — então no momento em que ela atinge `opacity: 1` o sticky já está soltando, e ela some imediatamente.
+- Reduzir `.durante-anos-pin` de `380svh` → **`260svh`** (desktop) e `320svh` → **`230svh`** (mobile). Trilho de scroll fica `160svh` desktop / `130svh` mobile — suficiente para 3 frases respirarem sem cansar.
+- Adicionar `background: var(--bg)` em `.durante-anos-stage` para evitar qualquer translucidez visual quando soltar.
+- Adicionar `contain: paint` em `.durante-anos-pin` para isolar o stacking context e evitar que o sticky vaze visualmente.
+- Garantir que a próxima seção (`#sobre` ou o que vier depois) não tenha `margin-top` negativo nem sobreposição.
 
-**Solução em `src/routes/index.tsx` (linhas 1518–1549):**
-- Aumentar o tempo de leitura da frase final adicionando uma **fase de "hold"** no último segmento:
-  - Para `i === N - 1` (última frase), expandir o platô central de `0.4–0.6` para `0.35–0.85` (frase fica visível por 50% do segmento, em vez de 20%).
-  - A saída (`local > 0.85`) usa o restante 0.15 do segmento.
+### 3. Resultado esperado
 
-**Solução em `src/styles.css` (linhas 1823–1875):**
-- Aumentar `.durante-anos-pin { height: 280vh }` → **`height: 320vh`** desktop e `220vh` → `260vh` mobile, dando margem extra de scroll para a frase final ficar fixa antes de soltar.
-
-Resultado: a frase "Agora é a nossa vez" fica congelada no centro da tela por ~1 viewport antes de o pin liberar.
-
----
-
-## 4. Final CTA — espaço vazio no desktop
-
-**Problema:** `.final-cta-sticky { height: 100dvh }` força a seção a ocupar a viewport inteira, e como o conteúdo (eyebrow + headline + descrição + botão + nota + citação) ocupa só ~70% da altura no desktop, sobra muito preto. Além disso `.final-cta-actions { margin-top: clamp(120px, 18vh, 220px) }` empurra o botão pra muito longe da headline.
-
-**Solução em `src/styles.css`:**
-- `.final-cta-sticky`:
-  - Desktop (≥ 768px): trocar `height: 100dvh` por `min-height: auto; height: auto;` — o sticky deixa de ser sticky de viewport cheia e vira fluxo normal.
-  - Mobile mantém o comportamento atual.
-- `.section-cta` (linhas 1211–1224):
-  - Desktop: trocar `padding: 120px 0` por **`padding: 96px 0`**.
-- `.final-cta-actions` (linha 1941–1948):
-  - Reduzir `margin-top: clamp(120px, 18vh, 220px)` → **`margin-top: clamp(40px, 6vh, 80px)`**.
-  - Mobile (linha 1958–1960): `margin-top: clamp(32px, 5vh, 56px)`.
-- `.final-cta-quote` (linha 1265–1276):
-  - Reduzir `margin: 80px auto 0; padding-top: 56px;` → **`margin: 56px auto 0; padding-top: 40px;`**.
-
-Resultado: a seção fica proporcional ao conteúdo, sem 30% de preto vazio embaixo do botão.
-
----
+- Usuário rola → frase 1 entra/sai, frase 2 entra/sai, frase 3 entra → **sai com fade enquanto ainda está pinada** → pin libera com a tela já vazia → próxima seção entra normalmente.
+- Nada de texto "subindo junto com o scroll".
+- Trilho de scroll ~38% mais curto, então a sensação de "travou" some.
 
 ## Arquivos editados
 
-- `src/routes/index.tsx` — hero mobile (height 100svh), useEffect AudienceSection (timeline comprimido), useEffect DuranteAnosHeadline (hold da última frase).
-- `src/styles.css` — `.hero` mobile padding override, `.audience-pin` height, `.durante-anos-pin` height, `.section-cta` / `.final-cta-sticky` / `.final-cta-actions` / `.final-cta-quote` espaçamentos desktop.
+- `src/routes/index.tsx` — reescrever o cálculo do `useEffect` de `DuranteAnosHeadline` (linhas 1487–1576) com `tail` e remoção do caso especial `isLast`.
+- `src/styles.css` — `.durante-anos-pin` height (linhas 1823–1829 e 1870–1878) + `background` em `.durante-anos-stage` (linhas 1831–1841).
 
-Nenhum texto, imagem, cor ou logomarca é alterado.
+Nenhum texto, cor ou ícone é alterado.
 
