@@ -746,7 +746,7 @@
 /* ─────────── AUDIENCE PIN (fan-out cards scroll) ─────────── */
 .audience-pin {
   position: relative;
-  height: 300vh;
+  height: 200vh;
 }
 .audience-pin__sticky {
   position: sticky;
@@ -1221,7 +1221,7 @@
   padding: 80px 0;
 }
 @media (min-width: 768px) {
-  .section-cta { padding: 120px 0; }
+  .section-cta { padding: 96px 0; }
 }
 .section-cta::before { content: none; }
 .section-cta > * {
@@ -1263,8 +1263,8 @@
 
 /* Citação final */
 .final-cta-quote {
-  margin: 80px auto 0;
-  padding-top: 56px;
+  margin: 56px auto 0;
+  padding-top: 40px;
   border-top: 1px solid var(--onn-border);
   font-family: var(--font);
   font-size: clamp(16px, 2.2vw, 22px);
@@ -1822,7 +1822,7 @@
 /* ─────────── Durante Anos — scroll-zoom pinned ─────────── */
 .durante-anos-pin {
   position: relative;
-  height: 280vh;
+  height: 320vh;
   background: var(--bg);
   border-top: 1px solid var(--border-subtle);
 }
@@ -1867,7 +1867,7 @@
 
 @media (max-width: 767px) {
   .durante-anos-pin {
-    height: 220vh;
+    height: 260vh;
   }
   .durante-anos-phrase {
     font-size: clamp(34px, 9vw, 56px);
@@ -1896,13 +1896,18 @@
 
 /* ─────────── Final CTA Sticky + Headline Lock ─────────── */
 .final-cta-sticky {
-  position: sticky;
-  top: 0;
-  height: 100dvh;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2;
+}
+@media (max-width: 767px) {
+  .final-cta-sticky {
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+  }
 }
 .final-cta-inner {
   position: relative;
@@ -1939,8 +1944,8 @@
 }
 
 .final-cta-actions {
-  /* margem grande: botão fica bem abaixo da headline final (que termina ~1.45x maior) */
-  margin-top: clamp(120px, 18vh, 220px);
+  /* Espaçamento proporcional entre headline e botão */
+  margin-top: clamp(40px, 6vh, 80px);
   display: flex;
   justify-content: center;
   position: relative;
@@ -1956,7 +1961,7 @@
     background: radial-gradient(ellipse at 50% 50%, rgba(224,140,50,0.04) 0%, transparent 55%);
   }
   .final-cta-actions {
-    margin-top: clamp(80px, 14vh, 140px);
+    margin-top: clamp(32px, 5vh, 56px);
   }
 }
 
