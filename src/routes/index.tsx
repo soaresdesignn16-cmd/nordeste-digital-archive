@@ -1325,6 +1325,7 @@ function DuranteAnosHeadline() {
   const lockedRef = useRef(false);
   const touchYRef = useRef<number | null>(null);
   const smoothRafRef = useRef<number | null>(null);
+  const unlockedUntilRef = useRef(0);
   const phraseRefs = [
     useRef<HTMLHeadingElement>(null),
     useRef<HTMLHeadingElement>(null),
