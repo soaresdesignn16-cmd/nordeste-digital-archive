@@ -1383,7 +1383,7 @@ function DuranteAnosHeadline() {
       const stageHeight = Math.max(viewportHeight, Math.round(stage.getBoundingClientRect().height || viewportHeight));
       section.style.setProperty("--durante-anos-stage-height", `${stageHeight}px`);
       section.style.setProperty("--durante-anos-pin-height", `${stageHeight}px`);
-      section.style.setProperty("--durante-anos-lock-distance", `${Math.max(Math.round(viewportHeight * 1.75), 960)}px`);
+      section.style.setProperty("--durante-anos-lock-distance", `${Math.max(Math.round(viewportHeight * 1.05), 620)}px`);
     };
 
     const applyProgress = (value: number) => {
