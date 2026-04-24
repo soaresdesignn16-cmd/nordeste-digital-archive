@@ -473,6 +473,7 @@ function NovosNordestinos() {
           <MetodoAPD />
           <ExecucaoCloneDigital />
           <ImpactSection />
+          <Depoimentos />
           <DuranteAnosHeadline />
           <CTABlock />
           <FinalCTA />
@@ -957,6 +958,67 @@ function ExecucaoCloneDigital() {
             ))}
           </div>
         </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─────────── DEPOIMENTOS ─────────── */
+function Depoimentos() {
+  const items = [
+    {
+      stars: 5,
+      quote:
+        "Em três meses meu ticket médio dobrou. Parei de competir por preço e comecei a ser procurado pelo meu posicionamento.",
+      name: "Rafael Albuquerque",
+      role: "CEO · Recife / PE",
+    },
+    {
+      stars: 5,
+      quote:
+        "Sempre achei que minha empresa era maior do que parecia no digital. O time d'Os Novos Nordestinos traduziu isso em presença real.",
+      name: "Camila Tavares",
+      role: "Fundadora · Fortaleza / CE",
+    },
+    {
+      stars: 5,
+      quote:
+        "Atendo menos clientes, cobro o dobro e finalmente tenho tempo. O Clone Digital virou meu maior comercial.",
+      name: "Marcos Lins",
+      role: "Advogado · Salvador / BA",
+    },
+  ];
+
+  return (
+    <section id="depoimentos" className="dep-section section-pad">
+      <div className="section-container dep-section__head">
+        <span className="eyebrow--bordered" style={{ marginInline: "auto" }}>Quem já vive isso</span>
+        <h2 className="typo-headline" style={{ marginBottom: 16 }}>
+          O que dizem <span className="accent-text">os Novos Nordestinos</span>
+        </h2>
+        <p className="typo-body" style={{ marginInline: "auto", marginBottom: 0 }}>
+          Empresários que decidiram ser vistos no nível que realmente são.
+        </p>
+      </div>
+
+      <div className="dep-grid">
+        {items.map((t, i) => (
+          <article key={i} className="dep-card">
+            <div className="dep-card__stars" aria-label={`${t.stars} estrelas`}>
+              {"★".repeat(t.stars)}
+            </div>
+            <p className="dep-card__quote">{t.quote}</p>
+            <div className="dep-card__author">
+              <span className="dep-card__avatar" aria-hidden>
+                {t.name.charAt(0)}
+              </span>
+              <div>
+                <div className="dep-card__name">{t.name}</div>
+                <div className="dep-card__role">{t.role}</div>
+              </div>
+            </div>
+          </article>
+        ))}
       </div>
     </section>
   );

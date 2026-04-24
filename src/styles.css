@@ -2254,3 +2254,87 @@ html:not(.reveal-ready) .final-cta-headline .reveal-word.accent-text {
   line-height: 1.6;
   color: var(--onn-muted);
 }
+
+/* ─────────── DEPOIMENTOS ─────────── */
+.dep-section { background: var(--onn-black); }
+.dep-section__head {
+  text-align: center;
+  margin-bottom: 56px;
+}
+.dep-section__head .typo-body { max-width: 520px; }
+
+.dep-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1px;
+  background: var(--onn-border);
+  width: 100%;
+  margin: 0 auto;
+  max-width: 1200px;
+}
+@media (min-width: 640px)  { .dep-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .dep-grid { grid-template-columns: repeat(3, 1fr); } }
+
+.dep-card {
+  background: var(--onn-black);
+  padding: 40px 36px;
+  transition: background 0.3s ease;
+}
+.dep-card:hover { background: var(--onn-surface-2); }
+
+.dep-card__stars {
+  color: var(--onn-orange);
+  font-size: 13px;
+  letter-spacing: 3px;
+  margin-bottom: 20px;
+  line-height: 1;
+}
+
+.dep-card__quote {
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--onn-muted);
+  line-height: 1.9;
+  margin: 0 0 28px 0;
+}
+
+.dep-card__author {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.dep-card__avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--onn-orange-border);
+  background: var(--onn-surface-3);
+  color: var(--onn-orange);
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+.dep-card__name {
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--onn-white);
+  line-height: 1.3;
+}
+
+.dep-card__role {
+  font-family: var(--font);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--onn-dim);
+  margin-top: 2px;
+}
