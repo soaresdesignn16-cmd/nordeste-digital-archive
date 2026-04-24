@@ -470,6 +470,7 @@ function NovosNordestinos() {
           <ManifestoSection />
           <AudienceSection />
           <FounderSection />
+          <MetodoAPD />
           <ImpactSection />
           <DuranteAnosHeadline />
           <CTABlock />
@@ -837,6 +838,74 @@ function Stat({ value, label, suffix = "" }: { value: number; label: string; suf
       </div>
       <div className="typo-label" style={{ marginTop: 6 }}>{label}</div>
     </div>
+  );
+}
+
+/* ─────────── MÉTODO APD ─────────── */
+function MetodoAPD() {
+  const pillars = [
+    {
+      letter: "A",
+      label: "Pilar 01",
+      title: "Autoridade",
+      desc: "Construímos a percepção real de quem você é no digital — uma presença que comunica nível, sem precisar gritar. Não é estética: é arquitetura de percepção.",
+      result: "Você passa a ser visto como referência, não como opção.",
+    },
+    {
+      letter: "P",
+      label: "Pilar 02",
+      title: "Posicionamento",
+      desc: "Definimos o lugar exato que você ocupa no mercado e no imaginário do seu cliente premium. Cada conteúdo, cada imagem, cada frase trabalha a favor da sua tese.",
+      result: "Você atrai os clientes certos — e repele os errados.",
+    },
+    {
+      letter: "D",
+      label: "Pilar 03",
+      title: "Distribuição",
+      desc: "Implantamos o sistema que leva sua marca ao mercado 24/7, sem depender da sua presença. O Clone Digital faz o trabalho enquanto você cuida do que importa.",
+      result: "Sua autoridade trabalha mesmo quando você não está.",
+    },
+  ];
+
+  const results = [
+    { label: "Resultado", text: "Você atende menos, cobra mais e finalmente é tratado no nível que entrega." },
+    { label: "Consequência", text: "Sua marca pessoal vira o ativo mais valioso do seu negócio — e ninguém pode te tirar isso." },
+  ];
+
+  return (
+    <section id="metodo-apd" className="apd-section section-pad">
+      <div className="section-container apd-section__head">
+        <span className="eyebrow--bordered">O Método</span>
+        <h2 className="typo-headline" style={{ marginBottom: 16 }}>
+          Método <span className="accent-text">APD</span>
+        </h2>
+        <p className="typo-body" style={{ maxWidth: 580, marginBottom: 8 }}>
+          Três pilares que estruturam toda Arquitetura de Posicionamento Digital
+          d'Os Novos Nordestinos.
+        </p>
+      </div>
+
+      <div className="apd-grid">
+        {pillars.map((p, i) => (
+          <article key={i} className="apd-card">
+            <span className="apd-card__bgletter" aria-hidden>{p.letter}</span>
+            <span className="apd-card__label">{p.label}</span>
+            <h3 className="apd-card__title">{p.title}</h3>
+            <p className="apd-card__desc">{p.desc}</p>
+            <p className="apd-card__result">{p.result}</p>
+          </article>
+        ))}
+      </div>
+
+      <div className="apd-results">
+        {results.map((r, i) => (
+          <div key={i} className="apd-results__cell">
+            <span className="apd-results__label">{r.label}</span>
+            <p className="apd-results__text">{r.text}</p>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
