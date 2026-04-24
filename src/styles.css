@@ -278,22 +278,31 @@
     margin-bottom: 22px;
   }
   @media (min-width: 768px) {
-    .eyebrow { font-size: 15px; margin-bottom: 26px; }
+    .eyebrow { font-size: 10px; margin-bottom: 26px; }
+  }
+  .eyebrow {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    gap: 12px;
+    color: var(--onn-orange);
   }
   .eyebrow::before {
     content: '';
     display: inline-block;
-    width: 32px;
+    width: 28px;
     height: 1px;
-    background: var(--accent);
+    background: var(--onn-orange);
+    opacity: 0.7;
   }
   .eyebrow--center { justify-content: center; }
   .eyebrow--center::after {
     content: '';
     display: inline-block;
-    width: 32px;
+    width: 28px;
     height: 1px;
-    background: var(--accent);
+    background: var(--onn-orange);
+    opacity: 0.7;
   }
 
   /* ─────────── BOTÕES ─────────── */
@@ -303,20 +312,21 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    background: var(--accent);
-    color: #0A0A0A;
-    padding: 16px 36px;
-    border-radius: var(--radius-sm);
+    background: var(--onn-orange);
+    color: #000000;
+    padding: 20px 52px;
+    border-radius: 0;
     font-family: var(--font);
     font-weight: 700;
-    font-size: 13px;
-    letter-spacing: 0.1em;
+    font-size: 12px;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     border: none;
     cursor: pointer;
     text-decoration: none;
     overflow: hidden;
-    transition: transform 0.22s ease, background 0.22s ease, box-shadow 0.22s ease;
+    box-shadow: 0 0 0 rgba(212, 134, 26, 0);
+    transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
     will-change: transform;
   }
   .btn-primary::before {
@@ -326,18 +336,18 @@
     left: -100%;
     width: 60%;
     height: 100%;
-    background: linear-gradient(to right, transparent, rgba(255,255,255,0.18), transparent);
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.22), transparent);
     transform: skewX(-20deg);
     transition: left 0.6s ease;
     pointer-events: none;
   }
   .btn-primary:hover {
-    background: var(--accent-bright);
+    background: var(--onn-orange-light);
     transform: translateY(-2px);
-    box-shadow: var(--shadow-accent);
+    box-shadow: 0 12px 40px rgba(212, 134, 26, 0.30);
   }
   .btn-primary:hover::before { left: 150%; }
-  .btn-primary--lg { padding: 20px 48px; font-size: 14px; }
+  .btn-primary--lg { padding: 22px 56px; font-size: 13px; }
   .btn-primary--sm { padding: 10px 22px; font-size: 12px; }
 
   .btn-secondary {
@@ -505,19 +515,63 @@
 /* ─────────── HERO ─────────── */
 .hero {
   position: relative;
-  background: var(--bg);
+  background:
+    radial-gradient(ellipse 55% 70% at 75% 45%, rgba(212,134,26,0.07) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 50% at 5% 90%, rgba(212,134,26,0.04) 0%, transparent 55%),
+    var(--onn-black);
   overflow: hidden;
 }
-.hero::before {
-  content: '';
+.hero::before { content: none; }
+/* Linha vertical decorativa */
+.hero-vline {
   position: absolute;
-  top: 15%;
-  left: -5%;
-  width: 55%;
-  height: 75%;
-  background: radial-gradient(ellipse, rgba(224,140,50,0.11) 0%, transparent 68%);
+  top: 0;
+  left: 38%;
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent, rgba(212,134,26,0.15), transparent);
+  opacity: 0.5;
   pointer-events: none;
-  z-index: 0;
+  z-index: 1;
+}
+@media (max-width: 767px) { .hero-vline { display: none; } }
+
+/* Scroll indicator */
+.hero-scroll {
+  position: absolute;
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  z-index: 5;
+  pointer-events: none;
+}
+.hero-scroll__line {
+  width: 1px;
+  height: 44px;
+  background: linear-gradient(to bottom, var(--onn-orange), transparent);
+  transform-origin: top center;
+  animation: hero-scroll-pulse 2.2s ease-in-out infinite;
+}
+.hero-scroll__label {
+  font-family: var(--font);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--onn-dim);
+}
+@keyframes hero-scroll-pulse {
+  0%, 100% { opacity: 1;   transform: scaleY(1); }
+  50%      { opacity: 0.3; transform: scaleY(0.65); }
+}
+
+/* Responsivo Hero */
+@media (max-width: 767px) {
+  .hero { padding-top: 0; }
 }
 
 .hero-photo-wrap {

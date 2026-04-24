@@ -698,6 +698,7 @@ function Nav() {
 function HeroIntro() {
   return (
     <section className="hero">
+      <div className="hero-vline" aria-hidden="true" />
       {/* Mobile: imagem no topo (70vh) com fade pro preto, texto abaixo no preto sólido */}
       <div className="md:hidden relative z-10">
         <div className="relative w-full" style={{ height: "70vh" }}>
@@ -811,6 +812,12 @@ function HeroIntro() {
             <span style={{ fontFamily: "var(--font)", fontWeight: 700, fontSize: 10, letterSpacing: "0.22em", color: "var(--accent)" }}>2K26</span>
           </div>
         </div>
+      </div>
+
+      {/* Scroll indicator (desktop) */}
+      <div className="hero-scroll hidden md:flex" aria-hidden="true">
+        <span className="hero-scroll__line" />
+        <span className="hero-scroll__label">scroll</span>
       </div>
     </section>
   );
