@@ -1359,9 +1359,9 @@ function DuranteAnosHeadline() {
       const progress = Math.max(0, Math.min(1, scrolled / total));
 
       const phases = [
-        { enterStart: 0.02, enterEnd: 0.14, holdEnd: 0.26, exitEnd: 0.36 },
-        { enterStart: 0.32, enterEnd: 0.44, holdEnd: 0.58, exitEnd: 0.70 },
-        { enterStart: 0.64, enterEnd: 0.76, holdEnd: 0.88, exitEnd: 0.94 },
+        { enterStart: 0.0, enterEnd: 0.14, holdEnd: 0.30, exitEnd: 0.40 },
+        { enterStart: 0.34, enterEnd: 0.48, holdEnd: 0.64, exitEnd: 0.74 },
+        { enterStart: 0.68, enterEnd: 0.80, holdEnd: 0.94, exitEnd: 0.985 },
       ];
 
       for (let i = 0; i < phases.length; i++) {
