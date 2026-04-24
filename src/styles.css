@@ -743,16 +743,16 @@
   margin-top: 10px;
 }
 
-/* ─────────── AUDIENCE PIN (fan-out cards scroll) ─────────── */
+/* ─────────── AUDIENCE — carrossel horizontal (desktop + mobile) ─────────── */
 .audience-pin {
   position: relative;
-  height: 200vh;
+  height: auto;
+  padding-bottom: 24px;
 }
 .audience-pin__sticky {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  overflow: hidden;
+  position: static;
+  height: auto;
+  overflow: visible;
   display: flex;
   flex-direction: column;
 }
@@ -761,78 +761,24 @@
   padding-bottom: 24px;
   flex-shrink: 0;
 }
+
+/* Stack fan-out desativado — substituído pelo carrossel em todos os viewports */
 .fan-stack-wrap {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px 24px 60px;
+  display: none;
 }
-.fan-stack {
-  position: relative;
-  width: min(360px, 78vw);
-  height: min(440px, 96vw);
-  --fan: 0;
-  --slide: 0;
-  --slide-1: 0;
-  --slide-2: 0;
-  --slide-3: 0;
-  --focus: 0;
-  --focus-1: 0;
-  --focus-2: 0;
-  --focus-3: 0;
-}
+
 .fan-card {
-  position: absolute;
-  inset: 0;
   background: var(--bg-card);
   border: 1.5px solid var(--accent);
   border-radius: 18px;
   padding: 36px 32px 40px;
   box-shadow:
-    0 calc(8px + var(--fan) * 14px) calc(20px + var(--fan) * 30px) rgba(0, 0, 0, 0.5),
+    0 8px 20px rgba(0, 0, 0, 0.5),
     0 4px 10px rgba(0, 0, 0, 0.35),
     0 0 0 1px color-mix(in oklab, var(--accent) 35%, transparent),
     0 0 24px color-mix(in oklab, var(--accent) 25%, transparent);
-  transform-origin: bottom center;
   display: flex;
   flex-direction: column;
-  will-change: transform;
-}
-.fan-card--bg-1 {
-  z-index: calc(1 + var(--focus-1) * 10 + var(--slide-1) * 20);
-  transform:
-    translateX(calc(var(--slide-1) * 180% + (1 - var(--slide-1)) * var(--fan) * -8%))
-    translateY(calc(12px - var(--fan) * 12px - var(--focus-1) * 12px))
-    scale(calc(0.94 + var(--fan) * 0.06 + var(--focus-1) * 0.06))
-    rotate(calc((1 - var(--slide-1)) * (var(--fan) * -22deg + var(--fan) * var(--focus-1) * 22deg) + var(--slide-1) * 4deg));
-  opacity: calc(1 - var(--slide-1) * 0.15);
-}
-.fan-card--bg-2 {
-  z-index: calc(2 + var(--focus-2) * 10 + var(--slide-2) * 20);
-  transform:
-    translateX(calc(var(--slide-2) * 180% + (1 - var(--slide-2)) * var(--fan) * -4%))
-    translateY(calc(8px - var(--fan) * 8px - var(--focus-2) * 8px))
-    scale(calc(0.96 + var(--fan) * 0.04 + var(--focus-2) * 0.06))
-    rotate(calc((1 - var(--slide-2)) * (var(--fan) * -14deg + var(--fan) * var(--focus-2) * 14deg) + var(--slide-2) * 4deg));
-  opacity: calc(1 - var(--slide-2) * 0.15);
-}
-.fan-card--bg-3 {
-  z-index: calc(3 + var(--focus-3) * 10 + var(--slide-3) * 20);
-  transform:
-    translateX(calc(var(--slide-3) * -180% + (1 - var(--slide-3)) * var(--fan) * 4%))
-    translateY(calc(4px - var(--fan) * 4px - var(--focus-3) * 4px))
-    scale(calc(0.98 + var(--fan) * 0.02 + var(--focus-3) * 0.06))
-    rotate(calc((1 - var(--slide-3)) * (var(--fan) * 14deg - var(--fan) * var(--focus-3) * 14deg) + var(--slide-3) * -4deg));
-  opacity: calc(1 - var(--slide-3) * 0.15);
-}
-.fan-card--lead {
-  z-index: calc(4 + var(--focus) * 10);
-  transform:
-    translateX(calc(var(--slide) * -160%))
-    scale(calc(1 + var(--focus) * 0.06))
-    rotate(calc(var(--slide) * -4deg));
-  opacity: calc(1 - var(--slide) * 0.1);
 }
 .fan-card .icon-box {
   width: 48px;
@@ -862,59 +808,55 @@
   margin-top: 12px;
 }
 
-/* Default: carousel hidden — só aparece em mobile (≤ 767px) */
-.audience-carousel,
-.audience-carousel__hint {
+/* Carrossel horizontal — visível em desktop e mobile */
+.audience-carousel {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scroll-padding: 32px;
+  padding: 16px 32px 32px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.audience-carousel::-webkit-scrollbar {
   display: none;
+}
+.audience-carousel__card {
+  position: relative;
+  inset: auto;
+  flex: 0 0 360px;
+  max-width: 360px;
+  scroll-snap-align: center;
+  width: auto;
+  height: auto;
+}
+.audience-carousel__hint {
+  display: block;
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--text-secondary, #888);
+  text-transform: uppercase;
+  padding: 0 24px 32px;
+  opacity: 0.6;
 }
 
 @media (max-width: 767px) {
-  /* Desliga o pin vertical e libera altura natural */
-  .audience-pin {
-    height: auto;
-  }
-  .audience-pin__sticky {
-    position: static;
-    height: auto;
-    overflow: visible;
-    padding-bottom: 24px;
-  }
   .audience-pin__header {
     padding-top: 48px;
     padding-bottom: 12px;
   }
-  /* Esconde o stack fan-out — substituído por carrossel horizontal */
-  .fan-stack-wrap {
-    display: none;
-  }
-
-  /* Carrossel horizontal nativo */
   .audience-carousel {
-    display: flex;
     gap: 16px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
     scroll-padding: 24px;
     padding: 8px 24px 24px;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-  .audience-carousel::-webkit-scrollbar {
-    display: none;
   }
   .audience-carousel__card {
-    position: relative;
-    inset: auto;
     flex: 0 0 82%;
     max-width: 320px;
-    scroll-snap-align: center;
-    transform: none !important;
-    opacity: 1 !important;
-    /* Override fan-card absolute positioning herdada */
-    width: auto;
-    height: auto;
     padding: 24px 20px 26px;
     border-radius: 20px;
   }
@@ -925,18 +867,6 @@
     font-size: 13px;
     line-height: 1.55;
     margin-top: 10px;
-  }
-
-  /* Hint de swipe */
-  .audience-carousel__hint {
-    display: block;
-    text-align: center;
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    color: var(--text-secondary, #888);
-    text-transform: uppercase;
-    padding: 0 24px 32px;
-    opacity: 0.6;
   }
 }
 

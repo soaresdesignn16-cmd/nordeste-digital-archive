@@ -1153,7 +1153,7 @@ function ManifestoSection() {
   );
 }
 
-/* ─────────── AUDIENCE (Fan-out cards pin scroll) ─────────── */
+/* ─────────── AUDIENCE — carrossel horizontal (desktop + mobile) ─────────── */
 function AudienceSection() {
   const profiles = [
     { icon: <Store size={22} />, title: "Donos de negócios do mundo físico", desc: "Lojas, clínicas, escritórios, prestadores de serviço presencial. Você sente que está preso na operação e que o digital não traduz o tamanho real da sua empresa." },
@@ -1162,151 +1162,9 @@ function AudienceSection() {
     { icon: <Briefcase size={22} />, title: "Especialistas e autoridades", desc: "Você já tem conhecimento, resultado e bagagem. Falta apenas a estrutura digital pra que o mercado pare de te tratar como mais um e comece a te tratar como referência." },
   ];
 
-  const leadProfile = profiles[0];
-  const backProfiles = [profiles[1], profiles[2], profiles[3]];
-
-  const wrapperRef = useRef<HTMLDivElement | null>(null);
-  const stackRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const wrapper = wrapperRef.current;
-    const stack = stackRef.current;
-    if (!wrapper || !stack) return;
-
-    // Mobile usa carrossel horizontal nativo — não precisa do scroll-pin/fan-out.
-    const isMobileCarousel = window.matchMedia("(max-width: 767px)").matches;
-    if (isMobileCarousel) return;
-
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    // Detecta dispositivo fraco (GPU/CPU/RAM limitada): celulares antigos.
-    // Critérios: pouca RAM (<= 2GB) OU poucos núcleos (<= 4) em conexão lenta,
-    // OU navegador pediu economia de dados. Mantém o efeito em qualquer device decente.
-    const nav = navigator as Navigator & {
-      deviceMemory?: number;
-      connection?: { saveData?: boolean; effectiveType?: string };
-    };
-    const lowMemory = typeof nav.deviceMemory === "number" && nav.deviceMemory <= 2;
-    const lowCores = typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4;
-    const saveData = nav.connection?.saveData === true;
-    const slowNet = nav.connection?.effectiveType === "2g" || nav.connection?.effectiveType === "slow-2g";
-    const isMobile = window.matchMedia("(max-width: 540px)").matches;
-    const lowGpu = saveData || lowMemory || (isMobile && lowCores && slowNet);
-    if (lowGpu) {
-      document.documentElement.classList.add("low-gpu");
-    }
-    if (reduced || lowGpu) return;
-
-    // Cacheia métricas pesadas (offsetHeight força layout). Só recalcula no resize.
-    let total = wrapper.offsetHeight - window.innerHeight;
-    let viewportH = window.innerHeight;
-    const recalc = () => {
-      total = wrapper.offsetHeight - window.innerHeight;
-      viewportH = window.innerHeight;
-    };
-
-    // Pré-calcula constantes do timeline pra evitar trabalho por frame.
-    const FAN_END = isMobile ? 0.3 : 0.25;
-    const INV_FAN_END = 1 / FAN_END;
-
-    // Cache do último valor escrito em cada custom property — evita
-    // setProperty redundante (cada chamada invalida estilo computado).
-    const last: Record<string, string> = {};
-    const setVar = (name: string, value: number) => {
-      const v = value.toFixed(2);
-      if (last[name] === v) return;
-      last[name] = v;
-      stack.style.setProperty(name, v);
-    };
-
-    let visible = false;
-    let ticking = false;
-    let lastProgress = -1;
-
-    const update = () => {
-      ticking = false;
-      if (total <= 0) return;
-      // getBoundingClientRect().top em vez de calcular de novo offsetTop.
-      const top = wrapper.getBoundingClientRect().top;
-      const progress = top >= 0 ? 0 : top <= -total ? 1 : -top / total;
-      // Skip se variação < 0.3% (sub-pixel em telas comuns).
-      if (Math.abs(progress - lastProgress) < 0.003) return;
-      lastProgress = progress;
-
-      // Smoothstep: easing suave (ease-in-out) em cada transição entre cards,
-      // mata os "cortes" lineares que pareciam jumps duros.
-      const seg = (start: number, end: number) => {
-        const t = (progress - start) / (end - start);
-        if (t <= 0) return 0;
-        if (t >= 1) return 1;
-        return t * t * (3 - 2 * t);
-      };
-
-      let fanRaw = progress * INV_FAN_END;
-      if (fanRaw > 1) fanRaw = 1;
-      // Ease-out cubic em todos os devices: o leque desacelera no final
-      // (movimento natural, sem "estalar" ao chegar aberto).
-      const inv = 1 - fanRaw;
-      const fanProgress = 1 - inv * inv * inv;
-
-      setVar("--fan", fanProgress);
-      setVar("--focus", seg(0.18, 0.30));
-      setVar("--slide", seg(0.28, 0.40));
-      setVar("--focus-3", seg(0.38, 0.50));
-      setVar("--slide-3", seg(0.48, 0.60));
-      setVar("--focus-2", seg(0.58, 0.70));
-      setVar("--slide-2", seg(0.68, 0.80));
-      setVar("--focus-1", seg(0.78, 0.90));
-      setVar("--slide-1", seg(0.88, 1));
-    };
-
-    const onScroll = () => {
-      if (!visible || ticking) return;
-      ticking = true;
-      requestAnimationFrame(update);
-    };
-
-    const onResize = () => {
-      recalc();
-      lastProgress = -1;
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(update);
-      }
-    };
-
-    // Só escuta scroll quando o pin está realmente em cena.
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          visible = e.isIntersecting;
-          if (visible) {
-            lastProgress = -1;
-            if (!ticking) {
-              ticking = true;
-              requestAnimationFrame(update);
-            }
-          }
-        }
-      },
-      { rootMargin: "100px 0px 100px 0px" },
-    );
-    io.observe(wrapper);
-
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onResize);
-    return () => {
-      io.disconnect();
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onResize);
-    };
-  }, []);
-
   return (
     <section
       id="para-quem"
-      ref={wrapperRef}
       className="audience-pin"
       style={{ background: "var(--bg-surface)", borderTop: "1px solid var(--border-subtle)", borderBottom: "1px solid var(--border-subtle)" }}
     >
@@ -1332,24 +1190,7 @@ function AudienceSection() {
           </div>
         </div>
 
-        <div className="fan-stack-wrap">
-          <div className="fan-stack" ref={stackRef}>
-            {backProfiles.map((p, i) => (
-              <div key={`bg-${i}`} className={`fan-card fan-card--bg-${i + 1}`}>
-                <div className="icon-box">{p.icon}</div>
-                <h3>{p.title}</h3>
-                <p>{p.desc}</p>
-              </div>
-            ))}
-            <div className="fan-card fan-card--lead">
-              <div className="icon-box">{leadProfile.icon}</div>
-              <h3>{leadProfile.title}</h3>
-              <p>{leadProfile.desc}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile carousel — substitui o fan-stack em telas ≤ 767px */}
+        {/* Carrossel horizontal — funciona em desktop e mobile via scroll-snap */}
         <div className="audience-carousel" aria-label="Perfis para quem o movimento é">
           {profiles.map((p, i) => (
             <div key={`mc-${i}`} className="audience-carousel__card fan-card fan-card--lead">
