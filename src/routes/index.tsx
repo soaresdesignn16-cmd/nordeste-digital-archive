@@ -1319,6 +1319,7 @@ function ImpactSection() {
 /* ─────────── DURANTE ANOS HEADLINE — scroll-zoom ─────────── */
 function DuranteAnosHeadline() {
   const sectionRef = useRef<HTMLElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const phraseRefs = [
     useRef<HTMLHeadingElement>(null),
     useRef<HTMLHeadingElement>(null),
@@ -1346,6 +1347,22 @@ function DuranteAnosHeadline() {
     const smoothstep = (t: number) => {
       const c = Math.max(0, Math.min(1, t));
       return c * c * (3 - 2 * c);
+    };
+
+    const syncMetrics = () => {
+      const section = sectionRef.current;
+      const stage = stageRef.current;
+      if (!section || !stage) return;
+
+      const visualHeight = window.visualViewport?.height ?? window.innerHeight;
+      viewportHeight = Math.max(1, Math.round(visualHeight));
+
+      const stageHeight = Math.max(viewportHeight, Math.round(stage.getBoundingClientRect().height || viewportHeight));
+      const track = Math.max(Math.round(viewportHeight * 1.85), stageHeight + Math.round(viewportHeight * 1.2));
+
+      section.style.setProperty("--durante-anos-stage-height", `${stageHeight}px`);
+      section.style.setProperty("--durante-anos-pin-height", `${stageHeight + track}px`);
+      section.style.setProperty("--durante-anos-track", `${track}px`);
     };
 
     const update = () => {
@@ -1401,17 +1418,20 @@ function DuranteAnosHeadline() {
     };
 
     const onResize = () => {
-      viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+      syncMetrics();
       onScroll();
     };
 
+    syncMetrics();
     update();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize, { passive: true });
+    window.addEventListener("orientationchange", onResize, { passive: true });
     window.visualViewport?.addEventListener("resize", onResize, { passive: true });
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("orientationchange", onResize);
       window.visualViewport?.removeEventListener("resize", onResize);
       if (raf) cancelAnimationFrame(raf);
     };
@@ -1419,7 +1439,7 @@ function DuranteAnosHeadline() {
 
   return (
     <section ref={sectionRef} className="durante-anos-pin">
-      <div className="durante-anos-stage">
+      <div ref={stageRef} className="durante-anos-stage">
         <h2 ref={phraseRefs[0]} className="durante-anos-phrase">
           Durante anos tentaram
         </h2>
