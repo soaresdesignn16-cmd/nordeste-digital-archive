@@ -474,6 +474,7 @@ function NovosNordestinos() {
           <ExecucaoCloneDigital />
           <ImpactSection />
           <Depoimentos />
+          <Seletividade />
           <DuranteAnosHeadline />
           <CTABlock />
           <FinalCTA />
