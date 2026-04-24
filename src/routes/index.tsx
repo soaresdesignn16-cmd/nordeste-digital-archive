@@ -1321,8 +1321,10 @@ function DuranteAnosHeadline() {
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef(0);
+  const targetProgressRef = useRef(0);
   const lockedRef = useRef(false);
   const touchYRef = useRef<number | null>(null);
+  const smoothRafRef = useRef<number | null>(null);
   const phraseRefs = [
     useRef<HTMLHeadingElement>(null),
     useRef<HTMLHeadingElement>(null),
