@@ -698,6 +698,7 @@ function Nav() {
 function HeroIntro() {
   return (
     <section className="hero">
+      <div className="hero-vline" aria-hidden="true" />
       {/* Mobile: imagem no topo (70vh) com fade pro preto, texto abaixo no preto sólido */}
       <div className="md:hidden relative z-10">
         <div className="relative w-full" style={{ height: "70vh" }}>
