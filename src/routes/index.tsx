@@ -523,6 +523,10 @@ function VSLGate({
 
         <div className="hero-anim hero-d-4" style={{ marginTop: 48 }}>
           <div className="video-frame">
+            <span className="video-frame__corner video-frame__corner--tl" aria-hidden />
+            <span className="video-frame__corner video-frame__corner--tr" aria-hidden />
+            <span className="video-frame__corner video-frame__corner--bl" aria-hidden />
+            <span className="video-frame__corner video-frame__corner--br" aria-hidden />
             <VSLPlayer
               videoId="1184950928"
               hash="c0d54d152e"
