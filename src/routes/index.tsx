@@ -1321,8 +1321,10 @@ function DuranteAnosHeadline() {
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef(0);
+  const targetProgressRef = useRef(0);
   const lockedRef = useRef(false);
   const touchYRef = useRef<number | null>(null);
+  const smoothRafRef = useRef<number | null>(null);
   const phraseRefs = [
     useRef<HTMLHeadingElement>(null),
     useRef<HTMLHeadingElement>(null),
@@ -1381,12 +1383,13 @@ function DuranteAnosHeadline() {
       const stageHeight = Math.max(viewportHeight, Math.round(stage.getBoundingClientRect().height || viewportHeight));
       section.style.setProperty("--durante-anos-stage-height", `${stageHeight}px`);
       section.style.setProperty("--durante-anos-pin-height", `${stageHeight}px`);
-      section.style.setProperty("--durante-anos-lock-distance", `${Math.max(Math.round(viewportHeight * 1.75), 960)}px`);
+      section.style.setProperty("--durante-anos-lock-distance", `${Math.max(Math.round(viewportHeight * 1.05), 620)}px`);
     };
 
     const applyProgress = (value: number) => {
       const progress = clamp01(value);
       progressRef.current = progress;
+      if (!lockedRef.current) targetProgressRef.current = progress;
 
       for (let i = 0; i < phases.length; i++) {
         const { enterStart, enterEnd, holdEnd, exitEnd } = phases[i];
@@ -1424,6 +1427,7 @@ function DuranteAnosHeadline() {
       if (lockedRef.current) return;
       lockedRef.current = true;
       touchYRef.current = null;
+      targetProgressRef.current = progressRef.current;
       setLockedClass(true);
       const targetTop = getSectionTop();
       window.scrollTo({ top: targetTop, behavior: "auto" });
@@ -1468,19 +1472,55 @@ function DuranteAnosHeadline() {
       return rect.top <= viewportHeight * 0.12 && rect.bottom >= viewportHeight * 0.42;
     };
 
+    const stopSmoothing = () => {
+      if (smoothRafRef.current != null) {
+        cancelAnimationFrame(smoothRafRef.current);
+        smoothRafRef.current = null;
+      }
+    };
+
+    const tickSmoothing = () => {
+      smoothRafRef.current = null;
+      const target = targetProgressRef.current;
+      const current = progressRef.current;
+      const diff = target - current;
+
+      if (Math.abs(diff) < 0.0008) {
+        applyProgress(target);
+
+        if (target >= 0.999) {
+          applyProgress(1);
+          unlockScroll(1);
+        } else if (target <= 0.001 && !lockedRef.current) {
+          applyProgress(0);
+        }
+        return;
+      }
+
+      // Lerp leve para sensação imersiva (~18% por frame)
+      const next = current + diff * 0.18;
+      applyProgress(next);
+      smoothRafRef.current = requestAnimationFrame(tickSmoothing);
+    };
+
     const driveProgress = (delta: number) => {
       if (!lockedRef.current) return;
-      const distance = Math.max(viewportHeight * 1.75, 960);
-      const next = clamp01(progressRef.current + delta / distance);
+      // Distância menor = scroll mais leve/responsivo
+      const distance = Math.max(viewportHeight * 1.05, 620);
+      // Sensibilidade reduzida para input mais suave
+      const next = clamp01(targetProgressRef.current + (delta / distance) * 0.85);
+      targetProgressRef.current = next;
 
-      applyProgress(next);
-
-      if (next >= 0.999 && delta > 0) {
-        applyProgress(1);
-        unlockScroll(1);
-      } else if (next <= 0.001 && delta < 0) {
+      if (next <= 0.001 && delta < 0) {
+        targetProgressRef.current = 0;
         applyProgress(0);
+        stopSmoothing();
         unlockScroll(-1);
+        return;
+      }
+
+      if (smoothRafRef.current == null) {
+        smoothRafRef.current = requestAnimationFrame(tickSmoothing);
       }
     };
 
@@ -1585,6 +1625,10 @@ function DuranteAnosHeadline() {
       window.removeEventListener("orientationchange", onResize);
       window.visualViewport?.removeEventListener("resize", onResize);
       if (raf) cancelAnimationFrame(raf);
+      if (smoothRafRef.current != null) {
+        cancelAnimationFrame(smoothRafRef.current);
+        smoothRafRef.current = null;
+      }
     };
   }, []);
 
