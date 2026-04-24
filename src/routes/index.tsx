@@ -471,6 +471,7 @@ function NovosNordestinos() {
           <AudienceSection />
           <FounderSection />
           <MetodoAPD />
+          <ExecucaoCloneDigital />
           <ImpactSection />
           <DuranteAnosHeadline />
           <CTABlock />
