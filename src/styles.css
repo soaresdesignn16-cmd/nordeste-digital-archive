@@ -1822,8 +1822,8 @@
 /* ─────────── Durante Anos — scroll-zoom pinned ─────────── */
 .durante-anos-pin {
   position: relative;
-  height: 340svh;
-  min-height: 340svh;
+  height: 380svh;
+  min-height: 380svh;
   background: var(--bg);
   border-top: 1px solid var(--border-subtle);
 }
