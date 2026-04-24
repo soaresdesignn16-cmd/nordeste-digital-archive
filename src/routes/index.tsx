@@ -708,9 +708,9 @@ function HeroIntro() {
   return (
     <section className="hero">
       <div className="hero-vline" aria-hidden="true" />
-      {/* Mobile: imagem no topo (70vh) com fade pro preto, texto abaixo no preto sólido */}
+      {/* Mobile: imagem ocupa a tela toda (100svh) com fade pro preto, texto abaixo no preto sólido */}
       <div className="md:hidden relative z-10">
-        <div className="relative w-full" style={{ height: "70vh" }}>
+        <div className="relative w-full" style={{ height: "100svh" }}>
           <img
             src={founderHeroGlow}
             alt="Idealizador d'Os Novos Nordestinos"
@@ -723,7 +723,7 @@ function HeroIntro() {
           <div
             className="absolute inset-x-0 bottom-0 pointer-events-none"
             style={{
-              height: "45%",
+              height: "35%",
               background:
                 "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 55%, #000 100%)",
             }}
@@ -1250,13 +1250,13 @@ function AudienceSection() {
       const fanProgress = 1 - inv * inv * inv;
 
       setVar("--fan", fanProgress);
-      setVar("--focus", seg(0.25, 0.36));
-      setVar("--slide", seg(0.34, 0.45));
-      setVar("--focus-3", seg(0.43, 0.54));
-      setVar("--slide-3", seg(0.52, 0.63));
-      setVar("--focus-2", seg(0.61, 0.72));
-      setVar("--slide-2", seg(0.7, 0.81));
-      setVar("--focus-1", seg(0.79, 0.9));
+      setVar("--focus", seg(0.18, 0.30));
+      setVar("--slide", seg(0.28, 0.40));
+      setVar("--focus-3", seg(0.38, 0.50));
+      setVar("--slide-3", seg(0.48, 0.60));
+      setVar("--focus-2", seg(0.58, 0.70));
+      setVar("--slide-2", seg(0.68, 0.80));
+      setVar("--focus-1", seg(0.78, 0.90));
       setVar("--slide-1", seg(0.88, 1));
     };
 
@@ -1518,9 +1518,13 @@ function DuranteAnosHeadline() {
       const N = 3;
       const overlap = 0.05;
       for (let i = 0; i < N; i++) {
+        const isLast = i === N - 1;
         const start = i / N - (i > 0 ? overlap : 0);
         const end = (i + 1) / N + (i < N - 1 ? overlap : 0);
         const local = (progress - start) / (end - start);
+        // Última frase tem um "hold" mais longo no centro pra dar tempo de leitura
+        const inEnd = isLast ? 0.35 : 0.4;
+        const outStart = isLast ? 0.85 : 0.6;
         let s = 1;
         let o = 0;
         if (local <= 0) {
@@ -1529,15 +1533,15 @@ function DuranteAnosHeadline() {
         } else if (local >= 1) {
           s = 0.5;
           o = 0;
-        } else if (local < 0.4) {
-          const t = smoothstep(local / 0.4);
+        } else if (local < inEnd) {
+          const t = smoothstep(local / inEnd);
           s = 1.6 - 0.6 * t;
           o = t;
-        } else if (local < 0.6) {
+        } else if (local < outStart) {
           s = 1;
           o = 1;
         } else {
-          const t = smoothstep((local - 0.6) / 0.4);
+          const t = smoothstep((local - outStart) / (1 - outStart));
           s = 1 - 0.5 * t;
           o = 1 - t;
         }
