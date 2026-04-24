@@ -910,6 +910,58 @@ function MetodoAPD() {
   );
 }
 
+/* ─────────── EXECUÇÃO / CLONE DIGITAL ─────────── */
+function ExecucaoCloneDigital() {
+  const checklist = [
+    "Estratégia completa de posicionamento, definida sob medida pra você.",
+    "Identidade visual e narrativa de marca arquitetadas no nível premium.",
+    "Roteiros, captação e edição de conteúdo executados pela nossa equipe.",
+    "Distribuição inteligente nas plataformas certas, no ritmo certo.",
+    "Clone Digital ativo 24/7 — atendendo, qualificando e engajando.",
+    "Acompanhamento estratégico contínuo com nosso time de especialistas.",
+  ];
+
+  const results = [
+    "Você não precisa gravar todo dia.",
+    "Você não precisa pensar no conteúdo.",
+    "Você só precisa estar pronto pro que vem depois.",
+  ];
+
+  return (
+    <section id="execucao" className="exec-section section-pad">
+      <div className="section-container">
+        <div className="exec-box">
+          <span className="exec-badge">Exclusivo</span>
+          <h2 className="exec-headline">
+            Implementamos tudo. <span className="accent-text">Você apenas vive o resultado.</span>
+          </h2>
+          <p className="exec-desc">
+            O Clone Digital é o sistema completo d'Os Novos Nordestinos. Estratégia, conteúdo, distribuição e atendimento — tudo executado pelo nosso time enquanto sua autoridade cresce no mercado.
+          </p>
+
+          <ul className="exec-checklist">
+            {checklist.map((item, i) => (
+              <li key={i} className="exec-checklist__item">
+                <span className="exec-checklist__icon" aria-hidden>✓</span>
+                <span className="exec-checklist__text">{item}</span>
+              </li>
+            ))}
+          </ul>
+
+          <div className="exec-strip">
+            {results.map((r, i) => (
+              <div key={i} className="exec-strip__cell">
+                <span className="exec-strip__icon" aria-hidden>✓</span>
+                <p className="exec-strip__text">{r}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ─────────── MANIFESTO ─────────── */
 function ManifestoSection() {
   const cards = [
