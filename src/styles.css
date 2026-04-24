@@ -2587,3 +2587,51 @@ html:not(.reveal-ready) .final-cta-headline .reveal-word.accent-text {
 @media (max-width: 768px) {
   .faq-answer__text { padding-right: 0; }
 }
+
+/* ─────────── FOOTER ─────────── */
+.onn-footer {
+  background: var(--onn-black);
+  border-top: 1px solid var(--onn-border);
+  padding: 48px 24px;
+  text-align: center;
+}
+.onn-footer__inner {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.onn-footer__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.onn-footer__logo-img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+.onn-footer__brand-text {
+  font-family: var(--font);
+  color: var(--onn-orange);
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.onn-footer__tagline {
+  font-family: var(--font);
+  font-size: 12px;
+  font-style: italic;
+  color: var(--onn-dim);
+  margin: 0 0 20px 0;
+}
+.onn-footer__copy {
+  font-family: var(--font);
+  font-size: 11px;
+  color: var(--onn-dim);
+  letter-spacing: 0.05em;
+  margin: 0;
+}

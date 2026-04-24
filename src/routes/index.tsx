@@ -1728,18 +1728,18 @@ function FAQSection() {
 /* ─────────── FOOTER ─────────── */
 function Footer() {
   return (
-    <footer className="px-6"
-      style={{ background: "var(--bg)", borderTop: "1px solid var(--border-subtle)", paddingTop: 40, paddingBottom: 40 }}>
-      <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-        <p style={{ fontFamily: "var(--font)", fontWeight: 400, fontSize: 12, color: "var(--text-ghost)" }}>
+    <footer className="onn-footer">
+      <div className="onn-footer__inner">
+        <div className="onn-footer__brand">
+          <img src={logoOnn} alt="ONN" className="onn-footer__logo-img" />
+          <span className="onn-footer__brand-text">ONN — 2K26</span>
+        </div>
+        <p className="onn-footer__tagline">
+          Movimento dos novos nordestinos.
+        </p>
+        <p className="onn-footer__copy">
           © 2026 Os Novos Nordestinos. Todos os direitos reservados.
         </p>
-        <div className="flex items-center gap-3">
-          <img src={logoOnn} alt="ONN" className="w-5 h-5 object-contain opacity-60" />
-          <span style={{ fontFamily: "var(--font)", fontWeight: 700, fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--text-ghost)" }}>
-            ONN — 2K26
-          </span>
-        </div>
       </div>
     </footer>
   );
