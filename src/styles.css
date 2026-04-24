@@ -1752,12 +1752,12 @@
 /* ─────────── Durante Anos — scroll-zoom pinned ─────────── */
 .durante-anos-pin {
   position: relative;
-  height: 320svh;
-  min-height: 320svh;
+  height: 300svh;
+  min-height: 300svh;
   background: var(--bg);
   border-top: 1px solid var(--border-subtle);
-  contain: paint;
   isolation: isolate;
+  overflow: visible;
 }
 
 .durante-anos-stage {
@@ -1803,8 +1803,8 @@
 
 @media (max-width: 767px) {
   .durante-anos-pin {
-    height: 280svh;
-    min-height: 280svh;
+    height: 260svh;
+    min-height: 260svh;
   }
   .durante-anos-phrase {
     font-size: clamp(34px, 9vw, 56px);
