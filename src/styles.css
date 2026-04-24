@@ -2635,3 +2635,150 @@ html:not(.reveal-ready) .final-cta-headline .reveal-word.accent-text {
   letter-spacing: 0.05em;
   margin: 0;
 }
+
+/* ============================================================
+   GLOBAL RESPONSIVE PASS — Mobile / Tablet / Desktop
+   (override final — mantém ordem da cascata)
+============================================================ */
+
+/* Padrões base para containers/sections compartilhados */
+.section-pad { padding: 96px 0; }
+.section-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+/* Anti-overflow global */
+html, body { overflow-x: hidden; }
+img, video, svg { max-width: 100%; height: auto; }
+.section-container, main, section, footer { min-width: 0; }
+
+/* ─────────── MOBILE (≤ 767px) ─────────── */
+@media (max-width: 767px) {
+  /* Espaçamento vertical reduzido */
+  .section-pad { padding: 56px 0; }
+
+  /* Containers — padding horizontal 20px */
+  .section-container,
+  .max-w-\[1400px\],
+  .max-w-\[1200px\],
+  .max-w-\[1100px\],
+  .max-w-\[1000px\],
+  .max-w-\[960px\],
+  .max-w-\[900px\] {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+  .px-6 { padding-left: 20px !important; padding-right: 20px !important; }
+
+  /* Tipografia mínima — nenhum heading abaixo de 28px */
+  h1, h2, h3,
+  .typo-display,
+  .typo-headline {
+    font-size: max(28px, 1em) !important;
+    line-height: 1.15 !important;
+    word-break: normal;
+    overflow-wrap: anywhere;
+  }
+  .typo-display { font-size: clamp(28px, 9vw, 48px) !important; }
+  .typo-headline { font-size: clamp(28px, 8vw, 42px) !important; }
+
+  /* CTAs — full width + touch target */
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    text-align: center;
+    min-height: 48px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+  .btn-primary--lg,
+  .btn-secondary--lg { padding-top: 18px; padding-bottom: 18px; }
+
+  /* Grids 2/3 colunas → 1 coluna */
+  .grid.grid-cols-2,
+  .grid.grid-cols-3,
+  .md\:grid-cols-2,
+  .md\:grid-cols-3,
+  .lg\:grid-cols-3 {
+    grid-template-columns: 1fr !important;
+  }
+  .dep-grid { grid-template-columns: 1fr !important; }
+
+  /* Navbar */
+  .onn-nav,
+  nav.onn-nav { padding: 14px 20px !important; }
+
+  /* Hero */
+  .hero-section,
+  #hero-intro > section,
+  #hero-intro {
+    min-height: 100svh;
+    padding-top: 90px;
+  }
+
+  /* VSL — sem padding lateral */
+  .vsl-section,
+  #vsl,
+  .vsl-wrap,
+  .vsl-container {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* FAQ */
+  .faq-answer__text { padding-right: 0 !important; }
+
+  /* Respiro mínimo entre elementos consecutivos */
+  section + section { margin-top: 0; }
+  .stack-mobile > * + * { margin-top: 16px; }
+}
+
+/* ─────────── TABLET (768 – 1023px) ─────────── */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .section-container { padding-left: 32px; padding-right: 32px; }
+  .px-6 { padding-left: 32px !important; padding-right: 32px !important; }
+
+  /* Grids 3 colunas → 2 colunas (exceto Método APD) */
+  .grid.grid-cols-3,
+  .md\:grid-cols-3,
+  .lg\:grid-cols-3 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  /* Método APD mantém 3 colunas */
+  .apd-section .grid.grid-cols-3,
+  .apd-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  /* Botões — largura auto, centralizados */
+  .btn-primary,
+  .btn-secondary {
+    width: auto;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Hero headline tablet */
+  .hero-section .typo-display,
+  .hero-headline {
+    font-size: clamp(38px, 7vw, 56px) !important;
+  }
+}
+
+/* ─────────── DESKTOP (≥ 1024px) ─────────── */
+@media (min-width: 1024px) {
+  .section-pad { padding: 96px 0; }
+  .section-container {
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hero-section,
+  #hero-intro > section { min-height: 100vh; }
+}
