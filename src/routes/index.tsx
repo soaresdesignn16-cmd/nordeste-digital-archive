@@ -1546,6 +1546,23 @@ function DuranteAnosHeadline() {
       const delta = currentScrollY - lastScrollY;
       lastScrollY = currentScrollY;
 
+      // Reset de "estado fantasma" quando a seção está totalmente fora da viewport
+      const section = sectionRef.current;
+      if (section) {
+        const rect = section.getBoundingClientRect();
+        if (rect.bottom < 0) {
+          if (progressRef.current !== 1) {
+            targetProgressRef.current = 1;
+            applyProgress(1);
+          }
+        } else if (rect.top > viewportHeight) {
+          if (progressRef.current !== 0) {
+            targetProgressRef.current = 0;
+            applyProgress(0);
+          }
+        }
+      }
+
       if (shouldLock(delta)) {
         lockScroll();
       }
