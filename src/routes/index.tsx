@@ -474,6 +474,7 @@ function NovosNordestinos() {
           <ExecucaoCloneDigital />
           <ImpactSection />
           <Depoimentos />
+          <Seletividade />
           <DuranteAnosHeadline />
           <CTABlock />
           <FinalCTA />
@@ -1019,6 +1020,49 @@ function Depoimentos() {
             </div>
           </article>
         ))}
+      </div>
+    </section>
+  );
+}
+
+/* ─────────── SELETIVIDADE ─────────── */
+function Seletividade() {
+  const criterios = [
+    "Você já tem um negócio em operação, com faturamento consistente.",
+    "Você entende que posicionamento é investimento, não despesa.",
+    "Você está disposto a confiar a estratégia ao nosso time.",
+    "Você quer atender menos, cobrar mais e crescer com margem.",
+    "Você se vê — ou quer se ver — como referência no seu mercado.",
+  ];
+
+  return (
+    <section id="seletividade" className="sel-section section-pad">
+      <div className="section-container sel-section__head">
+        <span className="eyebrow--bordered" style={{ marginInline: "auto" }}>Seletividade</span>
+        <h2 className="typo-headline" style={{ marginBottom: 16 }}>
+          Não atendemos <span className="accent-text">qualquer empresa.</span>
+        </h2>
+        <p className="typo-body" style={{ marginInline: "auto" }}>
+          Trabalhamos com um número limitado de empresários por mês, exatamente para garantir o nível de execução que prometemos.
+        </p>
+
+        <div className="sel-box">
+          <h3 className="sel-box__title">Critérios de seleção</h3>
+          <p className="sel-box__sub">Para entrar no movimento</p>
+
+          <ul className="sel-list">
+            {criterios.map((c, i) => (
+              <li key={i} className="sel-list__item">
+                <span className="sel-list__dash" aria-hidden>—</span>
+                <span>{c}</span>
+              </li>
+            ))}
+          </ul>
+
+          <p className="sel-box__final">
+            Se você se reconhece nesses critérios, então este movimento foi feito para o nível em que você joga.
+          </p>
+        </div>
       </div>
     </section>
   );
