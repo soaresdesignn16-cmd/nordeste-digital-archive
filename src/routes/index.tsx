@@ -477,6 +477,7 @@ function NovosNordestinos() {
           <Seletividade />
           <DuranteAnosHeadline />
           <CTABlock />
+          <FAQSection />
           <FinalCTA />
           <Footer />
         </main>
@@ -1637,6 +1638,88 @@ function CTABlock() {
             Agora é a nossa vez de ocupar o lugar certo.
           </p>
         </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* ─────────── FAQ ─────────── */
+function FAQSection() {
+  const items = [
+    {
+      q: "Para quem é Os Novos Nordestinos?",
+      a: "Para empresários nordestinos com negócio em operação e faturamento consistente, que querem ser vistos, valorizados e respeitados no nível que realmente são — atendendo menos e cobrando mais.",
+    },
+    {
+      q: "O que está incluso na entrega?",
+      a: "Arquitetura de Posicionamento Digital completa, criação do Clone Digital 24/7, presença digital editorial premium e acompanhamento estratégico durante todo o processo.",
+    },
+    {
+      q: "Quanto tempo leva para ver resultados?",
+      a: "Os primeiros sinais de reposicionamento aparecem nas primeiras semanas. A consolidação completa de autoridade acontece ao longo de 90 a 180 dias de execução contínua.",
+    },
+    {
+      q: "Vocês atendem qualquer empresário?",
+      a: "Não. Trabalhamos com um número limitado de empresários por trimestre e seguimos critérios rigorosos de seletividade. Cada projeto passa por avaliação estratégica antes de ser aceito.",
+    },
+    {
+      q: "Como funciona o processo de início?",
+      a: "Você solicita uma avaliação estratégica, conversamos sobre seu negócio e seus objetivos, validamos o fit e então iniciamos a Arquitetura de Posicionamento sob medida.",
+    },
+    {
+      q: "Qual o investimento?",
+      a: "O investimento varia conforme o escopo e o estágio do seu negócio. Os valores e condições são apresentados durante a avaliação estratégica, após entendermos o contexto completo.",
+    },
+  ];
+  const [openIdx, setOpenIdx] = useState<number | null>(0);
+
+  return (
+    <section id="faq" className="faq-section section-pad">
+      <div className="section-container">
+        <div className="faq-head">
+          <Reveal>
+            <span className="eyebrow eyebrow--center">Perguntas frequentes</span>
+          </Reveal>
+          <Reveal delay={120}>
+            <h2 className="typo-headline" style={{ marginTop: 18, textAlign: "center" }}>
+              Tire suas <span className="accent-text">dúvidas.</span>
+            </h2>
+          </Reveal>
+        </div>
+
+        <div className="faq-list">
+          {items.map((it, i) => {
+            const isOpen = openIdx === i;
+            return (
+              <div key={i} className={`faq-item${isOpen ? " open" : ""}`}>
+                <button
+                  type="button"
+                  className="faq-question"
+                  aria-expanded={isOpen}
+                  onClick={() => setOpenIdx(isOpen ? null : i)}
+                >
+                  <span className="faq-question__text">{it.q}</span>
+                  <span className="faq-icon" aria-hidden>+</span>
+                </button>
+                <div className="faq-answer">
+                  <p className="faq-answer__text">{it.a}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="faq-cta">
+          <a
+            href={WHATSAPP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-primary btn-primary--lg"
+          >
+            Solicitar avaliação estratégica
+            <ArrowRight size={14} />
+          </a>
+        </div>
       </div>
     </section>
   );
