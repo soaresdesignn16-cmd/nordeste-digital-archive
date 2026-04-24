@@ -1625,6 +1625,10 @@ function DuranteAnosHeadline() {
       window.removeEventListener("orientationchange", onResize);
       window.visualViewport?.removeEventListener("resize", onResize);
       if (raf) cancelAnimationFrame(raf);
+      if (smoothRafRef.current != null) {
+        cancelAnimationFrame(smoothRafRef.current);
+        smoothRafRef.current = null;
+      }
     };
   }, []);
 
