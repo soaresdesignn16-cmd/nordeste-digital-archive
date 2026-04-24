@@ -1153,7 +1153,7 @@ function ManifestoSection() {
   );
 }
 
-/* ─────────── AUDIENCE (Fan-out cards pin scroll) ─────────── */
+/* ─────────── AUDIENCE — carrossel horizontal (desktop + mobile) ─────────── */
 function AudienceSection() {
   const profiles = [
     { icon: <Store size={22} />, title: "Donos de negócios do mundo físico", desc: "Lojas, clínicas, escritórios, prestadores de serviço presencial. Você sente que está preso na operação e que o digital não traduz o tamanho real da sua empresa." },
@@ -1162,19 +1162,9 @@ function AudienceSection() {
     { icon: <Briefcase size={22} />, title: "Especialistas e autoridades", desc: "Você já tem conhecimento, resultado e bagagem. Falta apenas a estrutura digital pra que o mercado pare de te tratar como mais um e comece a te tratar como referência." },
   ];
 
-  const leadProfile = profiles[0];
-  const backProfiles = [profiles[1], profiles[2], profiles[3]];
-
-  const wrapperRef = useRef<HTMLDivElement | null>(null);
-  const stackRef = useRef<HTMLDivElement | null>(null);
-
-  // Carrossel horizontal nativo em todos os viewports — sem pin/scroll JS.
-  // O scroll lateral usa scroll-snap CSS, sem custo de animação por frame.
-
   return (
     <section
       id="para-quem"
-      ref={wrapperRef}
       className="audience-pin"
       style={{ background: "var(--bg-surface)", borderTop: "1px solid var(--border-subtle)", borderBottom: "1px solid var(--border-subtle)" }}
     >
@@ -1200,24 +1190,7 @@ function AudienceSection() {
           </div>
         </div>
 
-        <div className="fan-stack-wrap">
-          <div className="fan-stack" ref={stackRef}>
-            {backProfiles.map((p, i) => (
-              <div key={`bg-${i}`} className={`fan-card fan-card--bg-${i + 1}`}>
-                <div className="icon-box">{p.icon}</div>
-                <h3>{p.title}</h3>
-                <p>{p.desc}</p>
-              </div>
-            ))}
-            <div className="fan-card fan-card--lead">
-              <div className="icon-box">{leadProfile.icon}</div>
-              <h3>{leadProfile.title}</h3>
-              <p>{leadProfile.desc}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile carousel — substitui o fan-stack em telas ≤ 767px */}
+        {/* Carrossel horizontal — funciona em desktop e mobile via scroll-snap */}
         <div className="audience-carousel" aria-label="Perfis para quem o movimento é">
           {profiles.map((p, i) => (
             <div key={`mc-${i}`} className="audience-carousel__card fan-card fan-card--lead">
