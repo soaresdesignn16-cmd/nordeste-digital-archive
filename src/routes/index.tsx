@@ -1518,22 +1518,23 @@ function DuranteAnosHeadline() {
       const progress = Math.max(0, Math.min(1, scrolled / total));
 
       const N = 3;
-      const overlap = 0.05;
+      const tail = 0.15; // últimos 15% do progresso: pin segura, frase já saiu
+      const usable = 1 - tail;
+      const overlap = 0.04;
       for (let i = 0; i < N; i++) {
-        const isLast = i === N - 1;
-        const start = i / N - (i > 0 ? overlap : 0);
-        const end = (i + 1) / N + (i < N - 1 ? overlap : 0);
+        const start = (i / N) * usable - (i > 0 ? overlap : 0);
+        const end = ((i + 1) / N) * usable + (i < N - 1 ? overlap : 0);
         const local = (progress - start) / (end - start);
-        const inEnd = isLast ? 0.34 : 0.4;
-        const outStart = isLast ? 1.01 : 0.6;
+        const inEnd = 0.3;
+        const outStart = 0.7;
         let s = 1;
         let o = 0;
         if (local <= 0) {
           s = 1.6;
           o = 0;
         } else if (local >= 1) {
-          s = isLast ? 1 : 0.5;
-          o = isLast ? 1 : 0;
+          s = 0.5;
+          o = 0;
         } else if (local < inEnd) {
           const t = smoothstep(local / inEnd);
           s = 1.6 - 0.6 * t;
