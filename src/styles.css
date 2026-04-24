@@ -1752,7 +1752,7 @@
 /* ─────────── Durante Anos — scroll-zoom pinned ─────────── */
 .durante-anos-pin {
   --durante-anos-stage-height: clamp(100svh, 100svh, 100dvh);
-  --durante-anos-pin-height: clamp(280svh, 300svh, 340svh);
+  --durante-anos-pin-height: var(--durante-anos-stage-height);
   --durante-anos-track: calc(var(--durante-anos-pin-height) - var(--durante-anos-stage-height));
   position: relative;
   height: var(--durante-anos-pin-height);
@@ -1761,6 +1761,15 @@
   border-top: 1px solid var(--border-subtle);
   isolation: isolate;
   overflow: visible;
+}
+
+html.durante-anos-scroll-locked,
+body.durante-anos-scroll-locked {
+  overscroll-behavior-y: none;
+}
+
+.durante-anos-pin.is-scroll-locked {
+  z-index: 3;
 }
 
 .durante-anos-stage {
@@ -1806,7 +1815,7 @@
 
 @media (max-width: 767px) {
   .durante-anos-pin {
-    --durante-anos-pin-height: clamp(240svh, 268svh, 300svh);
+    --durante-anos-stage-height: clamp(100svh, 100svh, 100dvh);
   }
   .durante-anos-phrase {
     font-size: clamp(34px, 9vw, 56px);
