@@ -1358,7 +1358,7 @@ function DuranteAnosHeadline() {
       viewportHeight = Math.max(1, Math.round(visualHeight));
 
       const stageHeight = Math.max(viewportHeight, Math.round(stage.getBoundingClientRect().height || viewportHeight));
-      const track = Math.max(Math.round(viewportHeight * 1.85), stageHeight + Math.round(viewportHeight * 1.2));
+      const track = Math.max(Math.round(viewportHeight * 2.4), stageHeight + Math.round(viewportHeight * 1.55));
 
       section.style.setProperty("--durante-anos-stage-height", `${stageHeight}px`);
       section.style.setProperty("--durante-anos-pin-height", `${stageHeight + track}px`);
